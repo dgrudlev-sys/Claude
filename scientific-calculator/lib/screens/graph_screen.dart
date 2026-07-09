@@ -8,19 +8,29 @@ import '../graphing/plot_definition.dart';
 import '../theme/app_theme.dart';
 
 class GraphScreen extends StatefulWidget {
-  const GraphScreen({super.key});
+  const GraphScreen({super.key, GraphController? controller}) : _injectedController = controller;
+
+  /// Exposed for tests that need to verify a simulated gesture actually
+  /// reached the controller (rather than just "no exception was thrown",
+  /// which the TabBarView gesture-arena bug this app shipped with would
+  /// have passed too — the bug was a silent no-op, not a crash).
+  final GraphController? _injectedController;
 
   @override
   State<GraphScreen> createState() => _GraphScreenState();
 }
 
 class _GraphScreenState extends State<GraphScreen> {
-  final _controller = GraphController();
+  late final _controller = widget._injectedController ?? GraphController();
   bool _showTable = false;
 
   @override
   void dispose() {
-    _controller.dispose();
+    // Only dispose a controller this screen created itself — an injected
+    // controller is owned by whoever passed it in (e.g. a test).
+    if (widget._injectedController == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -322,6 +332,12 @@ class _GraphCanvas extends StatelessWidget {
       builder: (context, constraints) {
         final size = constraints.biggest;
         return GestureDetector(
+          key: const Key('graph-canvas'),
+          // A bare CustomPaint (no child) doesn't claim hit-tests itself, so
+          // without `opaque` this detector's deferToChild default would
+          // never see pointer events at all — pan/zoom would silently do
+          // nothing.
+          behavior: HitTestBehavior.opaque,
           onScaleUpdate: (details) {
             if ((details.scale - 1.0).abs() > 0.01) {
               controller.zoom(1 / details.scale);

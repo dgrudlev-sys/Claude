@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/settings_controller.dart';
 import 'calculator_screen.dart';
 import 'finance_screen.dart';
+import 'geometry_screen.dart';
 import 'graph_screen.dart';
 import 'matrix_screen.dart';
 import 'settings_screen.dart';
@@ -14,16 +15,18 @@ const _tabs = [
   (icon: Icons.calculate_outlined, label: 'Calculator'),
   (icon: Icons.show_chart, label: 'Graph'),
   (icon: Icons.view_in_ar_outlined, label: '3D'),
+  (icon: Icons.change_history, label: 'Geometry'),
   (icon: Icons.grid_on, label: 'Matrix'),
   (icon: Icons.bar_chart, label: 'Statistics'),
   (icon: Icons.attach_money, label: 'Finance'),
   (icon: Icons.functions, label: 'Solve'),
 ];
 
-/// Ties every mode (Calculator/Graph/3D/Matrix/Statistics/Finance/Solve)
-/// together behind one scrollable tab bar and a single shared settings
-/// entry point, mirroring how a physical calculator's APPS menu switches
-/// between its built-in tools without leaving "the calculator."
+/// Ties every mode (Calculator/Graph/3D/Geometry/Matrix/Statistics/
+/// Finance/Solve) together behind one scrollable tab bar and a single
+/// shared settings entry point, mirroring how a physical calculator's
+/// APPS menu switches between its built-in tools without leaving "the
+/// calculator."
 class HomeShell extends StatelessWidget {
   const HomeShell({super.key, required this.settings});
 
@@ -54,10 +57,19 @@ class HomeShell extends StatelessWidget {
           ),
         ),
         body: TabBarView(
+          // Swipe-to-switch-tabs conflicts with the Graph/3D/Geometry tabs'
+          // own pan and pinch-zoom gestures: PageView's drag recognizer
+          // wins the gesture arena over a descendant's onPan*/onScale*
+          // callbacks even for a plain tap, silently swallowing every
+          // interaction those canvases have. Navigation is via the TabBar
+          // itself (already how every tab is reached in this app), so
+          // disabling swipe costs nothing and fixes the conflict outright.
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             CalculatorScreen(settings: settings),
             const GraphScreen(),
             const Surface3dScreen(),
+            const GeometryScreen(),
             const MatrixScreen(),
             const StatsScreen(),
             const FinanceScreen(),

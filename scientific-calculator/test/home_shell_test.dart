@@ -14,7 +14,7 @@ void main() {
     return settings;
   }
 
-  testWidgets('all seven mode tabs are reachable and show distinct content', (tester) async {
+  testWidgets('all eight mode tabs are reachable and show distinct content', (tester) async {
     await pumpApp(tester);
 
     // Calculator is the default tab.
@@ -28,6 +28,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Plot'), findsOneWidget);
     expect(find.text('Drag to rotate'), findsOneWidget);
+
+    await tester.tap(find.text('Geometry'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('geometry-canvas')), findsOneWidget);
+    expect(find.text('Measure angle'), findsOneWidget);
 
     await tester.tap(find.text('Matrix'));
     await tester.pumpAndSettle();
@@ -65,5 +70,26 @@ void main() {
 
     // Default A is the 2x2 identity matrix -> determinant 1.
     expect(find.textContaining('Result: 1'), findsOneWidget);
+  });
+
+  testWidgets('geometry: tapping the canvas twice with Measure distance selected reports a distance',
+      (tester) async {
+    await pumpApp(tester);
+    await tester.tap(find.text('Geometry'));
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Measure distance'));
+    await tester.tap(find.text('Measure distance'));
+    await tester.pumpAndSettle();
+
+    final canvas = find.byKey(const Key('geometry-canvas'));
+    final topLeft = tester.getTopLeft(canvas);
+
+    await tester.tapAt(topLeft + const Offset(80, 80));
+    await tester.pumpAndSettle();
+    await tester.tapAt(topLeft + const Offset(160, 80));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('='), findsOneWidget);
   });
 }

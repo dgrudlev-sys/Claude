@@ -5,14 +5,18 @@ import '../graphing3d/surface_painter.dart';
 import '../theme/app_theme.dart';
 
 class Surface3dScreen extends StatefulWidget {
-  const Surface3dScreen({super.key});
+  const Surface3dScreen({super.key, SurfaceController? controller}) : _injectedController = controller;
+
+  /// Exposed for tests that need to verify a simulated drag actually
+  /// reached the controller — see the matching note on [GraphScreen].
+  final SurfaceController? _injectedController;
 
   @override
   State<Surface3dScreen> createState() => _Surface3dScreenState();
 }
 
 class _Surface3dScreenState extends State<Surface3dScreen> {
-  final _controller = SurfaceController();
+  late final _controller = widget._injectedController ?? SurfaceController();
   late final _exprField = TextEditingController(text: _controller.expression);
 
   @override
@@ -24,7 +28,9 @@ class _Surface3dScreenState extends State<Surface3dScreen> {
   @override
   void dispose() {
     _exprField.dispose();
-    _controller.dispose();
+    if (widget._injectedController == null) {
+      _controller.dispose();
+    }
     super.dispose();
   }
 
@@ -101,6 +107,11 @@ class _Surface3dScreenState extends State<Surface3dScreen> {
               ),
             Expanded(
               child: GestureDetector(
+                key: const Key('surface3d-canvas'),
+                // See the matching comment in graph_screen.dart: without
+                // this, a bare CustomPaint child never claims the hit test
+                // and drag-to-rotate silently does nothing.
+                behavior: HitTestBehavior.opaque,
                 onPanUpdate: (details) {
                   _controller.rotate(details.delta.dx * 0.01, -details.delta.dy * 0.01);
                 },
