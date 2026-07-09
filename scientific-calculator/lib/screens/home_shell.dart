@@ -8,17 +8,19 @@ import 'matrix_screen.dart';
 import 'settings_screen.dart';
 import 'solve_screen.dart';
 import 'stats_screen.dart';
+import 'surface3d_screen.dart';
 
 const _tabs = [
   (icon: Icons.calculate_outlined, label: 'Calculator'),
   (icon: Icons.show_chart, label: 'Graph'),
+  (icon: Icons.view_in_ar_outlined, label: '3D'),
   (icon: Icons.grid_on, label: 'Matrix'),
   (icon: Icons.bar_chart, label: 'Statistics'),
   (icon: Icons.attach_money, label: 'Finance'),
   (icon: Icons.functions, label: 'Solve'),
 ];
 
-/// Ties every mode (Calculator/Graph/Matrix/Statistics/Finance/Solve)
+/// Ties every mode (Calculator/Graph/3D/Matrix/Statistics/Finance/Solve)
 /// together behind one scrollable tab bar and a single shared settings
 /// entry point, mirroring how a physical calculator's APPS menu switches
 /// between its built-in tools without leaving "the calculator."
@@ -55,6 +57,7 @@ class HomeShell extends StatelessWidget {
           children: [
             CalculatorScreen(settings: settings),
             const GraphScreen(),
+            const Surface3dScreen(),
             const MatrixScreen(),
             const StatsScreen(),
             const FinanceScreen(),

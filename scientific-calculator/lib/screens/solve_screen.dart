@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/angle_mode.dart';
 import '../core/equation_solver.dart';
+import '../core/polynomial_solver.dart';
 import '../core/symbolic_math.dart';
 
 class SolveScreen extends StatefulWidget {
@@ -11,7 +12,7 @@ class SolveScreen extends StatefulWidget {
   State<SolveScreen> createState() => _SolveScreenState();
 }
 
-enum _SolveTab { equation, calculus }
+enum _SolveTab { equation, polynomial, calculus }
 
 class _SolveScreenState extends State<SolveScreen> {
   _SolveTab _tab = _SolveTab.equation;
@@ -26,11 +27,16 @@ class _SolveScreenState extends State<SolveScreen> {
   String? _simplifyResult;
   String? _calcError;
 
+  final _coefficients = TextEditingController(text: '1, -6, 11, -6');
+  List<PolynomialRoot>? _polynomialRoots;
+  String? _polynomialError;
+
   @override
   void dispose() {
     _equation.dispose();
     _guess.dispose();
     _calcExpr.dispose();
+    _coefficients.dispose();
     super.dispose();
   }
 
@@ -51,6 +57,26 @@ class _SolveScreenState extends State<SolveScreen> {
       setState(() => _equationError = e.message);
     } catch (_) {
       setState(() => _equationError = 'Could not parse that equation');
+    }
+  }
+
+  void _solvePolynomial() {
+    setState(() {
+      _polynomialError = null;
+      _polynomialRoots = null;
+    });
+    try {
+      final coeffs = _coefficients.text
+          .split(',')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .map(double.parse)
+          .toList();
+      setState(() => _polynomialRoots = PolynomialSolver.solve(coeffs));
+    } on PolynomialError catch (e) {
+      setState(() => _polynomialError = e.message);
+    } catch (_) {
+      setState(() => _polynomialError = 'Could not parse those coefficients');
     }
   }
 
@@ -79,6 +105,7 @@ class _SolveScreenState extends State<SolveScreen> {
           child: SegmentedButton<_SolveTab>(
             segments: const [
               ButtonSegment(value: _SolveTab.equation, label: Text('Solve for x')),
+              ButtonSegment(value: _SolveTab.polynomial, label: Text('Polynomial roots')),
               ButtonSegment(value: _SolveTab.calculus, label: Text('Derivative & simplify')),
             ],
             selected: {_tab},
@@ -87,7 +114,11 @@ class _SolveScreenState extends State<SolveScreen> {
           ),
         ),
         Expanded(
-          child: _tab == _SolveTab.equation ? _buildEquationPanel(context) : _buildCalculusPanel(context),
+          child: switch (_tab) {
+            _SolveTab.equation => _buildEquationPanel(context),
+            _SolveTab.polynomial => _buildPolynomialPanel(context),
+            _SolveTab.calculus => _buildCalculusPanel(context),
+          },
         ),
       ],
     );
@@ -131,6 +162,57 @@ class _SolveScreenState extends State<SolveScreen> {
           ),
       ],
     );
+  }
+
+  Widget _buildPolynomialPanel(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Text(
+          'Enter coefficients highest-degree first, comma-separated — e.g. '
+          '"1, -6, 11, -6" for x³ - 6x² + 11x - 6. Every root is found exactly '
+          '(including complex ones) for degree 4 and below; degree 5+ uses a '
+          'numeric approximation since no exact formula exists.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: _coefficients,
+          decoration: const InputDecoration(labelText: 'Coefficients', isDense: true, border: OutlineInputBorder()),
+          style: const TextStyle(fontFamily: 'monospace'),
+        ),
+        const SizedBox(height: 12),
+        FilledButton(onPressed: _solvePolynomial, child: const Text('Find roots')),
+        if (_polynomialError != null) _ErrorCard(message: _polynomialError!),
+        if (_polynomialRoots != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 0; i < _polynomialRoots!.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Text(
+                          'x${_subscript(i + 1)} = ${_polynomialRoots![i]}',
+                          style: const TextStyle(fontFamily: 'monospace', fontSize: 15),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  String _subscript(int n) {
+    const digits = ['₀', '₁', '₂', '₃', '₄', '₅', '₆', '₇', '₈', '₉'];
+    return n.toString().split('').map((d) => digits[int.parse(d)]).join();
   }
 
   Widget _buildCalculusPanel(BuildContext context) {

@@ -14,7 +14,7 @@ void main() {
     return settings;
   }
 
-  testWidgets('all six mode tabs are reachable and show distinct content', (tester) async {
+  testWidgets('all seven mode tabs are reachable and show distinct content', (tester) async {
     await pumpApp(tester);
 
     // Calculator is the default tab.
@@ -23,6 +23,11 @@ void main() {
     await tester.tap(find.text('Graph'));
     await tester.pumpAndSettle();
     expect(find.text('Function'), findsOneWidget); // graph mode segmented button
+
+    await tester.tap(find.text('3D'));
+    await tester.pumpAndSettle();
+    expect(find.text('Plot'), findsOneWidget);
+    expect(find.text('Drag to rotate'), findsOneWidget);
 
     await tester.tap(find.text('Matrix'));
     await tester.pumpAndSettle();
