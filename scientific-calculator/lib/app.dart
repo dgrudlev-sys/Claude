@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/calculator_screen.dart';
+import 'screens/home_shell.dart';
 import 'services/settings_controller.dart';
 import 'theme/app_theme.dart';
 
@@ -18,7 +18,7 @@ class CalculatorApp extends StatelessWidget {
           title: 'Scientific Calculator',
           debugShowCheckedModeBanner: false,
           theme: buildAppTheme(settings.layoutStyle),
-          home: CalculatorScreen(settings: settings),
+          home: HomeShell(settings: settings),
         );
       },
     );

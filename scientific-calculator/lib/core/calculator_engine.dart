@@ -14,17 +14,20 @@ class CalculatorError implements Exception {
 
 /// Pure math layer: turns a calculator-style expression string into a
 /// number. Knows nothing about widgets, buttons, or settings.
+///
+/// Parsing and evaluation are split ([prepareExpression] /
+/// [evaluateExpression]) so callers that need to evaluate the same
+/// expression many times with different variable bindings — the graphing
+/// sampler evaluating `f(x)` at hundreds of x values, for instance — only
+/// pay the parsing cost once.
 class CalculatorEngine {
   static const _directTrig = ['sin(', 'cos(', 'tan('];
   static const _inverseTrig = ['arcsin(', 'arccos(', 'arctan('];
 
-  /// Evaluates [rawExpression] and returns the numeric result.
-  ///
-  /// In [AngleMode.degrees], sin/cos/tan take degree input and
-  /// arcsin/arccos/arctan return degrees, matching how a physical
-  /// scientific calculator behaves — the underlying parser only knows
-  /// radians, so this rewrites the expression before evaluating it.
-  double evaluate(String rawExpression, AngleMode angleMode) {
+  /// Parses [rawExpression] into an [Expression], applying the same
+  /// degree-mode rewriting [evaluate] does. Throws [CalculatorError] on
+  /// invalid syntax.
+  Expression prepareExpression(String rawExpression, AngleMode angleMode) {
     final balanced = _autoCloseParens(rawExpression.trim());
     if (balanced.isEmpty) {
       throw const CalculatorError('Empty expression');
@@ -35,9 +38,21 @@ class CalculatorEngine {
         : balanced;
 
     try {
-      final parser = GrammarParser();
-      final expression = parser.parse(prepared);
-      final result = RealEvaluator(ContextModel()).evaluate(expression);
+      return GrammarParser().parse(prepared);
+    } catch (_) {
+      throw const CalculatorError('Syntax error');
+    }
+  }
+
+  /// Evaluates an already-[prepareExpression]d expression, optionally
+  /// binding [variables] (e.g. `{'x': 2.0}`) first.
+  double evaluateExpression(Expression expression, {Map<String, double> variables = const {}}) {
+    final context = ContextModel();
+    for (final entry in variables.entries) {
+      context.bindVariableName(entry.key, Number(entry.value));
+    }
+    try {
+      final result = RealEvaluator(context).evaluate(expression);
       final value = result.toDouble();
       if (value.isNaN || value.isInfinite) {
         throw const CalculatorError('Math error');
@@ -46,8 +61,18 @@ class CalculatorEngine {
     } on CalculatorError {
       rethrow;
     } catch (_) {
-      throw const CalculatorError('Syntax error');
+      throw const CalculatorError('Math error');
     }
+  }
+
+  /// Evaluates [rawExpression] and returns the numeric result.
+  ///
+  /// In [AngleMode.degrees], sin/cos/tan take degree input and
+  /// arcsin/arccos/arctan return degrees, matching how a physical
+  /// scientific calculator behaves — the underlying parser only knows
+  /// radians, so this rewrites the expression before evaluating it.
+  double evaluate(String rawExpression, AngleMode angleMode) {
+    return evaluateExpression(prepareExpression(rawExpression, angleMode));
   }
 
   /// Appends any closing parentheses the user left off, so `sin(30` still

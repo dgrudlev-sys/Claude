@@ -5,8 +5,9 @@ import '../services/feedback_service.dart';
 import '../services/settings_controller.dart';
 import '../widgets/calculator_display.dart';
 import '../widgets/keypad.dart';
-import 'settings_screen.dart';
 
+/// The calculator's display + keypad only — no Scaffold/AppBar of its own,
+/// since it's hosted inside [HomeShell] alongside the other modes.
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({super.key, required this.settings});
 
@@ -28,46 +29,30 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scientific Calculator'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: 'Settings',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => SettingsScreen(settings: widget.settings),
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            return Column(
-              children: [
-                CalculatorDisplay(controller: _controller),
-                const Divider(height: 1),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: AnimatedBuilder(
-                      animation: widget.settings,
-                      builder: (context, _) => Keypad(
-                        controller: _controller,
-                        layoutStyle: widget.settings.layoutStyle,
-                        feedback: _feedback,
-                      ),
+    return SafeArea(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, _) {
+          return Column(
+            children: [
+              CalculatorDisplay(controller: _controller),
+              const Divider(height: 1),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: AnimatedBuilder(
+                    animation: widget.settings,
+                    builder: (context, _) => Keypad(
+                      controller: _controller,
+                      layoutStyle: widget.settings.layoutStyle,
+                      feedback: _feedback,
                     ),
                   ),
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
