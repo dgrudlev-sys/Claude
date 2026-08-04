@@ -166,20 +166,64 @@ Play Store upload, ideally with a real on-device pass (TalkBack, haptics,
 and the touch-based canvases all deserve a physical-device check that
 `flutter test` can't fully substitute for).
 
+## Play Store readiness
+
+Prepared ahead of an actual Play Console submission, everything that
+didn't require a working Android build to do:
+
+- **Release signing** — a real upload keystore (`android/key.properties`,
+  gitignored — see `key.properties.example` for the format) replaces the
+  debug-signed release build `flutter create` ships with. The keystore
+  file itself was handed off as a download rather than committed; losing
+  it means going through Google's key-reset process, so it needs to live
+  somewhere durable outside this repo.
+- **App icon** — replaced the default Flutter logo everywhere: all Android
+  mipmap densities, the adaptive icon (separate foreground/background
+  layers, generated via `flutter_launcher_icons` from `assets/icon/`), and
+  the web favicon/icons. Matches the app's own charcoal/amber theme.
+- **App display name** — fixed from the raw `scientific_calculator`
+  package-name default to "Scientific Calculator" in both the Android and
+  web manifests.
+- **Privacy policy** — drafted to accurately reflect what the app actually
+  does today (collects nothing, no accounts, no third-party SDKs), and
+  linked from Settings → About alongside the app version — Google requires
+  an in-app disclosure, not just a Console field.
+- **Data Safety / content rating / store listing copy** — drafted as
+  reference material for Play Console's forms, based on the app's real
+  current behavior rather than boilerplate. Not committed to the repo
+  (it's process documentation, not app code) — ask if you need it
+  regenerated.
+
+None of this required the Android SDK to build or verify — it's all
+config, assets, and documentation, checked with `flutter analyze` and a
+web build. The Android-build verification gap below is still the one
+piece that does.
+
 ## Roadmap
 
 What's left is the genuinely large, separate undertakings intentionally
-kept out of scope:
+kept out of scope, plus the one verification step this environment
+couldn't do:
 
-1. **A general-purpose CAS** — symbolic equation solving for arbitrary
+1. **Verify the Android build** — run `flutter build appbundle` in an
+   environment that can reach the Android SDK and Google's Maven repo
+   (this sandbox's network policy blocks `dl.google.com`, and
+   `maven.google.com` itself 301-redirects straight to it, so Gradle's
+   Android Gradle Plugin resolution is blocked at the infrastructure
+   level — not fixable from here). `flutter analyze` and `flutter build
+   web` both succeed, and there's no Android-specific code beyond
+   untouched `flutter create` boilerplate plus the signing config above,
+   so a failure would be surprising — but it hasn't been directly
+   verified. This should happen before anything else on this list matters,
+   including a real on-device pass (TalkBack, haptics, and the
+   touch-based canvases all deserve a physical-device check that
+   `flutter test` can't fully substitute for).
+2. **A general-purpose CAS** — symbolic equation solving for arbitrary
    (non-polynomial) equations, symbolic integration. `math_expressions`
    provides derivative/simplify (already used) and the `equations` package
    provides exact polynomial roots (already used), but nothing covers
    solving a general transcendental equation symbolically; this would mean
    adopting a larger CAS library rather than writing one from scratch.
-2. **Constraint-solving geometry** — live-updating computed objects
+3. **Constraint-solving geometry** — live-updating computed objects
    (a midpoint that actually tracks its parents), plus more construction
    tools (perpendicular/parallel lines, polygons, transformations).
-3. **Verify the Android build** — run `flutter build apk`/`appbundle` in an
-   environment that can reach the Android SDK (see the network-policy note
-   above), then a real on-device pass.

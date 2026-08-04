@@ -1,11 +1,11 @@
 {
-    "name": "scientific_calculator",
-    "short_name": "scientific_calculator",
+    "name": "Scientific Calculator",
+    "short_name": "Scientific Calculator",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1E1C1A",
+    "theme_color": "#1E1C1A",
+    "description": "A scientific and graphing calculator with a familiar keypad layout.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

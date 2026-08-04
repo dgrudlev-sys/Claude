@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../services/settings_controller.dart';
 import '../theme/layout_style.dart';
+
+// TODO: swap for a permanently-hosted URL before publishing — this one is
+// a Claude Artifact, convenient for getting a real, live URL in front of
+// Play Console today, but not a long-term hosting home.
+const privacyPolicyUrl = 'https://claude.ai/code/artifact/3e3eef04-1156-4f39-9f5b-463168598093';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key, required this.settings});
@@ -53,10 +60,46 @@ class SettingsScreen extends StatelessWidget {
                 value: settings.hapticsEnabled,
                 onChanged: settings.setHapticsEnabled,
               ),
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Text('About', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              const _AboutSection(),
             ],
           );
         },
       ),
+    );
+  }
+}
+
+class _AboutSection extends StatelessWidget {
+  const _AboutSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.privacy_tip_outlined),
+          title: const Text('Privacy policy'),
+          subtitle: const Text('This app collects no personal data — read the full policy'),
+          trailing: const Icon(Icons.open_in_new, size: 18),
+          onTap: () => launchUrl(Uri.parse(privacyPolicyUrl), mode: LaunchMode.externalApplication),
+        ),
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            final info = snapshot.data;
+            return ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('Version'),
+              subtitle: Text(info == null ? 'Loading…' : '${info.version} (build ${info.buildNumber})'),
+            );
+          },
+        ),
+      ],
     );
   }
 }
