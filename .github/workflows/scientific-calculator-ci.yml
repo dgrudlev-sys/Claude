@@ -1,0 +1,82 @@
+name: Scientific Calculator CI
+
+on:
+  push:
+    branches: [main, master]
+    paths: ["scientific-calculator/**", ".github/workflows/scientific-calculator-ci.yml"]
+  pull_request:
+    paths: ["scientific-calculator/**", ".github/workflows/scientific-calculator-ci.yml"]
+
+defaults:
+  run:
+    working-directory: scientific-calculator
+
+jobs:
+  analyze-and-test:
+    name: Analyze & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fails the build if a keystore or key.properties ever gets committed
+      # despite .gitignore — a cheap extra safety net, not a replacement
+      # for keeping them out in the first place.
+      - name: Guard against committed signing secrets
+        run: |
+          if [ -f android/key.properties ] || find android -name "*.jks" | grep -q .; then
+            echo "::error::A keystore or key.properties was found in the repo. Remove it and rotate the key."
+            exit 1
+          fi
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+  build-android:
+    name: Build Android app bundle
+    runs-on: ubuntu-latest
+    needs: analyze-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - run: flutter pub get
+      # No signing secrets are configured here on purpose — this verifies
+      # the app *compiles* for Android (the thing this project's dev
+      # sandbox could never confirm), not that the artifact is ready to
+      # upload. build.gradle.kts falls back to debug signing when
+      # android/key.properties is absent, so this build should still
+      # succeed; the resulting .aab is not release-signed and shouldn't
+      # be uploaded to Play Console as-is.
+      - run: flutter build appbundle --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-bundle-unsigned
+          path: scientific-calculator/build/app/outputs/bundle/release/*.aab
+          retention-days: 14
+
+  build-web:
+    name: Build web (fast sanity check)
+    runs-on: ubuntu-latest
+    needs: analyze-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build web --release
