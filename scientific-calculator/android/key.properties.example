@@ -1,0 +1,18 @@
+# Copy this file to android/key.properties (already gitignored) and fill
+# in real values to enable release signing. Without this file, release
+# builds fall back to debug signing, which flutter run --release needs to
+# keep working, but which Play Console will not accept for a real upload.
+#
+# To generate a keystore:
+#   keytool -genkeypair -v -keystore upload-keystore.jks -alias upload \
+#     -keyalg RSA -keysize 2048 -validity 10000
+#
+# Keep the resulting .jks file and these passwords somewhere durable
+# (a password manager, not just this repo checkout) — losing them means
+# losing the ability to sign updates to this app without going through
+# Google's Play App Signing key-reset process.
+
+storePassword=
+keyPassword=
+keyAlias=upload
+storeFile=upload-keystore.jks
