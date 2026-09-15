@@ -494,6 +494,60 @@ body {
 .gs-num { font-family:'JetBrains Mono',monospace; font-size:clamp(1.4rem,5vw,2.4rem); font-weight:600; color:var(--gold); line-height:1; font-variant-numeric:tabular-nums; }
 .gs-label { font-family:'Cinzel',serif; font-size:0.46rem; letter-spacing:0.22em; color:var(--t4); text-transform:uppercase; line-height:1.5; }
 
+/* ─── RANK FRAMES ── */
+/*
+  Drop your 10 PNGs into a frames/ folder next to index.html:
+  frames/final-boss.png · frames/challenger.png · frames/unreal.png
+  frames/world-boss.png · frames/global-elite.png · frames/elite.png
+  frames/big-deal.png · frames/national-treasure.png · frames/main-character.png · frames/npc.png
+
+  Tweak these two variables once to align the profile circle with the
+  white hole in your actual images (default fits the provided reference set):
+*/
+:root { --fp-top: 32%; --fp-size: 44%; }
+
+.entry-frame {
+  position: relative; flex-shrink: 0;
+}
+.entry-avatar {
+  position: absolute;
+  top: var(--fp-top);
+  left: calc((100% - var(--fp-size)) / 2);
+  width: var(--fp-size);
+  height: var(--fp-size);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-weight: 700;
+  color: var(--t3); background: var(--g3);
+  z-index: 0;
+}
+.entry-frame-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain; pointer-events: none;
+  z-index: 1;
+}
+
+.frame-throne { width: 108px; height: 108px; }
+.frame-throne .entry-avatar { font-size: 1.6rem; }
+
+.frame-podium { width: 76px; height: 76px; }
+.frame-podium .entry-avatar { font-size: 1.05rem; }
+
+.frame-list { width: 62px; height: 62px; }
+.frame-list .entry-avatar { font-size: 0.82rem; }
+
+/* Grid overrides for wider first column */
+.throne-main { grid-template-columns: 108px 1fr auto !important; }
+.throne-tagline { padding-left: calc(108px + 14px + 18px) !important; }
+.throne-meta    { padding-left: calc(108px + 14px + 18px) !important; }
+
+.podium-main { grid-template-columns: 76px 1fr auto !important; }
+.podium-foot { padding-left: calc(76px + 14px + 18px) !important; }
+
+.li-main { grid-template-columns: 62px 1fr auto !important; }
+
 /* ─── DARK MODE ── */
 @media(prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -570,9 +624,9 @@ body {
   </div>
 
   <div class="throne-main">
-    <div>
-      <span class="throne-crown">♛</span>
-      <div class="throne-rank-badge">01</div>
+    <div class="entry-frame frame-throne">
+      <div class="entry-avatar" style="background:#2A1C06;color:var(--gold)">M</div>
+      <img class="entry-frame-img" src="frames/final-boss.png" alt="Final Boss rank frame">
     </div>
     <div class="throne-center">
       <div class="throne-name">Marcus Bell</div>
@@ -627,7 +681,10 @@ body {
 
   <div class="podium-card sil" id="p2" aria-expanded="false" onclick="toggleRow('p2')">
     <div class="podium-main">
-      <div class="podium-rank-badge">02</div>
+      <div class="entry-frame frame-podium">
+        <div class="entry-avatar" style="background:#1A2040;color:var(--sil)">S</div>
+        <img class="entry-frame-img" src="frames/challenger.png" alt="Challenger rank frame">
+      </div>
       <div class="podium-center">
         <div class="podium-name">Sarah K.</div>
         <div class="podium-tagline">Founder & CEO at Vaultline · scaling B2B SaaS from $0 to $12M ARR · ex-Stripe · 2× Forbes 30 Under 30 · angel in 22 startups · shipping fast every quarter</div>
@@ -669,7 +726,10 @@ body {
 
   <div class="podium-card brz" id="p3" aria-expanded="false" onclick="toggleRow('p3')">
     <div class="podium-main">
-      <div class="podium-rank-badge">03</div>
+      <div class="entry-frame frame-podium">
+        <div class="entry-avatar" style="background:#1E1006;color:var(--brz)">J</div>
+        <img class="entry-frame-img" src="frames/challenger.png" alt="Challenger rank frame">
+      </div>
       <div class="podium-center">
         <div class="podium-name">James Rivera</div>
         <div class="podium-tagline">Real estate developer · 12 exits across Dubai, Miami & Singapore · $300M+ in closed deals · partner at Meridian Capital · building for the next 10 years</div>
@@ -743,7 +803,7 @@ body {
     <!-- PAGE 1: #4-10 -->
     <div class="list-item" id="r4" data-page="1" aria-expanded="false" data-ind="Crypto / Web3" onclick="toggleRow('r4')">
       <div class="li-main">
-        <div class="li-rank">4</div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A2040;color:var(--sil)">A</div><img class="entry-frame-img" src="frames/challenger.png" alt="Challenger"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Alex Nakamura</span><span class="chip">Crypto / Web3</span></div>
           <div class="li-tagline">DeFi protocol builder · ex-Coinbase research · launched 3 protocols with $80M TVL · angel investor in 15 web3 startups · published on ETH governance</div>
@@ -770,7 +830,7 @@ body {
 
     <div class="list-item" id="r5" data-page="1" aria-expanded="false" data-ind="Design / Creative" onclick="toggleRow('r5')">
       <div class="li-main">
-        <div class="li-rank">5</div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#2A1A06;color:#E07020">P</div><img class="entry-frame-img" src="frames/challenger.png" alt="Challenger"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Priya Mehta</span><span class="chip">Design / Creative</span></div>
           <div class="li-tagline">Brand strategist & creative director · ex-Pentagram NYC · built visual identities for 4 Fortune 500s · founded Contrast Studio · speaker at Cannes Lions 2024</div>
@@ -794,7 +854,7 @@ body {
 
     <div class="list-item" id="r6" data-page="1" aria-expanded="false" data-ind="Marketing / Sales" onclick="toggleRow('r6')">
       <div class="li-main">
-        <div class="li-rank">6</div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#180A20;color:#C060FF">D</div><img class="entry-frame-img" src="frames/unreal.png" alt="Unreal"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Daniel Cole</span><span class="chip">Marketing / Sales</span></div>
           <div class="li-tagline">Growth hacker & performance marketer · $50M+ in ad spend managed · podcast host with 180K listeners · exited 2 agencies · currently building Amplify OS</div>
@@ -821,7 +881,7 @@ body {
 
     <div class="list-item" id="r7" data-page="1" aria-expanded="false" data-ind="E-commerce" onclick="toggleRow('r7')">
       <div class="li-main">
-        <div class="li-rank">7</div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#0A0402;color:#FF5020">T</div><img class="entry-frame-img" src="frames/world-boss.png" alt="World Boss"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Tom W.</span><span class="chip">E-commerce</span></div>
           <div class="li-tagline">8-figure Shopify brand founder · DTC obsessed · scaled 2 brands from $0 to $40M GMV · Klaviyo partner · building the next consumer brand in supplements</div>
@@ -843,7 +903,7 @@ body {
 
     <div class="list-item" id="r8" data-page="1" aria-expanded="false" data-ind="Finance" onclick="toggleRow('r8')">
       <div class="li-main">
-        <div class="li-rank">8</div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#040C28;color:#40C8FF">L</div><img class="entry-frame-img" src="frames/global-elite.png" alt="Global Elite"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Layla Hassan</span><span class="chip">Finance</span></div>
           <div class="li-tagline">Quant trader & hedge fund alumni · former Two Sigma · fintech angel investor · advising 3 Series A companies · building systematic strategies for the next decade</div>
@@ -865,7 +925,7 @@ body {
 
     <div class="list-item" id="r9" data-page="1" aria-expanded="false" data-ind="Consulting" onclick="toggleRow('r9')">
       <div class="li-main">
-        <div class="li-rank">9</div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A1206;color:var(--gold)">C</div><img class="entry-frame-img" src="frames/elite.png" alt="Elite"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Chris Baxter</span><span class="chip">Consulting</span></div>
           <div class="li-tagline">McKinsey alumni · operating partner at 3 PE-backed companies · board advisor in healthcare & logistics · helps scale companies from $10M to $100M in revenue</div>
@@ -887,7 +947,7 @@ body {
 
     <div class="list-item" id="r10" data-page="1" aria-expanded="false" data-ind="Media / Content" onclick="toggleRow('r10')">
       <div class="li-main">
-        <div class="li-rank">10</div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#200C1A;color:#B060FF">N</div><img class="entry-frame-img" src="frames/big-deal.png" alt="Big Deal"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Nina Sato</span><span class="chip">Media / Content</span></div>
           <div class="li-tagline">Documentary filmmaker · 2.4M YouTube subscribers · Substack top 1% · Sundance selection 2023 · exploring the intersection of money, power, and identity globally</div>
@@ -909,43 +969,43 @@ body {
 
     <!-- PAGE 2: #11-30 (sampled) -->
     <div class="list-item" id="r11" data-page="2" hidden aria-expanded="false" data-ind="AI / ML" onclick="toggleRow('r11')">
-      <div class="li-main"><div class="li-rank">11</div><div class="li-body"><div class="li-name-row"><span class="li-name">Omar Hassan</span><span class="chip">AI / ML</span></div><div class="li-tagline">ML engineer · ex-Google DeepMind · 12 published papers on LLM alignment · built developer tooling used by 40K teams · open-source contributor with 38K GitHub stars</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">omarh.ai ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">4d</span></div></div><div class="li-right"><div class="li-amount">$178</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#0C1A10;color:#60AA38">O</div><img class="entry-frame-img" src="frames/national-treasure.png" alt="National Treasure"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Omar Hassan</span><span class="chip">AI / ML</span></div><div class="li-tagline">ML engineer · ex-Google DeepMind · 12 published papers on LLM alignment · built developer tooling used by 40K teams · open-source contributor with 38K GitHub stars</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">omarh.ai ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">4d</span></div></div><div class="li-right"><div class="li-amount">$178</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Omar · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r12" data-page="2" hidden aria-expanded="false" data-ind="Finance" onclick="toggleRow('r12')">
-      <div class="li-main"><div class="li-rank">12</div><div class="li-body"><div class="li-name-row"><span class="li-name">Mia Chen</span><span class="chip">Finance</span></div><div class="li-tagline">Derivatives trader · former Goldman Sachs structuring desk · founder of Vega Capital · managing $120M AUM · advising sovereign wealth funds on digital assets strategy</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">miachen.io ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">9d</span></div></div><div class="li-right"><div class="li-amount">$165</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#060C24;color:#4080C0">M</div><img class="entry-frame-img" src="frames/national-treasure.png" alt="National Treasure"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Mia Chen</span><span class="chip">Finance</span></div><div class="li-tagline">Derivatives trader · former Goldman Sachs structuring desk · founder of Vega Capital · managing $120M AUM · advising sovereign wealth funds on digital assets strategy</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">miachen.io ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">9d</span></div></div><div class="li-right"><div class="li-amount">$165</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Mia · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r13" data-page="2" hidden aria-expanded="false" data-ind="Tech / Software" onclick="toggleRow('r13')">
-      <div class="li-main"><div class="li-rank">13</div><div class="li-body"><div class="li-name-row"><span class="li-name">Felix Wagner</span><span class="chip">Tech / Software</span></div><div class="li-tagline">Serial founder · 3 exits including $42M acquisition by SAP · current CEO of Stratum · Y Combinator W21 · building infrastructure for the future of European deep tech</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#4285F4">G</span><a class="pl" href="#" onclick="event.stopPropagation()">felixw.tech ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">21d</span></div></div><div class="li-right"><div class="li-amount">$155</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">F</div><img class="entry-frame-img" src="frames/main-character.png" alt="Main Character"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Felix Wagner</span><span class="chip">Tech / Software</span></div><div class="li-tagline">Serial founder · 3 exits including $42M acquisition by SAP · current CEO of Stratum · Y Combinator W21 · building infrastructure for the future of European deep tech</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#4285F4">G</span><a class="pl" href="#" onclick="event.stopPropagation()">felixw.tech ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">21d</span></div></div><div class="li-right"><div class="li-amount">$155</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Felix · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r14" data-page="2" hidden aria-expanded="false" data-ind="Consulting" onclick="toggleRow('r14')">
-      <div class="li-main"><div class="li-rank">14</div><div class="li-body"><div class="li-name-row"><span class="li-name">Raj Patel</span><span class="chip">Consulting</span></div><div class="li-tagline">Strategy partner · BCG alumni · scaled 6 companies to Series C · specializes in market entry across South Asia · keynote speaker · advisor to 3 unicorn-stage companies</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">raj.studio ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">7d</span></div></div><div class="li-right"><div class="li-amount">$140</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">R</div><img class="entry-frame-img" src="frames/main-character.png" alt="Main Character"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Raj Patel</span><span class="chip">Consulting</span></div><div class="li-tagline">Strategy partner · BCG alumni · scaled 6 companies to Series C · specializes in market entry across South Asia · keynote speaker · advisor to 3 unicorn-stage companies</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">raj.studio ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">7d</span></div></div><div class="li-right"><div class="li-amount">$140</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Raj · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r15" data-page="2" hidden aria-expanded="false" data-ind="Venture Capital" onclick="toggleRow('r15')">
-      <div class="li-main"><div class="li-rank">15</div><div class="li-body"><div class="li-name-row"><span class="li-name">Ivy Lee</span><span class="chip">Venture Capital</span></div><div class="li-tagline">Partner at Meridian Ventures · $180M fund III · led investments in 8 unicorns · 15 years in early-stage VC · board seats at Tessera, Flux, and Orbit · Forbes Midas 2023</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#8B5CF6">V</span><a class="pl" href="#" onclick="event.stopPropagation()">ivylee.vc ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">15d</span></div></div><div class="li-right"><div class="li-amount">$132</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">I</div><img class="entry-frame-img" src="frames/main-character.png" alt="Main Character"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ivy Lee</span><span class="chip">Venture Capital</span></div><div class="li-tagline">Partner at Meridian Ventures · $180M fund III · led investments in 8 unicorns · 15 years in early-stage VC · board seats at Tessera, Flux, and Orbit · Forbes Midas 2023</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#8B5CF6">V</span><a class="pl" href="#" onclick="event.stopPropagation()">ivylee.vc ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">15d</span></div></div><div class="li-right"><div class="li-amount">$132</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Ivy · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r16" data-page="2" hidden aria-expanded="false" data-ind="E-commerce" onclick="toggleRow('r16')">
-      <div class="li-main"><div class="li-rank">16</div><div class="li-body"><div class="li-name-row"><span class="li-name">Marco Diaz</span><span class="chip">E-commerce</span></div><div class="li-tagline">DTC brand architect · grew 4 Shopify brands to 8-figure revenue · Amazon top seller 2022–2024 · warehouse automation pioneer · building next brand in beauty & wellness space</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#95BF47">S</span><a class="pl" href="#" onclick="event.stopPropagation()">marcodiaz.co ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">12d</span></div></div><div class="li-right"><div class="li-amount">$125</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">M</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Marco Diaz</span><span class="chip">E-commerce</span></div><div class="li-tagline">DTC brand architect · grew 4 Shopify brands to 8-figure revenue · Amazon top seller 2022–2024 · warehouse automation pioneer · building next brand in beauty & wellness space</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#95BF47">S</span><a class="pl" href="#" onclick="event.stopPropagation()">marcodiaz.co ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">12d</span></div></div><div class="li-right"><div class="li-amount">$125</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Marco · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r17" data-page="2" hidden aria-expanded="false" data-ind="Media / Content" onclick="toggleRow('r17')">
-      <div class="li-main"><div class="li-rank">17</div><div class="li-body"><div class="li-name-row"><span class="li-name">Ana Silva</span><span class="chip">Media / Content</span></div><div class="li-tagline">Award-winning journalist turned media entrepreneur · 3M newsletter subscribers · former NYT staff · launched 2 podcasts with 500K+ downloads · Peabody Award nominee 2024</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#FF0000">▶</span><a class="pl" href="#" onclick="event.stopPropagation()">anasilva.press ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">6d</span></div></div><div class="li-right"><div class="li-amount">$118</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">A</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ana Silva</span><span class="chip">Media / Content</span></div><div class="li-tagline">Award-winning journalist turned media entrepreneur · 3M newsletter subscribers · former NYT staff · launched 2 podcasts with 500K+ downloads · Peabody Award nominee 2024</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#FF0000">▶</span><a class="pl" href="#" onclick="event.stopPropagation()">anasilva.press ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">6d</span></div></div><div class="li-right"><div class="li-amount">$118</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Ana · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r18" data-page="2" hidden aria-expanded="false" data-ind="Real Estate" onclick="toggleRow('r18')">
-      <div class="li-main"><div class="li-rank">18</div><div class="li-body"><div class="li-name-row"><span class="li-name">Ben Carter</span><span class="chip">Real Estate</span></div><div class="li-tagline">Multifamily developer · 2,400 doors across Texas & Georgia · former CBRE investment sales · syndicator with 600+ LPs · podcast host: The Deal Room · author of Passive Empire</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#E25822">B</span><a class="pl" href="#" onclick="event.stopPropagation()">bencarter.co ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">28d</span></div></div><div class="li-right"><div class="li-amount">$110</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">B</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ben Carter</span><span class="chip">Real Estate</span></div><div class="li-tagline">Multifamily developer · 2,400 doors across Texas & Georgia · former CBRE investment sales · syndicator with 600+ LPs · podcast host: The Deal Room · author of Passive Empire</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#E25822">B</span><a class="pl" href="#" onclick="event.stopPropagation()">bencarter.co ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">28d</span></div></div><div class="li-right"><div class="li-amount">$110</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Ben · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r19" data-page="2" hidden aria-expanded="false" data-ind="Crypto / Web3" onclick="toggleRow('r19')">
-      <div class="li-main"><div class="li-rank">19</div><div class="li-body"><div class="li-name-row"><span class="li-name">Zara Khan</span><span class="chip">Crypto / Web3</span></div><div class="li-tagline">Web3 founder · launched NFT marketplace with $22M in volume · DeFi educator with 180K Twitter following · tokenomics advisor · building cross-chain identity protocol since 2022</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#F7931A">₿</span><a class="pl" href="#" onclick="event.stopPropagation()">zarakhan.xyz ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">33d</span></div></div><div class="li-right"><div class="li-amount">$105</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">Z</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Zara Khan</span><span class="chip">Crypto / Web3</span></div><div class="li-tagline">Web3 founder · launched NFT marketplace with $22M in volume · DeFi educator with 180K Twitter following · tokenomics advisor · building cross-chain identity protocol since 2022</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#F7931A">₿</span><a class="pl" href="#" onclick="event.stopPropagation()">zarakhan.xyz ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">33d</span></div></div><div class="li-right"><div class="li-amount">$105</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Zara · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
     <div class="list-item" id="r20" data-page="2" hidden aria-expanded="false" data-ind="Marketing / Sales" onclick="toggleRow('r20')">
-      <div class="li-main"><div class="li-rank">20</div><div class="li-body"><div class="li-name-row"><span class="li-name">Leo Park</span><span class="chip">Marketing / Sales</span></div><div class="li-tagline">CMO turned founder · led marketing at 2 unicorn exits · built 3 brand-to-acquisition plays · viral campaign creator · 320K LinkedIn following · current: building Tempo Labs</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">leopark.com ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">2d</span></div></div><div class="li-right"><div class="li-amount">$98</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">L</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Leo Park</span><span class="chip">Marketing / Sales</span></div><div class="li-tagline">CMO turned founder · led marketing at 2 unicorn exits · built 3 brand-to-acquisition plays · viral campaign creator · 320K LinkedIn following · current: building Tempo Labs</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">leopark.com ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">2d</span></div></div><div class="li-right"><div class="li-amount">$98</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
       <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Leo · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
     </div>
 
