@@ -1,6 +1,6 @@
 ---
 name: apple-design-os
-description: "Use when designing app UI for Apple operating systems — iOS/iPadOS surfaces (sheets, detents, tab bars, large titles, widgets, lock screen, Dynamic Island), macOS (windows, traffic lights, sidebars, menus, vibrancy), visionOS spatial design, watchOS (complications, Digital Crown), or the standard UIKit/SwiftUI component anatomy (nav bars, lists, forms, buttons, alerts, search, empty states). Part of the apple-design family. Keywords: iOS design, iPadOS, macOS Tahoe, visionOS, watchOS, spatial, ornament, sheet, presentationDetents, tab bar, navigation bar, large title, sidebar, traffic lights, widget, dynamic island, stage manager, components, SwiftUI, List, Form, button hierarchy, ContentUnavailableView, alert, searchable."
+description: "Use when designing app UI for Apple operating systems — iOS/iPadOS surfaces (sheets, detents, tab bars, large titles, widgets, lock screen, Dynamic Island), macOS (windows, traffic lights, sidebars, menus, vibrancy), visionOS spatial design, watchOS (complications, Digital Crown), or the standard UIKit/SwiftUI component anatomy (nav bars, lists, forms, buttons, alerts, search, empty states). Part of the apple-design family. Keywords: iOS design, iPadOS, macOS Tahoe, visionOS, watchOS, spatial, ornament, sheet, presentationDetents, tab bar, navigation bar, large title, sidebar, traffic lights, widget, dynamic island, stage manager, components, SwiftUI, List, Form, button hierarchy, ContentUnavailableView, alert, searchable; also covers a Flutter/Dart implementation layer (Cupertino widgets, packages). Keywords: flutter, dart, cupertino widgets."
 ---
 
 # Apple Design — OS Surfaces & Components
@@ -25,6 +25,7 @@ Designing native-feeling app UI across Apple's platforms, plus the standard comp
 | `references/macos.md` | Windows, traffic lights, toolbars, sidebars, menu bar, vibrancy, Tahoe glass |
 | `references/visionos-watchos.md` | Spatial windows/ornaments/immersion + watchOS complications/crown/glance |
 | `references/app-component-anatomy.md` | The full UIKit/SwiftUI component catalog + CSS mimics of iOS lists/toggles/segments |
+| `references/flutter-implementation.md` | Flutter/Dart port: Cupertino component map, sheet-detent gap (`DraggableScrollableSheet`/`wolt_modal_sheet`), why widgets/lock-screen/Dynamic Island/visionOS/watchOS are unreachable from Dart, macOS desktop chrome (`macos_ui`, `bitsdojo_window`) |
 
 ## Common mistakes
 - Top-only controls out of thumb reach; faking native chrome with wrong metrics.
