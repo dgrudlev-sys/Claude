@@ -1,6 +1,6 @@
 ---
 name: apple-design-foundations
-description: "Use when choosing colors, typography, or layout/spacing for an Apple-style interface — semantic & dynamic system colors, Display P3 wide gamut, dark mode, the San Francisco type family, Dynamic Type, the 8-point grid, safe areas, and bento layouts. Part of the apple-design family. Keywords: apple color, semantic colors, system colors, label color, systemBlue, P3 wide gamut, dark mode, SF Pro, San Francisco font, New York serif, dynamic type, type scale, tracking, 8pt grid, 4pt, spacing, safe area, layout margins, bento grid, readable content width."
+description: "Use when choosing colors, typography, or layout/spacing for an Apple-style interface — semantic & dynamic system colors, Display P3 wide gamut, dark mode, the San Francisco type family, Dynamic Type, the 8-point grid, safe areas, and bento layouts. Part of the apple-design family; also covers a Flutter/Dart implementation layer (Cupertino widgets, packages). Keywords: apple color, semantic colors, system colors, label color, systemBlue, P3 wide gamut, dark mode, SF Pro, San Francisco font, New York serif, dynamic type, type scale, tracking, 8pt grid, 4pt, spacing, safe area, layout margins, bento grid, readable content width, flutter, dart, cupertino widgets."
 ---
 
 # Apple Design — Foundations (color · typography · layout)
@@ -26,6 +26,7 @@ reference files; this is the map + the rules you must not get wrong.
 | `references/color-systems.md` | Semantic/system color tables, P3, dark-mode staircase, contrast, CSS tokens |
 | `references/typography.md` | SF family, optical sizes, Dynamic Type table, tracking, marketing clamp() scale |
 | `references/layout-grid-spacing.md` | 8pt system, margins/insets, apple.com breakpoints, bento grid recipes |
+| `references/flutter-implementation.md` | CupertinoColors/dynamic colors, Dynamic Type via MediaQuery, font alternatives, 8pt spacing + SafeArea, bento grid in Flutter |
 
 ## Common mistakes
 - Hardcoded hex instead of adaptive tokens; pure inversion for dark mode.

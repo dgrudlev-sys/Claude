@@ -1,6 +1,6 @@
 ---
 name: apple-design
-description: "Use when building, restyling, critiquing, or making any interface feel Apple-grade / premium / Cupertino-quality, or when you need Apple's design philosophy (Human Interface Guidelines — clarity, deference, depth), the 2025 Liquid Glass design language, or a map into deep Apple references. This is the HUB; route to apple-design-foundations/-materials/-motion/-os/-web/-backend/-tactics for specifics. Keywords: apple design, HIG, human interface guidelines, design philosophy, clarity deference depth, liquid glass, iOS 26, macOS Tahoe, visionOS, apple-grade, premium UI, cupertino, design system, make it look apple."
+description: "Use when building, restyling, critiquing, or making any interface feel Apple-grade / premium / Cupertino-quality, or when you need Apple's design philosophy (Human Interface Guidelines — clarity, deference, depth), the 2025 Liquid Glass design language, or a map into deep Apple references. This is the HUB; route to apple-design-foundations/-materials/-motion/-os/-web/-backend/-tactics for specifics; also covers a Flutter/Dart implementation layer (Cupertino widgets, packages). Keywords: apple design, HIG, human interface guidelines, design philosophy, clarity deference depth, liquid glass, iOS 26, macOS Tahoe, visionOS, apple-grade, premium UI, cupertino, design system, make it look apple, flutter, dart, cupertino widgets."
 ---
 
 # Apple Design (family hub)
@@ -71,3 +71,4 @@ Every non-trivial claim in the reference files is tagged `[observed]` (verifiabl
 ## References
 - `references/restraint-and-antislop.md` — **read first.** Apple's real defaults (light-first, real product, one accent) + the AI-slop traps + the restraint checklist.
 - `references/philosophy-and-evolution.md` — HIG principles, the era evolution, and the *why* behind each shift.
+- `references/flutter-implementation.md` — Flutter quick-start: Cupertino vs Material, recommended packages, SF Pro licensing on non-Apple platforms.

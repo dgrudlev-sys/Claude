@@ -1,6 +1,6 @@
 ---
 name: apple-design-materials
-description: "Use when implementing translucent glass surfaces, vibrancy/blur materials, the 2025 Liquid Glass language, app icons (the continuous-corner squircle), or SF Symbols. Part of the apple-design family. Keywords: liquid glass, vibrancy, blur, backdrop-filter, frosted glass, translucency, material, ultraThinMaterial, glassEffect, specular highlight, lensing, app icon, squircle, superellipse, continuous corner, corner-shape, icon grid, SF Symbols, symbol rendering mode, hierarchical palette multicolor, symbol effect."
+description: "Use when implementing translucent glass surfaces, vibrancy/blur materials, the 2025 Liquid Glass language, app icons (the continuous-corner squircle), or SF Symbols. Part of the apple-design family; also covers a Flutter/Dart implementation layer (Cupertino widgets, packages). Keywords: liquid glass, vibrancy, blur, backdrop-filter, frosted glass, translucency, material, ultraThinMaterial, glassEffect, specular highlight, lensing, app icon, squircle, superellipse, continuous corner, corner-shape, icon grid, SF Symbols, symbol rendering mode, hierarchical palette multicolor, symbol effect, flutter, dart, cupertino widgets."
 ---
 
 # Apple Design — Materials & Iconography
@@ -23,6 +23,7 @@ Apple's surface character: translucent glass materials, and the icon/symbol syst
 |---|---|
 | `references/materials-liquid-glass.md` | System material names, Liquid Glass behaviors, CSS glass recipes, SwiftUI `.glassEffect()`, fidelity limits |
 | `references/iconography-sf-symbols.md` | Squircle math + CSS/SVG, icon grid, SF Symbols weights/scales/modes/effects |
+| `references/flutter-implementation.md` | BackdropFilter glass recipes, squircle CustomClipper/figma_squircle, cupertino_icons + SF Symbols mode approximations in Flutter |
 
 ## Common mistakes
 - Over-blurring everything; glass-on-glass; ignoring reduce-transparency.

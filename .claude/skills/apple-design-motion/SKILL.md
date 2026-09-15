@@ -1,6 +1,6 @@
 ---
 name: apple-design-motion
-description: "Use when animating an Apple-style interface — spring physics, the signature smooth/snappy/bouncy springs, fluid interruptible transitions, hero/continuity transitions, gestures (swipe, drag, context menu, Dynamic Island, swipe actions), haptic feedback, control/loading micro-interactions, and the web aliveness primitives (continuous scroll-progress motion + pointer-reactive sugar). Part of the apple-design family. Keywords: apple animation, spring, springs, damping fraction, response, fluid interface, interruptible, matchedGeometryEffect, zoom transition, hero, gesture, swipe to dismiss, drag, velocity handoff, context menu, haptics, taptic engine, sensory feedback, micro-interaction, button press, prefers-reduced-motion, css linear() spring, easing, scroll-progress, scroll progress mapping, damped scroll, scroll smoothing, mapRange, magnetic button, tilt, pointer-reactive, spotlight."
+description: "Use when animating an Apple-style interface — spring physics, the signature smooth/snappy/bouncy springs, fluid interruptible transitions, hero/continuity transitions, gestures (swipe, drag, context menu, Dynamic Island, swipe actions), haptic feedback, control/loading micro-interactions, and the web aliveness primitives (continuous scroll-progress motion + pointer-reactive sugar). Part of the apple-design family. Keywords: apple animation, spring, springs, damping fraction, response, fluid interface, interruptible, matchedGeometryEffect, zoom transition, hero, gesture, swipe to dismiss, drag, velocity handoff, context menu, haptics, taptic engine, sensory feedback, micro-interaction, button press, prefers-reduced-motion, css linear() spring, easing, scroll-progress, scroll progress mapping, damped scroll, scroll smoothing, mapRange, magnetic button, tilt, pointer-reactive, spotlight; also covers a Flutter/Dart implementation layer (Cupertino widgets, packages). Keywords: flutter, dart, cupertino widgets."
 ---
 
 # Apple Design — Motion (animation · gestures · feedback)
@@ -27,6 +27,7 @@ How Apple makes interfaces feel alive: spring-driven, interruptible, responsive.
 | `references/motion-animation.md` → "Pointer-reactive motion (desktop sugar)" | Magnetic button / tilt / spotlight vanilla recipes, the `pointer:fine` + reduced-motion HARD gate, single-rAF-tick production note |
 | `references/gestures-interaction.md` | Gesture vocabulary, swipe-to-dismiss, context menus, Dynamic Island, JS pointer recipes |
 | `references/microinteractions-feedback.md` | Haptic catalog + when-to-fire, control states, loading patterns, the iOS web-haptics gap |
+| `references/flutter-implementation.md` | Flutter/Dart port: SpringSimulation spring-physics math, velocity-driven drag-to-dismiss, HapticFeedback mapping, Hero transitions, CupertinoContextMenu/Slidable, reduced-motion gating |
 
 ## Common mistakes
 - `ease`/`linear` everywhere; long, non-interruptible, input-blocking animations.
