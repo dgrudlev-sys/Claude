@@ -196,26 +196,40 @@ body {
 .fe-amount { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--fan); font-variant-numeric:tabular-nums; text-align:right; }
 .no-fans { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:0.9rem; color:var(--t4); }
 
-/* ─── BACK THIS RANK ── */
-.back-rank-row {
-  display:flex; gap:0; padding:12px 18px 14px;
-  border-top:1px solid var(--g3); background:var(--g2);
+/* ─── BACK COMPACT ── */
+.entry-right-col { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+
+.back-compact { display:flex; gap:0; }
+.back-compact-input {
+  width:64px; font-family:'JetBrains Mono',monospace; font-size:0.56rem;
+  color:var(--t2); background:var(--g2); border:1px solid var(--g4); border-right:none;
+  padding:5px 7px; outline:none; transition:border-color 0.18s; height:28px;
+  -moz-appearance:textfield;
 }
-.back-rank-input {
-  flex:1; min-width:0; font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:0.06em;
-  color:var(--t2); background:var(--g1); border:1px solid var(--g4); border-right:none;
-  padding:11px 14px; outline:none; transition:border-color 0.18s; height:46px;
-}
-.back-rank-input::placeholder { color:var(--t4); }
-.back-rank-input:focus { border-color:var(--fan); }
-.back-rank-btn {
-  font-family:'Cinzel',serif; font-size:0.54rem; font-weight:700;
-  letter-spacing:0.14em; text-transform:uppercase;
+.back-compact-input::-webkit-outer-spin-button,
+.back-compact-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+.back-compact-input::placeholder { color:var(--t4); }
+.back-compact-input:focus { border-color:var(--fan); }
+.back-compact-btn {
+  font-family:'Cinzel',serif; font-size:0.42rem; font-weight:700;
+  letter-spacing:0.10em; text-transform:uppercase;
   background:var(--fan); color:#fff; border:none;
-  padding:11px 18px; cursor:pointer; white-space:nowrap;
-  transition:opacity 0.15s; flex-shrink:0; height:46px;
+  padding:5px 9px; cursor:pointer; white-space:nowrap;
+  transition:opacity 0.15s; flex-shrink:0; height:28px; line-height:1;
 }
-.back-rank-btn:hover { opacity:0.85; }
+.back-compact-btn:hover { opacity:0.85; }
+
+/* compact back row inside expanded list items */
+.li-back-row {
+  display:flex; align-items:center; justify-content:flex-end;
+  padding:8px 18px 10px; border-top:1px solid var(--g3); background:var(--g2);
+}
+
+/* ─── LINK CLICKS ── */
+.link-clicks {
+  font-family:'JetBrains Mono',monospace; font-size:0.46rem;
+  color:var(--t4); white-space:nowrap; font-variant-numeric:tabular-nums;
+}
 
 /* ═══════════════════════════════════════════
    #1 THRONE ENTRY
@@ -626,13 +640,19 @@ body {
   <div class="throne-main">
     <div class="entry-frame frame-throne">
       <div class="entry-avatar" style="background:#2A1C06;color:var(--gold)">M</div>
-      <img class="entry-frame-img" src="frames/final-boss.png" alt="Final Boss rank frame">
+      <img class="entry-frame-img" src="frames/npc.png" alt="Final Boss rank frame">
     </div>
     <div class="throne-center">
       <div class="throne-name">Marcus Bell</div>
       <span class="chip">Venture Capital</span>
     </div>
-    <div class="throne-amount">$4,750</div>
+    <div class="entry-right-col">
+      <div class="throne-amount">$4,750</div>
+      <div class="back-compact" onclick="event.stopPropagation()">
+        <input class="back-compact-input" type="number" min="5" placeholder="min $5">
+        <button class="back-compact-btn">Back</button>
+      </div>
+    </div>
   </div>
 
   <div class="throne-tagline">
@@ -640,7 +660,7 @@ body {
   </div>
 
   <div class="throne-meta">
-    <span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">google.com ↗</a></span>
+    <span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">google.com ↗</a><span class="link-clicks"> · 3.2K clicks</span></span>
     <div class="socials" onclick="event.stopPropagation()">
       <a class="soc" href="#" title="X"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
       <a class="soc" href="#" title="Instagram"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
@@ -669,10 +689,6 @@ body {
       </div>
     </div>
   </div>
-  <div class="back-rank-row" onclick="event.stopPropagation()">
-    <input class="back-rank-input" type="number" min="5" placeholder="Back Marcus · min $5">
-    <button class="back-rank-btn">Back this Rank</button>
-  </div>
 
 </div>
 
@@ -683,7 +699,7 @@ body {
     <div class="podium-main">
       <div class="entry-frame frame-podium">
         <div class="entry-avatar" style="background:#1A2040;color:var(--sil)">S</div>
-        <img class="entry-frame-img" src="frames/challenger.png" alt="Challenger rank frame">
+        <img class="entry-frame-img" src="frames/npc.png" alt="Challenger rank frame">
       </div>
       <div class="podium-center">
         <div class="podium-name">Sarah K.</div>
@@ -693,10 +709,13 @@ body {
           <span style="font-family:'JetBrains Mono',monospace;font-size:0.50rem;color:var(--t4);">8d</span>
         </div>
       </div>
-      <div class="podium-amount">$3,200</div>
+      <div class="entry-right-col">
+        <div class="podium-amount">$3,200</div>
+        <div class="back-compact" onclick="event.stopPropagation()"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div>
+      </div>
     </div>
     <div class="podium-foot" onclick="event.stopPropagation()">
-      <span class="link-fav"><span class="fav" style="background:#1877F2">f</span><a class="pl sil" href="#">facebook.com ↗</a></span>
+      <span class="link-fav"><span class="fav" style="background:#1877F2">f</span><a class="pl sil" href="#">facebook.com ↗</a><span class="link-clicks"> · 1.8K clicks</span></span>
       <div class="p-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div>
     </div>
     <div class="p-detail">
@@ -718,17 +737,13 @@ body {
         </div>
       </div>
     </div>
-    <div class="back-rank-row" onclick="event.stopPropagation()">
-      <input class="back-rank-input" type="number" min="5" placeholder="Back Sarah · min $5">
-      <button class="back-rank-btn">Back this Rank</button>
-    </div>
   </div>
 
   <div class="podium-card brz" id="p3" aria-expanded="false" onclick="toggleRow('p3')">
     <div class="podium-main">
       <div class="entry-frame frame-podium">
         <div class="entry-avatar" style="background:#1E1006;color:var(--brz)">J</div>
-        <img class="entry-frame-img" src="frames/challenger.png" alt="Challenger rank frame">
+        <img class="entry-frame-img" src="frames/npc.png" alt="Challenger rank frame">
       </div>
       <div class="podium-center">
         <div class="podium-name">James Rivera</div>
@@ -738,10 +753,13 @@ body {
           <span style="font-family:'JetBrains Mono',monospace;font-size:0.50rem;color:var(--t4);">2d</span>
         </div>
       </div>
-      <div class="podium-amount">$2,100</div>
+      <div class="entry-right-col">
+        <div class="podium-amount">$2,100</div>
+        <div class="back-compact" onclick="event.stopPropagation()"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div>
+      </div>
     </div>
     <div class="podium-foot" onclick="event.stopPropagation()">
-      <span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl brz" href="#">linkedin.com ↗</a></span>
+      <span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl brz" href="#">linkedin.com ↗</a><span class="link-clicks"> · 942 clicks</span></span>
       <div class="p-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div>
     </div>
     <div class="p-detail">
@@ -756,10 +774,6 @@ body {
           </div>
         </div>
       </div>
-    </div>
-    <div class="back-rank-row" onclick="event.stopPropagation()">
-      <input class="back-rank-input" type="number" min="5" placeholder="Back James · min $5">
-      <button class="back-rank-btn">Back this Rank</button>
     </div>
   </div>
 
@@ -803,12 +817,12 @@ body {
     <!-- PAGE 1: #4-10 -->
     <div class="list-item" id="r4" data-page="1" aria-expanded="false" data-ind="Crypto / Web3" onclick="toggleRow('r4')">
       <div class="li-main">
-        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A2040;color:var(--sil)">A</div><img class="entry-frame-img" src="frames/challenger.png" alt="Challenger"></div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A2040;color:var(--sil)">A</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Alex Nakamura</span><span class="chip">Crypto / Web3</span></div>
           <div class="li-tagline">DeFi protocol builder · ex-Coinbase research · launched 3 protocols with $80M TVL · angel investor in 15 web3 startups · published on ETH governance</div>
           <div class="li-meta-row">
-            <span class="link-fav"><span class="fav" style="background:#F7931A">₿</span><a class="pl" href="#" onclick="event.stopPropagation()">alex.me ↗</a></span>
+            <span class="link-fav"><span class="fav" style="background:#F7931A">₿</span><a class="pl" href="#" onclick="event.stopPropagation()">alex.me ↗</a><span class="link-clicks"> · 1.2K clicks</span></span>
             <span class="li-meta-sep">·</span><span class="li-time">31d</span>
           </div>
         </div>
@@ -821,21 +835,18 @@ body {
             <div class="fans-body"><div class="fans-panel"><div class="fans-head"><span>Backers</span><span class="fans-total">$45 total</span></div><div class="fan-entry"><div class="fe-rank">1</div><div class="fe-info"><span class="fe-name">Bob</span><a class="fe-link" href="#">bob.studio ↗</a></div><div class="fe-amount">$45</div></div></div></div>
           </div>
         </div>
-        <div class="back-rank-row" onclick="event.stopPropagation()">
-          <input class="back-rank-input" type="number" min="5" placeholder="Back Alex · min $5">
-          <button class="back-rank-btn">Back this Rank</button>
-        </div>
+        <div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div>
       </div>
     </div>
 
     <div class="list-item" id="r5" data-page="1" aria-expanded="false" data-ind="Design / Creative" onclick="toggleRow('r5')">
       <div class="li-main">
-        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#2A1A06;color:#E07020">P</div><img class="entry-frame-img" src="frames/challenger.png" alt="Challenger"></div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#2A1A06;color:#E07020">P</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Priya Mehta</span><span class="chip">Design / Creative</span></div>
           <div class="li-tagline">Brand strategist & creative director · ex-Pentagram NYC · built visual identities for 4 Fortune 500s · founded Contrast Studio · speaker at Cannes Lions 2024</div>
           <div class="li-meta-row">
-            <span class="link-fav"><span class="fav" style="background:#FF4500">P</span><a class="pl" href="#" onclick="event.stopPropagation()">priya.design ↗</a></span>
+            <span class="link-fav"><span class="fav" style="background:#FF4500">P</span><a class="pl" href="#" onclick="event.stopPropagation()">priya.design ↗</a><span class="link-clicks"> · 678 clicks</span></span>
             <span class="li-meta-sep">·</span><span class="li-time">67d</span>
           </div>
         </div>
@@ -843,10 +854,7 @@ body {
       </div>
       <div class="li-detail">
         <div class="li-det-inner"><span class="no-fans">No backers yet — be the first.</span></div>
-        <div class="back-rank-row" onclick="event.stopPropagation()">
-          <input class="back-rank-input" type="number" min="5" placeholder="Back Priya · min $5">
-          <button class="back-rank-btn">Back this Rank</button>
-        </div>
+        <div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div>
       </div>
     </div>
 
@@ -854,12 +862,12 @@ body {
 
     <div class="list-item" id="r6" data-page="1" aria-expanded="false" data-ind="Marketing / Sales" onclick="toggleRow('r6')">
       <div class="li-main">
-        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#180A20;color:#C060FF">D</div><img class="entry-frame-img" src="frames/unreal.png" alt="Unreal"></div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#180A20;color:#C060FF">D</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Daniel Cole</span><span class="chip">Marketing / Sales</span></div>
           <div class="li-tagline">Growth hacker & performance marketer · $50M+ in ad spend managed · podcast host with 180K listeners · exited 2 agencies · currently building Amplify OS</div>
           <div class="li-meta-row">
-            <span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">danielco.com ↗</a></span>
+            <span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">danielco.com ↗</a><span class="link-clicks"> · 531 clicks</span></span>
             <span class="li-meta-sep">·</span><span class="li-time">14d</span>
           </div>
         </div>
@@ -872,21 +880,18 @@ body {
             <div class="fans-body"><div class="fans-panel"><div class="fans-head"><span>Backers</span><span class="fans-total">$150 total</span></div><div class="fan-entry"><div class="fe-rank">1</div><div class="fe-info"><span class="fe-name">Sam</span><a class="fe-link" href="#">sam.io ↗</a></div><div class="fe-amount">$120</div></div><div class="fan-entry"><div class="fe-rank">2</div><div class="fe-info"><span class="fe-name">Lee</span><a class="fe-link" href="#">lee.co ↗</a></div><div class="fe-amount">$30</div></div></div></div>
           </div>
         </div>
-        <div class="back-rank-row" onclick="event.stopPropagation()">
-          <input class="back-rank-input" type="number" min="5" placeholder="Back Daniel · min $5">
-          <button class="back-rank-btn">Back this Rank</button>
-        </div>
+        <div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div>
       </div>
     </div>
 
     <div class="list-item" id="r7" data-page="1" aria-expanded="false" data-ind="E-commerce" onclick="toggleRow('r7')">
       <div class="li-main">
-        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#0A0402;color:#FF5020">T</div><img class="entry-frame-img" src="frames/world-boss.png" alt="World Boss"></div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#0A0402;color:#FF5020">T</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Tom W.</span><span class="chip">E-commerce</span></div>
           <div class="li-tagline">8-figure Shopify brand founder · DTC obsessed · scaled 2 brands from $0 to $40M GMV · Klaviyo partner · building the next consumer brand in supplements</div>
           <div class="li-meta-row">
-            <span class="link-fav"><span class="fav" style="background:#95BF47">S</span><a class="pl" href="#" onclick="event.stopPropagation()">tomw.xyz ↗</a></span>
+            <span class="link-fav"><span class="fav" style="background:#95BF47">S</span><a class="pl" href="#" onclick="event.stopPropagation()">tomw.xyz ↗</a><span class="link-clicks"> · 320 clicks</span></span>
             <span class="li-meta-sep">·</span><span class="li-time">5d</span>
           </div>
         </div>
@@ -894,21 +899,18 @@ body {
       </div>
       <div class="li-detail">
         <div class="li-det-inner"><span class="no-fans">No backers yet — be the first.</span></div>
-        <div class="back-rank-row" onclick="event.stopPropagation()">
-          <input class="back-rank-input" type="number" min="5" placeholder="Back Tom · min $5">
-          <button class="back-rank-btn">Back this Rank</button>
-        </div>
+        <div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div>
       </div>
     </div>
 
     <div class="list-item" id="r8" data-page="1" aria-expanded="false" data-ind="Finance" onclick="toggleRow('r8')">
       <div class="li-main">
-        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#040C28;color:#40C8FF">L</div><img class="entry-frame-img" src="frames/global-elite.png" alt="Global Elite"></div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#040C28;color:#40C8FF">L</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Layla Hassan</span><span class="chip">Finance</span></div>
           <div class="li-tagline">Quant trader & hedge fund alumni · former Two Sigma · fintech angel investor · advising 3 Series A companies · building systematic strategies for the next decade</div>
           <div class="li-meta-row">
-            <span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">layla.world ↗</a></span>
+            <span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">layla.world ↗</a><span class="link-clicks"> · 198 clicks</span></span>
             <span class="li-meta-sep">·</span><span class="li-time">19d</span>
           </div>
         </div>
@@ -916,21 +918,18 @@ body {
       </div>
       <div class="li-detail">
         <div class="li-det-inner"><span class="no-fans">No backers yet — be the first.</span></div>
-        <div class="back-rank-row" onclick="event.stopPropagation()">
-          <input class="back-rank-input" type="number" min="5" placeholder="Back Layla · min $5">
-          <button class="back-rank-btn">Back this Rank</button>
-        </div>
+        <div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div>
       </div>
     </div>
 
     <div class="list-item" id="r9" data-page="1" aria-expanded="false" data-ind="Consulting" onclick="toggleRow('r9')">
       <div class="li-main">
-        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A1206;color:var(--gold)">C</div><img class="entry-frame-img" src="frames/elite.png" alt="Elite"></div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A1206;color:var(--gold)">C</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Chris Baxter</span><span class="chip">Consulting</span></div>
           <div class="li-tagline">McKinsey alumni · operating partner at 3 PE-backed companies · board advisor in healthcare & logistics · helps scale companies from $10M to $100M in revenue</div>
           <div class="li-meta-row">
-            <span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">chrisb.co ↗</a></span>
+            <span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">chrisb.co ↗</a><span class="link-clicks"> · 144 clicks</span></span>
             <span class="li-meta-sep">·</span><span class="li-time">3d</span>
           </div>
         </div>
@@ -938,21 +937,18 @@ body {
       </div>
       <div class="li-detail">
         <div class="li-det-inner"><span class="no-fans">No backers yet — be the first.</span></div>
-        <div class="back-rank-row" onclick="event.stopPropagation()">
-          <input class="back-rank-input" type="number" min="5" placeholder="Back Chris · min $5">
-          <button class="back-rank-btn">Back this Rank</button>
-        </div>
+        <div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div>
       </div>
     </div>
 
     <div class="list-item" id="r10" data-page="1" aria-expanded="false" data-ind="Media / Content" onclick="toggleRow('r10')">
       <div class="li-main">
-        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#200C1A;color:#B060FF">N</div><img class="entry-frame-img" src="frames/big-deal.png" alt="Big Deal"></div>
+        <div class="entry-frame frame-list"><div class="entry-avatar" style="background:#200C1A;color:#B060FF">N</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div>
         <div class="li-body">
           <div class="li-name-row"><span class="li-name">Nina Sato</span><span class="chip">Media / Content</span></div>
           <div class="li-tagline">Documentary filmmaker · 2.4M YouTube subscribers · Substack top 1% · Sundance selection 2023 · exploring the intersection of money, power, and identity globally</div>
           <div class="li-meta-row">
-            <span class="link-fav"><span class="fav" style="background:#FF0000">▶</span><a class="pl" href="#" onclick="event.stopPropagation()">nina.studio ↗</a></span>
+            <span class="link-fav"><span class="fav" style="background:#FF0000">▶</span><a class="pl" href="#" onclick="event.stopPropagation()">nina.studio ↗</a><span class="link-clicks"> · 267 clicks</span></span>
             <span class="li-meta-sep">·</span><span class="li-time">11d</span>
           </div>
         </div>
@@ -960,53 +956,50 @@ body {
       </div>
       <div class="li-detail">
         <div class="li-det-inner"><span class="no-fans">No backers yet — be the first.</span></div>
-        <div class="back-rank-row" onclick="event.stopPropagation()">
-          <input class="back-rank-input" type="number" min="5" placeholder="Back Nina · min $5">
-          <button class="back-rank-btn">Back this Rank</button>
-        </div>
+        <div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div>
       </div>
     </div>
 
     <!-- PAGE 2: #11-30 (sampled) -->
     <div class="list-item" id="r11" data-page="2" hidden aria-expanded="false" data-ind="AI / ML" onclick="toggleRow('r11')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#0C1A10;color:#60AA38">O</div><img class="entry-frame-img" src="frames/national-treasure.png" alt="National Treasure"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Omar Hassan</span><span class="chip">AI / ML</span></div><div class="li-tagline">ML engineer · ex-Google DeepMind · 12 published papers on LLM alignment · built developer tooling used by 40K teams · open-source contributor with 38K GitHub stars</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">omarh.ai ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">4d</span></div></div><div class="li-right"><div class="li-amount">$178</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Omar · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#0C1A10;color:#60AA38">O</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Omar Hassan</span><span class="chip">AI / ML</span></div><div class="li-tagline">ML engineer · ex-Google DeepMind · 12 published papers on LLM alignment · built developer tooling used by 40K teams · open-source contributor with 38K GitHub stars</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#1a73e8">G</span><a class="pl" href="#" onclick="event.stopPropagation()">omarh.ai ↗</a><span class="link-clicks"> · 89 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">4d</span></div></div><div class="li-right"><div class="li-amount">$178</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r12" data-page="2" hidden aria-expanded="false" data-ind="Finance" onclick="toggleRow('r12')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#060C24;color:#4080C0">M</div><img class="entry-frame-img" src="frames/national-treasure.png" alt="National Treasure"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Mia Chen</span><span class="chip">Finance</span></div><div class="li-tagline">Derivatives trader · former Goldman Sachs structuring desk · founder of Vega Capital · managing $120M AUM · advising sovereign wealth funds on digital assets strategy</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">miachen.io ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">9d</span></div></div><div class="li-right"><div class="li-amount">$165</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Mia · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#060C24;color:#4080C0">M</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Mia Chen</span><span class="chip">Finance</span></div><div class="li-tagline">Derivatives trader · former Goldman Sachs structuring desk · founder of Vega Capital · managing $120M AUM · advising sovereign wealth funds on digital assets strategy</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">miachen.io ↗</a><span class="link-clicks"> · 71 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">9d</span></div></div><div class="li-right"><div class="li-amount">$165</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r13" data-page="2" hidden aria-expanded="false" data-ind="Tech / Software" onclick="toggleRow('r13')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">F</div><img class="entry-frame-img" src="frames/main-character.png" alt="Main Character"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Felix Wagner</span><span class="chip">Tech / Software</span></div><div class="li-tagline">Serial founder · 3 exits including $42M acquisition by SAP · current CEO of Stratum · Y Combinator W21 · building infrastructure for the future of European deep tech</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#4285F4">G</span><a class="pl" href="#" onclick="event.stopPropagation()">felixw.tech ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">21d</span></div></div><div class="li-right"><div class="li-amount">$155</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Felix · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">F</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Felix Wagner</span><span class="chip">Tech / Software</span></div><div class="li-tagline">Serial founder · 3 exits including $42M acquisition by SAP · current CEO of Stratum · Y Combinator W21 · building infrastructure for the future of European deep tech</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#4285F4">G</span><a class="pl" href="#" onclick="event.stopPropagation()">felixw.tech ↗</a><span class="link-clicks"> · 53 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">21d</span></div></div><div class="li-right"><div class="li-amount">$155</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r14" data-page="2" hidden aria-expanded="false" data-ind="Consulting" onclick="toggleRow('r14')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">R</div><img class="entry-frame-img" src="frames/main-character.png" alt="Main Character"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Raj Patel</span><span class="chip">Consulting</span></div><div class="li-tagline">Strategy partner · BCG alumni · scaled 6 companies to Series C · specializes in market entry across South Asia · keynote speaker · advisor to 3 unicorn-stage companies</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">raj.studio ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">7d</span></div></div><div class="li-right"><div class="li-amount">$140</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Raj · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">R</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Raj Patel</span><span class="chip">Consulting</span></div><div class="li-tagline">Strategy partner · BCG alumni · scaled 6 companies to Series C · specializes in market entry across South Asia · keynote speaker · advisor to 3 unicorn-stage companies</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">raj.studio ↗</a><span class="link-clicks"> · 44 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">7d</span></div></div><div class="li-right"><div class="li-amount">$140</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r15" data-page="2" hidden aria-expanded="false" data-ind="Venture Capital" onclick="toggleRow('r15')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">I</div><img class="entry-frame-img" src="frames/main-character.png" alt="Main Character"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ivy Lee</span><span class="chip">Venture Capital</span></div><div class="li-tagline">Partner at Meridian Ventures · $180M fund III · led investments in 8 unicorns · 15 years in early-stage VC · board seats at Tessera, Flux, and Orbit · Forbes Midas 2023</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#8B5CF6">V</span><a class="pl" href="#" onclick="event.stopPropagation()">ivylee.vc ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">15d</span></div></div><div class="li-right"><div class="li-amount">$132</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Ivy · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#1A0E06;color:#D09030">I</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC rank frame"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ivy Lee</span><span class="chip">Venture Capital</span></div><div class="li-tagline">Partner at Meridian Ventures · $180M fund III · led investments in 8 unicorns · 15 years in early-stage VC · board seats at Tessera, Flux, and Orbit · Forbes Midas 2023</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#8B5CF6">V</span><a class="pl" href="#" onclick="event.stopPropagation()">ivylee.vc ↗</a><span class="link-clicks"> · 38 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">15d</span></div></div><div class="li-right"><div class="li-amount">$132</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r16" data-page="2" hidden aria-expanded="false" data-ind="E-commerce" onclick="toggleRow('r16')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">M</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Marco Diaz</span><span class="chip">E-commerce</span></div><div class="li-tagline">DTC brand architect · grew 4 Shopify brands to 8-figure revenue · Amazon top seller 2022–2024 · warehouse automation pioneer · building next brand in beauty & wellness space</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#95BF47">S</span><a class="pl" href="#" onclick="event.stopPropagation()">marcodiaz.co ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">12d</span></div></div><div class="li-right"><div class="li-amount">$125</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Marco · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">M</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Marco Diaz</span><span class="chip">E-commerce</span></div><div class="li-tagline">DTC brand architect · grew 4 Shopify brands to 8-figure revenue · Amazon top seller 2022–2024 · warehouse automation pioneer · building next brand in beauty & wellness space</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#95BF47">S</span><a class="pl" href="#" onclick="event.stopPropagation()">marcodiaz.co ↗</a><span class="link-clicks"> · 29 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">12d</span></div></div><div class="li-right"><div class="li-amount">$125</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r17" data-page="2" hidden aria-expanded="false" data-ind="Media / Content" onclick="toggleRow('r17')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">A</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ana Silva</span><span class="chip">Media / Content</span></div><div class="li-tagline">Award-winning journalist turned media entrepreneur · 3M newsletter subscribers · former NYT staff · launched 2 podcasts with 500K+ downloads · Peabody Award nominee 2024</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#FF0000">▶</span><a class="pl" href="#" onclick="event.stopPropagation()">anasilva.press ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">6d</span></div></div><div class="li-right"><div class="li-amount">$118</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Ana · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">A</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ana Silva</span><span class="chip">Media / Content</span></div><div class="li-tagline">Award-winning journalist turned media entrepreneur · 3M newsletter subscribers · former NYT staff · launched 2 podcasts with 500K+ downloads · Peabody Award nominee 2024</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#FF0000">▶</span><a class="pl" href="#" onclick="event.stopPropagation()">anasilva.press ↗</a><span class="link-clicks"> · 45 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">6d</span></div></div><div class="li-right"><div class="li-amount">$118</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r18" data-page="2" hidden aria-expanded="false" data-ind="Real Estate" onclick="toggleRow('r18')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">B</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ben Carter</span><span class="chip">Real Estate</span></div><div class="li-tagline">Multifamily developer · 2,400 doors across Texas & Georgia · former CBRE investment sales · syndicator with 600+ LPs · podcast host: The Deal Room · author of Passive Empire</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#E25822">B</span><a class="pl" href="#" onclick="event.stopPropagation()">bencarter.co ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">28d</span></div></div><div class="li-right"><div class="li-amount">$110</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Ben · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">B</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Ben Carter</span><span class="chip">Real Estate</span></div><div class="li-tagline">Multifamily developer · 2,400 doors across Texas & Georgia · former CBRE investment sales · syndicator with 600+ LPs · podcast host: The Deal Room · author of Passive Empire</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#E25822">B</span><a class="pl" href="#" onclick="event.stopPropagation()">bencarter.co ↗</a><span class="link-clicks"> · 22 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">28d</span></div></div><div class="li-right"><div class="li-amount">$110</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r19" data-page="2" hidden aria-expanded="false" data-ind="Crypto / Web3" onclick="toggleRow('r19')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">Z</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Zara Khan</span><span class="chip">Crypto / Web3</span></div><div class="li-tagline">Web3 founder · launched NFT marketplace with $22M in volume · DeFi educator with 180K Twitter following · tokenomics advisor · building cross-chain identity protocol since 2022</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#F7931A">₿</span><a class="pl" href="#" onclick="event.stopPropagation()">zarakhan.xyz ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">33d</span></div></div><div class="li-right"><div class="li-amount">$105</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Zara · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">Z</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Zara Khan</span><span class="chip">Crypto / Web3</span></div><div class="li-tagline">Web3 founder · launched NFT marketplace with $22M in volume · DeFi educator with 180K Twitter following · tokenomics advisor · building cross-chain identity protocol since 2022</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#F7931A">₿</span><a class="pl" href="#" onclick="event.stopPropagation()">zarakhan.xyz ↗</a><span class="link-clicks"> · 18 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">33d</span></div></div><div class="li-right"><div class="li-amount">$105</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
     <div class="list-item" id="r20" data-page="2" hidden aria-expanded="false" data-ind="Marketing / Sales" onclick="toggleRow('r20')">
-      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">L</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Leo Park</span><span class="chip">Marketing / Sales</span></div><div class="li-tagline">CMO turned founder · led marketing at 2 unicorn exits · built 3 brand-to-acquisition plays · viral campaign creator · 320K LinkedIn following · current: building Tempo Labs</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">leopark.com ↗</a></span><span class="li-meta-sep">·</span><span class="li-time">2d</span></div></div><div class="li-right"><div class="li-amount">$98</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
-      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="back-rank-row" onclick="event.stopPropagation()"><input class="back-rank-input" type="number" min="5" placeholder="Back Leo · min $5"><button class="back-rank-btn">Back this Rank</button></div></div>
+      <div class="li-main"><div class="entry-frame frame-list"><div class="entry-avatar" style="background:#181818;color:#7A7A7A">L</div><img class="entry-frame-img" src="frames/npc.png" alt="NPC"></div><div class="li-body"><div class="li-name-row"><span class="li-name">Leo Park</span><span class="chip">Marketing / Sales</span></div><div class="li-tagline">CMO turned founder · led marketing at 2 unicorn exits · built 3 brand-to-acquisition plays · viral campaign creator · 320K LinkedIn following · current: building Tempo Labs</div><div class="li-meta-row"><span class="link-fav"><span class="fav" style="background:#0077B5">in</span><a class="pl" href="#" onclick="event.stopPropagation()">leopark.com ↗</a><span class="link-clicks"> · 14 clicks</span></span><span class="li-meta-sep">·</span><span class="li-time">2d</span></div></div><div class="li-right"><div class="li-amount">$98</div><div class="li-chev"><svg width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M0 0l5 6 5-6z"/></svg></div></div></div>
+      <div class="li-detail"><div class="li-det-inner"><span class="no-fans">No backers yet.</span></div><div class="li-back-row" onclick="event.stopPropagation()"><div class="back-compact"><input class="back-compact-input" type="number" min="5" placeholder="min $5"><button class="back-compact-btn">Back</button></div></div></div>
     </div>
 
   </div>
