@@ -1,6 +1,6 @@
 ---
 name: apple-design-backend
-description: "Use when reasoning about how Apple delivers and serves its experiences — the observable web delivery/infra (multi-CDN, mzstatic image-transform URLs, image formats, HLS adaptive video, caching, HTTP/2-3) and the reverse-engineered, INFERRED server-side architecture (CloudKit, APNs, StoreKit, Sign in with Apple, Private Cloud Compute, iCloud sync). Part of the apple-design family. Keywords: apple cdn, akamai, mzstatic, image transform url, srcset picture, HLS m3u8, http3 quic, cache-control immutable, content-hash fingerprint, frame-sequence delivery, createImageBitmap, KTX texture, video scrub, cloudkit, APNs push, StoreKit, sign in with apple, private cloud compute, icloud sync, conflict resolution, backend, infrastructure, reverse-engineered, inferred architecture."
+description: "Use when reasoning about how Apple delivers and serves its experiences — the observable web delivery/infra (multi-CDN, mzstatic image-transform URLs, image formats, HLS adaptive video, caching, HTTP/2-3) and the reverse-engineered, INFERRED server-side architecture (CloudKit, APNs, StoreKit, Sign in with Apple, Private Cloud Compute, iCloud sync); also covers a Flutter/Dart implementation layer (Cupertino widgets, packages) for consuming these services from a cross-platform app. Part of the apple-design family. Keywords: apple cdn, akamai, mzstatic, image transform url, srcset picture, HLS m3u8, http3 quic, cache-control immutable, content-hash fingerprint, frame-sequence delivery, createImageBitmap, KTX texture, video scrub, cloudkit, APNs push, StoreKit, sign in with apple, private cloud compute, icloud sync, conflict resolution, backend, infrastructure, reverse-engineered, inferred architecture, flutter, dart, cupertino widgets."
 ---
 
 # Apple Design — Delivery & (Inferred) Backend
@@ -22,6 +22,7 @@ description: "Use when reasoning about how Apple delivers and serves its experie
 |---|---|
 | `references/web-delivery-infra.md` | `[observed]` CDN/image-transform/HLS/caching/HTTP — with replication recipes |
 | `references/inferred-backend-architecture.md` | `[documented]` public services + `[inferred]` server topology (banner-led, every claim labeled) |
+| `references/flutter-implementation.md` | Consuming Apple services from a Flutter app: push via `firebase_messaging`/APNs, `sign_in_with_apple`, HLS via `video_player`/`chewie`, `cached_network_image` responsive delivery, iCloud/CloudKit sync gap + Firebase/Supabase alternative |
 
 ## Common mistakes
 - **Presenting inference as fact** (the #1 anti-pattern of this skill).

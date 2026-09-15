@@ -1,6 +1,6 @@
 ---
 name: apple-design-tactics
-description: "Use when you need Apple's accessibility / inclusive-design bar (VoiceOver, Dynamic Type reflow, Reduce Motion/Transparency, contrast, 44pt targets, WCAG 2.2 AA) or its marketing / persuasion / brand tactics (whitespace as luxury signal, product-as-hero photography, the confident benefit-led copy voice, pricing presentation & anchoring, the one-idea-per-section reveal cadence). Part of the apple-design family. Keywords: accessibility, a11y, VoiceOver, dynamic type, reduce motion, prefers-reduced-motion, reduce transparency, prefers-contrast, focus-visible, WCAG, inclusive design, curb-cut, marketing, brand, copywriting, persuasion, whitespace, pricing anchoring, product photography, hero headline, reveal cadence, keynote."
+description: "Use when you need Apple's accessibility / inclusive-design bar (VoiceOver, Dynamic Type reflow, Reduce Motion/Transparency, contrast, 44pt targets, WCAG 2.2 AA) or its marketing / persuasion / brand tactics (whitespace as luxury signal, product-as-hero photography, the confident benefit-led copy voice, pricing presentation & anchoring, the one-idea-per-section reveal cadence); also covers a Flutter/Dart implementation layer (Cupertino widgets, packages). Part of the apple-design family. Keywords: accessibility, a11y, VoiceOver, dynamic type, reduce motion, prefers-reduced-motion, reduce transparency, prefers-contrast, focus-visible, WCAG, inclusive design, curb-cut, marketing, brand, copywriting, persuasion, whitespace, pricing anchoring, product photography, hero headline, reveal cadence, keynote, flutter, dart, cupertino widgets."
 ---
 
 # Apple Design — Tactics (accessibility · marketing & brand)
@@ -25,6 +25,7 @@ Two cross-cutting human-factors lenses: designing for *everyone*, and persuading
 |---|---|
 | `references/accessibility-inclusive.md` | VoiceOver/Dynamic Type/Reduce-* constraints, ARIA recipes, media queries, a11y checklist |
 | `references/marketing-tactics-brand.md` | Visual/copy/persuasion tactics, hero-headline formula, pricing layout, product-shot CSS |
+| `references/flutter-implementation.md` | Flutter/Dart: Semantics widget a11y recipes, Dynamic Type reflow, Reduce Motion/Transparency handling, 44×48dp targets, contrast checking, semantics testing; marketing tactics scoped to onboarding/paywall/empty-state copy |
 
 ## Common mistakes
 - Color-only meaning, fixed font sizes, motion with no opt-out, opaque-only-on-blur text, missing labels/focus.
