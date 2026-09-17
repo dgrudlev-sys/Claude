@@ -63,6 +63,23 @@ void main() {
     });
   });
 
+  group('a shipped maths vocabulary changes what the picker promises', () {
+    test('German is promised in full, because we ship German maths', () async {
+      final service = serviceWith(
+        voices: const [SpeechVoice(id: 'de1', name: 'Anna', localeTag: 'de-DE')],
+        locales: const [
+          SpeechLocale(tag: 'de-DE', displayName: 'German', supportsOnDevice: true),
+        ],
+      );
+
+      final german = await service.describe('de-DE');
+      expect(german.mathVocabularySupported, isTrue);
+      expect(german.level, LanguageSupportLevel.full);
+      // No "falls back to English" note, because it does not.
+      expect(german.caveats, isEmpty);
+    });
+  });
+
   group('a language the device supports but our maths layer does not', () {
     test('is honest that maths falls back to English', () async {
       final service = serviceWith(

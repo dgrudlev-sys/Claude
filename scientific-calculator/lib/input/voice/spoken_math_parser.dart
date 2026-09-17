@@ -1,7 +1,8 @@
 import '../../expression/expression.dart';
 import '../../expression/parse/expression_parser.dart';
 import '../../expression/render/speech_renderer.dart';
-import 'number_words.dart';
+import '../language/english_vocabulary.dart';
+import '../language/math_vocabulary.dart';
 
 /// A reading of a spoken phrase that the app isn't certain about, along
 /// with the alternative — so the UI can ask instead of guessing.
@@ -70,67 +71,17 @@ class SpokenMathError implements Exception {
 /// keyboard uses — so voice input can't drift out of sync with typed
 /// input, because there's only one parser.
 class SpokenMathParser {
-  const SpokenMathParser();
+  const SpokenMathParser({this.vocabulary = const EnglishMathVocabulary()});
 
-  static const _numberWords = NumberWordParser();
+  /// The language being spoken. Everything language-specific — number
+  /// composition, phrases, filler — comes from here, so supporting a new
+  /// language means supplying a vocabulary, not touching this class.
+  final MathVocabulary vocabulary;
+
   static const _parser = ExpressionParser();
-  static const _speech = SpeechRenderer();
 
-  /// Multi-word phrases, longest first so "to the power of" is matched
-  /// before "to" and "divided by" before "by".
-  static const _phrases = <List<String>, String>{
-    ['square', 'root', 'of']: 'sqrt(',
-    ['the', 'square', 'root', 'of']: 'sqrt(',
-    ['cube', 'root', 'of']: 'cbrt(',
-    ['absolute', 'value', 'of']: 'abs(',
-    ['to', 'the', 'power', 'of']: '^',
-    ['raised', 'to', 'the', 'power', 'of']: '^',
-    ['multiplied', 'by']: '*',
-    ['multiply', 'by']: '*',
-    ['divided', 'by']: '/',
-    ['divide', 'by']: '/',
-    ['take', 'away']: '-',
-    ['open', 'parenthesis']: '(',
-    ['open', 'parentheses']: '(',
-    ['open', 'paren']: '(',
-    ['open', 'bracket']: '(',
-    ['close', 'parenthesis']: ')',
-    ['close', 'parentheses']: ')',
-    ['close', 'paren']: ')',
-    ['close', 'bracket']: ')',
-    ['sine', 'of']: 'sin(',
-    ['sin', 'of']: 'sin(',
-    ['cosine', 'of']: 'cos(',
-    ['cos', 'of']: 'cos(',
-    ['tangent', 'of']: 'tan(',
-    ['tan', 'of']: 'tan(',
-    ['natural', 'log', 'of']: 'ln(',
-    ['log', 'of']: 'log(',
-    ['log', 'base']: 'log(',
-  };
-
-  static const _singleWords = <String, String>{
-    'plus': '+',
-    'add': '+',
-    'minus': '-',
-    'subtract': '-',
-    'negative': '-',
-    'times': '*',
-    'over': '/',
-    'squared': '^2',
-    'cubed': '^3',
-    'percent': '%',
-    'factorial': '!',
-    'pi': 'pi',
-    'sqrt': 'sqrt(',
-  };
-
-  /// Words that carry no mathematical meaning and are dropped.
-  static const _filler = {
-    'what', 'whats', "what's", 'is', 'the', 'of', 'please', 'calculate',
-    'compute', 'equals', 'equal', 'result', 'answer', 'me', 'tell', 'can',
-    'you', 'could', 'would', 'a',
-  };
+  SpokenNumberParser get _numberWords => vocabulary.numbers;
+  SpeechRenderer get _speech => SpeechRenderer(vocabulary: vocabulary);
 
   /// Functions that open a paren and need it closed again.
   static const _openers = {'sqrt(', 'cbrt(', 'abs(', 'sin(', 'cos(', 'tan(', 'ln(', 'log('};
@@ -138,7 +89,9 @@ class SpokenMathParser {
   SpokenMathResult parse(String transcript) {
     final words = transcript
         .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9.\s-]'), ' ')
+        // Keep letters from any script: stripping to ASCII would turn
+        // "fünfundzwanzig" into "fnfundzwanzig" and lose the number.
+        .replaceAll(RegExp(r'[^\p{L}\p{N}.\s-]', unicode: true), ' ')
         .split(RegExp(r'\s+'))
         .where((w) => w.isNotEmpty)
         .toList();
@@ -222,7 +175,7 @@ class SpokenMathParser {
         continue;
       }
 
-      final symbol = _singleWords[word];
+      final symbol = vocabulary.singleWords[word];
       if (symbol != null) {
         out.write(symbol);
         i++;
@@ -242,7 +195,7 @@ class SpokenMathParser {
         continue;
       }
 
-      if (_filler.contains(word)) {
+      if (vocabulary.fillerWords.contains(word)) {
         i++;
         continue;
       }
@@ -326,7 +279,7 @@ class SpokenMathParser {
           i += number.wordsConsumed;
           continue;
         }
-        final symbol = _singleWords[words[i]];
+        final symbol = vocabulary.singleWords[words[i]];
         if (symbol != null) {
           inner.write(symbol);
           i++;
@@ -364,7 +317,7 @@ class SpokenMathParser {
 
   ({String symbol, int length})? _matchPhrase(List<String> words, int start) {
     ({String symbol, int length})? best;
-    for (final entry in _phrases.entries) {
+    for (final entry in vocabulary.phrases.entries) {
       final phrase = entry.key;
       if (start + phrase.length > words.length) continue;
       var matches = true;

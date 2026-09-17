@@ -1,5 +1,6 @@
 import '../platform/speech_ports.dart';
 import 'math_vocabulary.dart';
+import 'vocabularies.dart';
 
 /// How well a given language works, all things considered.
 enum LanguageSupportLevel {
@@ -109,7 +110,7 @@ class LanguageSupportService {
   const LanguageSupportService({
     required this.tts,
     required this.speech,
-    this.vocabularies = const MathVocabularyRegistry(),
+    this.vocabularies = shippedMathVocabularies,
   });
 
   final TextToSpeechPort tts;

@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:scientific_calculator/engine/number/number.dart';
 import 'package:scientific_calculator/expression/evaluator.dart';
-import 'package:scientific_calculator/input/voice/number_words.dart';
+import 'package:scientific_calculator/input/language/english_vocabulary.dart';
 import 'package:scientific_calculator/input/voice/spoken_math_parser.dart';
 
 void main() {
-  const numbers = NumberWordParser();
+  const numbers = EnglishNumberParser();
   const spoken = SpokenMathParser();
   const evaluator = Evaluator();
 
