@@ -264,13 +264,18 @@ final class RootNode extends ExpressionNode {
 
   bool get isSquareRoot => index == null;
 
+  /// Index first, because that is where it is written and where it is
+  /// read: ⁿ√x is spoken "nth root of x". Children are in reading order
+  /// by contract, and cursor navigation follows them, so listing the
+  /// radicand first would have the caret visit the two slots in the
+  /// opposite order to the one they appear in.
   @override
-  List<ExpressionNode> get children => index == null ? [radicand] : [radicand, index!];
+  List<ExpressionNode> get children => index == null ? [radicand] : [index!, radicand];
 
   @override
   ExpressionNode withChildren(List<ExpressionNode> newChildren) => index == null
       ? RootNode(newChildren[0])
-      : RootNode(newChildren[0], index: newChildren[1]);
+      : RootNode(newChildren[1], index: newChildren[0]);
 
   @override
   bool operator ==(Object other) =>
