@@ -1,0 +1,176 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:scientific_calculator/input/language/language_support.dart';
+import 'package:scientific_calculator/input/platform/speech_ports.dart';
+
+import 'math_speaker_test.dart' show FakeTts;
+
+/// Stands in for the device recogniser. Two phones running the same OS
+/// return different lists here, which is the whole reason the app has to
+/// ask rather than assume.
+class FakeSpeechRecognition implements SpeechRecognitionPort {
+  FakeSpeechRecognition(this.locales);
+
+  final List<SpeechLocale> locales;
+
+  @override
+  Future<bool> initialize() async => true;
+
+  @override
+  Future<List<SpeechLocale>> availableLocales() async => locales;
+
+  @override
+  Future<void> listen({
+    required String localeTag,
+    required void Function(SpeechTranscript) onResult,
+    bool preferOnDevice = true,
+  }) async {}
+
+  @override
+  Future<void> stop() async {}
+
+  @override
+  bool get isListening => false;
+}
+
+void main() {
+  LanguageSupportService serviceWith({
+    List<SpeechVoice> voices = const [],
+    List<SpeechLocale> locales = const [],
+  }) {
+    final tts = FakeTts()..voices = voices;
+    return LanguageSupportService(
+      tts: tts,
+      speech: FakeSpeechRecognition(locales),
+    );
+  }
+
+  group('English: everything works', () {
+    test('reports full support with no caveats', () async {
+      final service = serviceWith(
+        voices: const [
+          SpeechVoice(id: 'en1', name: 'Samantha', localeTag: 'en-US', isEnhanced: true),
+        ],
+        locales: const [
+          SpeechLocale(tag: 'en-US', displayName: 'English (US)', supportsOnDevice: true),
+        ],
+      );
+
+      final english = await service.describe('en-US');
+      expect(english.level, LanguageSupportLevel.full);
+      expect(english.summary, 'Voice input and spoken results available');
+      expect(english.caveats, isEmpty);
+      expect(english.hasEnhancedVoice, isTrue);
+    });
+  });
+
+  group('a language the device supports but our maths layer does not', () {
+    test('is honest that maths falls back to English', () async {
+      final service = serviceWith(
+        voices: const [SpeechVoice(id: 'da1', name: 'Sara', localeTag: 'da-DK')],
+        locales: const [
+          SpeechLocale(tag: 'da-DK', displayName: 'Danish', supportsOnDevice: true),
+        ],
+      );
+
+      final danish = await service.describe('da-DK');
+      expect(danish.canSpeak, isTrue);
+      expect(danish.canListen, isTrue);
+      // The device is fully capable; we are not.
+      expect(danish.mathVocabularySupported, isFalse);
+      expect(danish.level, LanguageSupportLevel.deviceOnly);
+      expect(
+        danish.caveats.single,
+        contains('not yet translated into Danish'),
+      );
+    });
+  });
+
+  group('device gaps are named specifically', () {
+    test('no voice installed says so and points at device settings', () async {
+      final service = serviceWith(
+        locales: const [
+          SpeechLocale(tag: 'fr-FR', displayName: 'French', supportsOnDevice: true),
+        ],
+      );
+
+      final french = await service.describe('fr-FR');
+      expect(french.canSpeak, isFalse);
+      expect(french.level, LanguageSupportLevel.needsDeviceSetup);
+      expect(french.summary, 'Voice input only');
+      expect(french.caveats.first, contains('no French voice installed'));
+      expect(french.caveats.first, contains('device settings'));
+    });
+
+    test('recognition present but online-only is called out', () async {
+      final service = serviceWith(
+        voices: const [SpeechVoice(id: 'de1', name: 'Anna', localeTag: 'de-DE')],
+        locales: const [
+          SpeechLocale(tag: 'de-DE', displayName: 'German', supportsOnDevice: false),
+        ],
+      );
+
+      final german = await service.describe('de-DE');
+      expect(german.canListenOffline, isFalse);
+      expect(
+        german.caveats.any((c) => c.contains('needs an internet connection')),
+        isTrue,
+      );
+    });
+
+    test('a language the device knows nothing about is unavailable', () async {
+      final service = serviceWith();
+      final japanese = await service.describe('ja-JP');
+      expect(japanese.level, LanguageSupportLevel.unavailable);
+      expect(japanese.summary, 'Not available on this device');
+    });
+  });
+
+  group('the language picker', () {
+    test('lists everything the device offers, best support first', () async {
+      final service = serviceWith(
+        voices: const [
+          SpeechVoice(id: 'da1', name: 'Sara', localeTag: 'da-DK'),
+          SpeechVoice(id: 'en1', name: 'Samantha', localeTag: 'en-US'),
+        ],
+        locales: const [
+          SpeechLocale(tag: 'da-DK', displayName: 'Danish', supportsOnDevice: true),
+          SpeechLocale(tag: 'en-US', displayName: 'English (US)', supportsOnDevice: true),
+          SpeechLocale(tag: 'fr-FR', displayName: 'French', supportsOnDevice: false),
+        ],
+      );
+
+      final all = await service.availableLanguages();
+
+      expect(all.map((l) => l.localeTag), containsAll(['en-US', 'da-DK', 'fr-FR']));
+      // Fully supported English leads; French, which has no voice, trails.
+      expect(all.first.localeTag, 'en-US');
+      expect(all.last.localeTag, 'fr-FR');
+    });
+
+    test('a language with only a voice still appears, with its limits', () async {
+      final service = serviceWith(
+        voices: const [SpeechVoice(id: 'es1', name: 'Monica', localeTag: 'es-ES')],
+      );
+
+      final spanish = await service.describe('es-ES');
+      expect(spanish.canSpeak, isTrue);
+      expect(spanish.canListen, isFalse);
+      expect(spanish.summary, 'Spoken results only');
+      expect(spanish.caveats.any((c) => c.contains('cannot recognise spoken')), isTrue);
+    });
+  });
+
+  group('locale codes', () {
+    test('regional variants share a maths vocabulary', () async {
+      final service = serviceWith(
+        voices: const [SpeechVoice(id: 'gb1', name: 'Daniel', localeTag: 'en-GB')],
+        locales: const [
+          SpeechLocale(tag: 'en-GB', displayName: 'English (UK)', supportsOnDevice: true),
+        ],
+      );
+      final british = await service.describe('en-GB');
+      expect(british.mathVocabularySupported, isTrue);
+      expect(british.level, LanguageSupportLevel.full);
+    });
+  });
+}
