@@ -83,21 +83,21 @@ void main() {
   group('a language the device supports but our maths layer does not', () {
     test('is honest that maths falls back to English', () async {
       final service = serviceWith(
-        voices: const [SpeechVoice(id: 'da1', name: 'Sara', localeTag: 'da-DK')],
+        voices: const [SpeechVoice(id: 'nl1', name: 'Xander', localeTag: 'nl-NL')],
         locales: const [
-          SpeechLocale(tag: 'da-DK', displayName: 'Danish', supportsOnDevice: true),
+          SpeechLocale(tag: 'nl-NL', displayName: 'Dutch', supportsOnDevice: true),
         ],
       );
 
-      final danish = await service.describe('da-DK');
-      expect(danish.canSpeak, isTrue);
-      expect(danish.canListen, isTrue);
+      final dutch = await service.describe('nl-NL');
+      expect(dutch.canSpeak, isTrue);
+      expect(dutch.canListen, isTrue);
       // The device is fully capable; we are not.
-      expect(danish.mathVocabularySupported, isFalse);
-      expect(danish.level, LanguageSupportLevel.deviceOnly);
+      expect(dutch.mathVocabularySupported, isFalse);
+      expect(dutch.level, LanguageSupportLevel.deviceOnly);
       expect(
-        danish.caveats.single,
-        contains('not yet translated into Danish'),
+        dutch.caveats.single,
+        contains('not yet translated into Dutch'),
       );
     });
   });
@@ -146,22 +146,23 @@ void main() {
     test('lists everything the device offers, best support first', () async {
       final service = serviceWith(
         voices: const [
-          SpeechVoice(id: 'da1', name: 'Sara', localeTag: 'da-DK'),
+          SpeechVoice(id: 'nl1', name: 'Xander', localeTag: 'nl-NL'),
           SpeechVoice(id: 'en1', name: 'Samantha', localeTag: 'en-US'),
         ],
         locales: const [
-          SpeechLocale(tag: 'da-DK', displayName: 'Danish', supportsOnDevice: true),
+          SpeechLocale(tag: 'nl-NL', displayName: 'Dutch', supportsOnDevice: true),
           SpeechLocale(tag: 'en-US', displayName: 'English (US)', supportsOnDevice: true),
-          SpeechLocale(tag: 'fr-FR', displayName: 'French', supportsOnDevice: false),
+          SpeechLocale(tag: 'pl-PL', displayName: 'Polish', supportsOnDevice: false),
         ],
       );
 
       final all = await service.availableLanguages();
 
-      expect(all.map((l) => l.localeTag), containsAll(['en-US', 'da-DK', 'fr-FR']));
-      // Fully supported English leads; French, which has no voice, trails.
+      expect(all.map((l) => l.localeTag), containsAll(['en-US', 'nl-NL', 'pl-PL']));
+      // English has a maths vocabulary and leads; Dutch is device-only;
+      // Polish, which has no voice at all, trails.
       expect(all.first.localeTag, 'en-US');
-      expect(all.last.localeTag, 'fr-FR');
+      expect(all.last.localeTag, 'pl-PL');
     });
 
     test('a language with only a voice still appears, with its limits', () async {

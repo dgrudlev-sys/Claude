@@ -153,6 +153,10 @@ class EnglishMathVocabulary extends MathVocabulary {
         ['natural', 'log', 'of']: 'ln(',
         ['log', 'of']: 'log(',
         ['log', 'base']: 'log(',
+        // The sanitiser drops the apostrophe before any matching, so
+        // "what's" arrives as two tokens. Matched here rather than added
+        // to the filler words, because a lone "s" is a usable variable.
+        ['what', 's']: '',
       };
 
   @override

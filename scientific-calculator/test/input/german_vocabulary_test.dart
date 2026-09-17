@@ -230,9 +230,11 @@ void main() {
 
     test('German is in the shipped set, so the picker will promise it', () {
       // The language notice is driven by this list, so a vocabulary that
-      // exists but is not shipped would be invisible to users.
+      // exists but is not shipped would be invisible to users. The full
+      // shipped set is pinned in shipped_languages_test.dart.
       expect(shippedMathVocabularies.supportsLanguage('de-DE'), isTrue);
-      expect(shippedMathVocabularies.supportedLanguageCodes, {'en', 'de'});
+      expect(shippedMathVocabularies.forLocale('de-CH'),
+          isA<GermanMathVocabulary>());
     });
   });
 }

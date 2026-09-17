@@ -32,6 +32,73 @@ abstract class SpokenNumberParser {
   bool isNumberWord(String word);
 }
 
+/// Maps accented Latin letters onto their base letters.
+///
+/// Speech recognisers are inconsistent about accents, and people typing a
+/// number word often skip them — "dieciseis" for "dieciséis", "tva" for
+/// "två". Folding both the lookup tables and the input through this means
+/// the tables can keep the correct orthography while still matching what
+/// actually arrives.
+///
+/// Not applied to German, whose umlauts have their own established
+/// transliterations ("ü" → "ue") that this would get wrong.
+String foldDiacritics(String text) {
+  final buffer = StringBuffer();
+  for (final rune in text.runes) {
+    final character = String.fromCharCode(rune);
+    buffer.write(_folded[character] ?? character);
+  }
+  return buffer.toString();
+}
+
+const _folded = <String, String>{
+  'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae',
+  'ç': 'c',
+  'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+  'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+  'ñ': 'n',
+  'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', 'œ': 'oe',
+  'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+  'ý': 'y', 'ÿ': 'y',
+  // Russian writes ё as е in most text, including what recognisers emit.
+  'ё': 'е',
+};
+
+/// Reads the digits spoken after a decimal separator and appends them.
+///
+/// Every language does this the same way — the digits after the
+/// separator are read singly, "three point one four" rather than "three
+/// point fourteen" — so only the separator word and the digit table
+/// differ. Shared rather than copied into each parser, because a bug
+/// fixed here should be fixed for every language at once.
+({String digits, int wordsConsumed}) withDecimalTail({
+  required String whole,
+  required List<String> words,
+  required int start,
+  required int consumed,
+  required Set<String> separators,
+  required int? Function(String word) digitOf,
+}) {
+  final separatorAt = start + consumed;
+  if (separatorAt >= words.length ||
+      !separators.contains(words[separatorAt].toLowerCase())) {
+    return (digits: whole, wordsConsumed: consumed);
+  }
+
+  final decimals = StringBuffer();
+  var scan = separatorAt + 1;
+  while (scan < words.length) {
+    final digit = digitOf(words[scan].toLowerCase());
+    if (digit == null || digit < 0 || digit > 9) break;
+    decimals.write(digit);
+    scan++;
+  }
+
+  // A separator with no digits after it was not a decimal point at all.
+  if (decimals.isEmpty) return (digits: whole, wordsConsumed: consumed);
+  return (digits: '$whole.$decimals', wordsConsumed: scan - start);
+}
+
 /// The words used when speaking an expression back.
 ///
 /// Held as data rather than scattered through the renderer, so a
