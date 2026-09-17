@@ -57,6 +57,10 @@ dev_dependencies:
 #   flutter pub run flutter_launcher_icons
 flutter_launcher_icons:
   android: true
+  ios: true
+  # iOS has no adaptive-icon concept and rejects alpha channels, so it
+  # takes the flattened image with the background already composited in.
+  remove_alpha_ios: true
   image_path: "assets/icon/legacy.png"
   adaptive_icon_background: "assets/icon/background.png"
   adaptive_icon_foreground: "assets/icon/foreground.png"
