@@ -93,17 +93,28 @@ void main() {
       // every background, which is how the amber key ended up with white
       // text. Pairing them in one type makes that unwriteable.
       final palette = Palette.of(Appearance.darkHighContrast);
-      final backgrounds = {
-        palette.keyNumber.background,
-        palette.keyOperator.background,
-        palette.keyFunction.background,
-        palette.keyAction.background,
-        palette.keyEquals.background,
-      };
-      expect(backgrounds, hasLength(5), reason: 'key roles should be distinct');
 
-      // The amber key's foreground differs from the rest, which is the
-      // whole point: it is chosen for its own background.
+      // The three neutral tiers are distinct, so a digit, a function and
+      // an action never look like the same key.
+      expect(
+        {
+          palette.keyNumber.background,
+          palette.keyFunction.background,
+          palette.keyAction.background,
+          palette.keyOperator.background,
+        },
+        hasLength(4),
+        reason: 'the neutral key tiers should be distinguishable',
+      );
+
+      // Operator and equals deliberately share one warm background: they
+      // are one column in the design, and splitting them would invent a
+      // distinction the keypad does not have.
+      expect(palette.keyEquals.background, palette.keyOperator.background);
+
+      // The warm key's foreground differs from the neutral keys', which
+      // is the whole point: it is chosen for its own background rather
+      // than inherited from a single shared "on button" colour.
       expect(palette.keyEquals.foreground,
           isNot(equals(palette.keyNumber.foreground)));
     });

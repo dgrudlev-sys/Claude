@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/home_screen.dart';
+import 'screens/home_shell.dart';
 import 'screens/math_gallery_screen.dart';
 import 'services/settings_controller.dart';
 import 'theme/app_theme.dart';
@@ -16,7 +16,7 @@ class CalculatorApp extends StatelessWidget {
       animation: settings,
       builder: (context, _) {
         return MaterialApp(
-          title: HomeScreen.title,
+          title: HomeShell.title,
           debugShowCheckedModeBanner: false,
           // Four appearances, chosen by the system rather than by us.
           // A person who has set their phone to light, or turned on
@@ -28,7 +28,7 @@ class CalculatorApp extends StatelessWidget {
           highContrastTheme: buildAppTheme(Appearance.lightHighContrast),
           highContrastDarkTheme: buildAppTheme(Appearance.darkHighContrast),
           themeMode: ThemeMode.system,
-          home: HomeScreen(settings: settings),
+          home: HomeShell(settings: settings),
           routes: {'/math-gallery': (_) => const MathGalleryScreen()},
         );
       },

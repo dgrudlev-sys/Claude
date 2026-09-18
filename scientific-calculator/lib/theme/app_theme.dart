@@ -74,8 +74,13 @@ ThemeData buildAppTheme(Appearance appearance) {
     useMaterial3: true,
     brightness: brightness,
     colorScheme: scheme,
+    // Set once, here, so nothing downstream has to remember it. Every
+    // style in AppType inherits it, including the ones Material builds
+    // for its own widgets.
+    fontFamily: AppType.family,
     scaffoldBackgroundColor: palette.background,
     dividerColor: palette.separator,
+    splashFactory: InkSparkle.splashFactory,
     extensions: [AppPalette(palette)],
     textTheme: TextTheme(
       displayLarge: body(AppType.displayResult),
@@ -111,24 +116,32 @@ ThemeData buildAppTheme(Appearance appearance) {
     }),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        minimumSize: const Size(TouchTarget.comfortable, TouchTarget.comfortable),
+        minimumSize: const Size(TouchTarget.comfortable, 52),
         backgroundColor: palette.accent,
         foregroundColor: palette.onAccent,
         textStyle: AppType.headline,
+        elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Radii.medium),
+          borderRadius: BorderRadius.circular(Radii.card),
         ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        minimumSize: const Size(TouchTarget.comfortable, TouchTarget.comfortable),
-        foregroundColor: palette.label,
+        minimumSize: const Size(TouchTarget.comfortable, 52),
+        foregroundColor: palette.accentOnSurface,
+        backgroundColor: palette.elevatedSurface,
         side: BorderSide(color: palette.separator),
-        textStyle: AppType.callout,
+        textStyle: AppType.headline,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Radii.medium),
+          borderRadius: BorderRadius.circular(Radii.card),
         ),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: palette.accentOnSurface,
+        textStyle: AppType.callout.copyWith(fontWeight: FontWeight.w600),
       ),
     ),
     iconButtonTheme: IconButtonThemeData(
@@ -137,19 +150,99 @@ ThemeData buildAppTheme(Appearance appearance) {
         foregroundColor: palette.label,
       ),
     ),
+    // Borderless and filled. A box drawn around every field is the single
+    // loudest "this is a form" signal there is, and none of these screens
+    // is a form — they are places you type one thing.
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: palette.elevatedSurface,
+      fillColor: palette.groupedBackground,
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: Space.m, vertical: 14),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(Radii.small),
-        borderSide: BorderSide(color: palette.separator),
+        borderRadius: BorderRadius.circular(Radii.medium),
+        borderSide: BorderSide.none,
       ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Radii.medium),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Radii.medium),
+        borderSide: BorderSide(color: palette.accent, width: 2),
+      ),
+      hintStyle: AppType.body.copyWith(color: palette.secondaryLabel),
       labelStyle: AppType.subheadline.copyWith(color: palette.secondaryLabel),
+      floatingLabelStyle:
+          AppType.footnote.copyWith(color: palette.accentOnSurface),
+      helperStyle: AppType.footnote.copyWith(color: palette.secondaryLabel),
+    ),
+    chipTheme: ChipThemeData(
+      backgroundColor: palette.elevatedSurface,
+      selectedColor: palette.accentSoft.background,
+      side: BorderSide.none,
+      showCheckmark: false,
+      labelStyle: AppType.subheadline.copyWith(
+        color: palette.label,
+        fontWeight: FontWeight.w500,
+      ),
+      secondaryLabelStyle: AppType.subheadline.copyWith(
+        color: palette.accentSoft.foreground,
+        fontWeight: FontWeight.w600,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: Space.xs, vertical: 10),
+      shape: const StadiumBorder(),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected)
+                ? palette.elevatedSurface
+                : Colors.transparent),
+        foregroundColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected)
+                ? palette.label
+                : palette.secondaryLabel),
+        side: WidgetStateProperty.all(BorderSide.none),
+        textStyle: WidgetStateProperty.all(
+          AppType.subheadline.copyWith(fontWeight: FontWeight.w600),
+        ),
+        shape: WidgetStateProperty.all(const StadiumBorder()),
+      ),
+    ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.all(Colors.white),
+      trackColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.selected)
+              ? palette.accent
+              : palette.separator),
+      trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: palette.elevatedSurface,
+      surfaceTintColor: Colors.transparent,
+      indicatorColor: Colors.transparent,
+      elevation: 0,
+      height: 64,
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+      labelTextStyle: WidgetStateProperty.resolveWith((states) =>
+          AppType.caption2.copyWith(
+            fontWeight: FontWeight.w600,
+            color: states.contains(WidgetState.selected)
+                ? palette.accentOnSurface
+                : palette.secondaryLabel,
+          )),
+      iconTheme: WidgetStateProperty.resolveWith((states) => IconThemeData(
+            size: 24,
+            color: states.contains(WidgetState.selected)
+                ? palette.accentOnSurface
+                : palette.secondaryLabel,
+          )),
     ),
     listTileTheme: ListTileThemeData(
       titleTextStyle: AppType.body.copyWith(color: palette.label),
       subtitleTextStyle: AppType.subheadline.copyWith(color: palette.secondaryLabel),
       iconColor: palette.secondaryLabel,
     ),
+    dividerTheme: DividerThemeData(color: palette.separator, space: 1, thickness: 1),
   );
 }

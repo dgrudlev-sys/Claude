@@ -16,28 +16,93 @@ library;
 import 'package:flutter/widgets.dart';
 
 abstract final class AppType {
-  static const largeTitle = TextStyle(fontSize: 34, height: 41 / 34, letterSpacing: 0.37);
-  static const title1 = TextStyle(fontSize: 28, height: 34 / 28, letterSpacing: 0.36);
-  static const title2 = TextStyle(fontSize: 22, height: 28 / 22, letterSpacing: 0.35);
-  static const title3 = TextStyle(fontSize: 20, height: 25 / 20, letterSpacing: 0.38);
+  /// The typeface, shipped with the app rather than taken from the system.
+  ///
+  /// This is a deliberate departure from HIG's "use the system font", and
+  /// it buys three things the system font could not: the same drawing on
+  /// Android, iOS and the web, so a screenshot is the truth everywhere;
+  /// true tabular figures, without which a column of results wanders;
+  /// and a Cyrillic and Greek range wide enough for the Russian
+  /// vocabulary and for π, μ and Å in the unit catalog.
+  ///
+  /// The cost is about two megabytes and the loss of the user's own font
+  /// choice, so everything else about Dynamic Type still applies — sizes
+  /// below are the default and `TextScaler` grows them.
+  static const family = 'Inter';
+
+  /// Digits that all occupy the same width. On by default everywhere a
+  /// number can change in place: a result that reflows while you type is
+  /// a result that is hard to read.
+  static const tabular = <FontFeature>[FontFeature.tabularFigures()];
+
+  static const largeTitle =
+      TextStyle(fontSize: 34, height: 40 / 34, fontWeight: FontWeight.w700, letterSpacing: -0.8);
+  static const title1 =
+      TextStyle(fontSize: 28, height: 34 / 28, fontWeight: FontWeight.w700, letterSpacing: -0.6);
+  static const title2 =
+      TextStyle(fontSize: 22, height: 28 / 22, fontWeight: FontWeight.w600, letterSpacing: -0.45);
+  static const title3 =
+      TextStyle(fontSize: 20, height: 25 / 20, fontWeight: FontWeight.w600, letterSpacing: -0.4);
   static const headline =
-      TextStyle(fontSize: 17, height: 22 / 17, fontWeight: FontWeight.w600, letterSpacing: -0.41);
-  static const body = TextStyle(fontSize: 17, height: 22 / 17, letterSpacing: -0.41);
-  static const callout = TextStyle(fontSize: 16, height: 21 / 16, letterSpacing: -0.32);
-  static const subheadline = TextStyle(fontSize: 15, height: 20 / 15, letterSpacing: -0.24);
-  static const footnote = TextStyle(fontSize: 13, height: 18 / 13, letterSpacing: -0.08);
+      TextStyle(fontSize: 17, height: 22 / 17, fontWeight: FontWeight.w600, letterSpacing: -0.3);
+  static const body = TextStyle(fontSize: 17, height: 23 / 17, letterSpacing: -0.2);
+  static const callout = TextStyle(fontSize: 16, height: 21 / 16, letterSpacing: -0.18);
+  static const subheadline = TextStyle(fontSize: 15, height: 20 / 15, letterSpacing: -0.12);
+  static const footnote = TextStyle(fontSize: 13, height: 18 / 13);
   static const caption1 = TextStyle(fontSize: 12, height: 16 / 12);
-  static const caption2 = TextStyle(fontSize: 11, height: 13 / 11, letterSpacing: 0.07);
+  static const caption2 = TextStyle(fontSize: 11, height: 14 / 11, letterSpacing: 0.06);
+
+  /// A section heading over a group of cards — "Other tools", "Options".
+  /// Small, spaced out and set in the secondary colour, so it labels the
+  /// group without competing with the rows inside it.
+  static const sectionLabel = TextStyle(
+    fontSize: 13,
+    height: 16 / 13,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.3,
+  );
 
   /// The running result. Large by design, and the one place tracking is
   /// pulled tight — large type needs less letter-spacing to feel solid,
   /// which is the rule third-party apps break most often.
-  static const displayResult =
-      TextStyle(fontSize: 48, height: 1.1, fontWeight: FontWeight.w300, letterSpacing: -1.2);
+  static const displayResult = TextStyle(
+    fontSize: 52,
+    height: 1.08,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -2.0,
+    fontFeatures: tabular,
+  );
+
+  /// The expression above the result: what you are entering, as opposed
+  /// to what it came to. Lighter and smaller, so the eye lands on the
+  /// answer first.
+  static const displayExpression = TextStyle(
+    fontSize: 30,
+    height: 1.15,
+    fontWeight: FontWeight.w400,
+    letterSpacing: -0.9,
+    fontFeatures: tabular,
+  );
 
   /// A calculator key. A key is a label, not body copy, so it gets the
   /// weight of a headline at the size of a title.
-  static const key = TextStyle(fontSize: 20, height: 1.1, fontWeight: FontWeight.w500);
+  static const key = TextStyle(
+    fontSize: 21,
+    height: 1.1,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.3,
+    fontFeatures: tabular,
+  );
+
+  /// A key carrying a function name rather than a digit — sin, log, x².
+  /// One step down, because those labels are words and words at digit
+  /// size crowd their key.
+  static const keyFunction = TextStyle(
+    fontSize: 16,
+    height: 1.1,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.1,
+  );
 
   /// Working text that has to line up in columns — matrices, tables of
   /// results — where proportional digits would wander.

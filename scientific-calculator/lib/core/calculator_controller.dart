@@ -22,10 +22,21 @@ class CalculatorController extends ChangeNotifier {
   String _expression = '';
   String _display = '0';
   String? _errorMessage;
+  String? _evaluated;
   AngleMode _angleMode = AngleMode.degrees;
   final List<HistoryEntry> _history = [];
 
   String get expression => _expression;
+
+  /// The expression that produced the current [display], kept after an
+  /// evaluation so the readout can show the working above the answer.
+  ///
+  /// Evaluating replaces the expression with its own result, so that the
+  /// next key carries on from the answer. Without this the readout would
+  /// show that result twice — once as what you entered and once as what
+  /// it came to, which is the sort of thing that looks like a rendering
+  /// bug because it is indistinguishable from one.
+  String? get evaluatedExpression => _evaluated;
   String get display => _display;
   String? get errorMessage => _errorMessage;
   AngleMode get angleMode => _angleMode;
@@ -33,6 +44,7 @@ class CalculatorController extends ChangeNotifier {
 
   void input(String token) {
     _errorMessage = null;
+    _evaluated = null;
     _expression += token;
     _display = _expression.isEmpty ? '0' : _expression;
     notifyListeners();
@@ -48,6 +60,7 @@ class CalculatorController extends ChangeNotifier {
       return;
     }
     _errorMessage = null;
+    _evaluated = null;
     _expression = '$prefix$_expression$suffix';
     _display = _expression;
     notifyListeners();
@@ -56,6 +69,7 @@ class CalculatorController extends ChangeNotifier {
   void backspace() {
     if (_expression.isEmpty) return;
     _errorMessage = null;
+    _evaluated = null;
     _expression = _expression.substring(0, _expression.length - 1);
     _display = _expression.isEmpty ? '0' : _expression;
     notifyListeners();
@@ -63,6 +77,7 @@ class CalculatorController extends ChangeNotifier {
 
   void clear() {
     _expression = '';
+    _evaluated = null;
     _display = '0';
     _errorMessage = null;
     notifyListeners();
@@ -78,6 +93,7 @@ class CalculatorController extends ChangeNotifier {
     try {
       final value = _engine.evaluate(_expression, _angleMode);
       final formatted = _formatResult(value);
+      _evaluated = _expression;
       _history.insert(0, HistoryEntry(_expression, formatted));
       if (_history.length > 50) _history.removeLast();
       _display = formatted;

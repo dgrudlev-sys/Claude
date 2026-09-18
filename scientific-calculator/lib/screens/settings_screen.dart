@@ -3,7 +3,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../services/settings_controller.dart';
+import '../theme/app_theme.dart';
 import '../theme/layout_style.dart';
+import 'home_shell.dart';
 
 // TODO: swap for a permanently-hosted URL before publishing — this one is
 // a Claude Artifact, convenient for getting a real, live URL in front of
@@ -11,15 +13,22 @@ import '../theme/layout_style.dart';
 const privacyPolicyUrl = 'https://claude.ai/code/artifact/3e3eef04-1156-4f39-9f5b-463168598093';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key, required this.settings});
+  const SettingsScreen({
+    super.key,
+    required this.settings,
+    this.embedded = false,
+  });
 
   final SettingsController settings;
 
+  /// True when this is a tab in the shell, which already supplies the
+  /// surrounding chrome. A Scaffold inside a Scaffold would put a second
+  /// bar under the first one.
+  final bool embedded;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: AnimatedBuilder(
+    final body = AnimatedBuilder(
         animation: settings,
         builder: (context, _) {
           return ListView(
@@ -69,7 +78,25 @@ class SettingsScreen extends StatelessWidget {
             ],
           );
         },
-      ),
+      );
+
+    if (embedded) {
+      return SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: Space.m),
+              child: TabTitle('Settings'),
+            ),
+            Expanded(child: body),
+          ],
+        ),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: body,
     );
   }
 }

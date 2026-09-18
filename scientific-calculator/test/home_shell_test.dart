@@ -14,37 +14,49 @@ void main() {
     return settings;
   }
 
-  /// Back out to the home list. Every mode is opened from there, so the
-  /// test walks the app the way a person does rather than assuming the
-  /// modes all sit side by side.
+  /// Back out to the Formulas tab, which is where every tool is reached
+  /// from now that the app has four destinations rather than a wall of
+  /// tiles.
   Future<void> goHome(WidgetTester tester) async {
     while (find.byType(BackButton).evaluate().isNotEmpty) {
       await tester.tap(find.byType(BackButton).first);
       await tester.pumpAndSettle();
     }
+    // By label rather than by icon: the selected destination swaps to a
+    // filled icon, so the outlined one is not there once you have
+    // arrived.
+    await tester.tap(find.text('Formulas'));
+    await tester.pumpAndSettle();
   }
 
-  /// Opens a tool by its name on the home screen, scrolling it into view
-  /// first — the list is longer than a small window, exactly as it is on
-  /// a phone.
+  /// Opens a tool by name, searching for it rather than remembering
+  /// which group it sits in — which is also the shortest path a person
+  /// has, and the one that proves the search is wired to the catalog.
   Future<void> openMode(WidgetTester tester, String name) async {
     await goHome(tester);
-    final tile = find.text(name);
-    await tester.scrollUntilVisible(tile, 120, scrollable: find.byType(Scrollable).first);
-    await tester.tap(tile);
+    await tester.enterText(find.byType(TextField).first, name);
+    await tester.pumpAndSettle();
+
+    // The search field now also contains the name, so the row is the
+    // last match rather than the only one.
+    final row = find.text(name).last;
+    await tester.ensureVisible(row);
+    await tester.pumpAndSettle();
+    await tester.tap(row);
     await tester.pumpAndSettle();
   }
 
   testWidgets('every tool is named on the home screen and opens from it', (tester) async {
     await pumpApp(tester);
 
-    // Every tool is named on the home screen before it is opened.
-    await openMode(tester, 'Calculator');
+    // The calculator is the app's own tab rather than something you
+    // open, so it is checked where it lives.
     expect(find.byKey(const Key('calculator-display')), findsOneWidget);
-    await openMode(tester, 'Graph');
+
+    await openMode(tester, 'Graphs');
     expect(find.text('Function'), findsOneWidget); // graph mode segmented button
 
-    await openMode(tester, '3D surfaces');
+    await openMode(tester, 'Surfaces in 3D');
     expect(find.text('Plot'), findsOneWidget);
     expect(find.text('Drag to rotate'), findsOneWidget);
 
@@ -61,13 +73,13 @@ void main() {
     await openMode(tester, 'Finance');
     expect(find.textContaining('N (periods)'), findsOneWidget);
 
-    await openMode(tester, 'Solve');
+    await openMode(tester, 'Solve an equation');
     expect(find.text('Solve for x'), findsWidgets);
   });
 
-  testWidgets('settings is reachable from the home screen', (tester) async {
+  testWidgets('settings is a destination of its own', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await tester.tap(find.text('Settings'));
     await tester.pumpAndSettle();
     expect(find.text('Layout'), findsOneWidget);
     expect(find.text('Sound on key press'), findsOneWidget);

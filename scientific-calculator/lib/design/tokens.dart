@@ -90,6 +90,17 @@ abstract final class Radii {
   static const double small = 8;
   static const double medium = 12;
   static const double large = 16;
+
+  /// A content card — a category row, a result panel, an example. The
+  /// largest radius in the app, and the one that does most of the work of
+  /// making a list read as a stack of cards rather than a table.
+  static const double card = 18;
+
+  /// A key on the keypad, and the icon badge beside a category name.
+  static const double key = 20;
+
+  /// Fully round: search fields, pills, the equals key.
+  static const double pill = 999;
 }
 
 /// Apple's hardest layout constraint: every interactive element must be at
@@ -122,9 +133,16 @@ abstract final class Motion {
 
 /// The colour roles, resolved for one appearance.
 ///
-/// The accent is deliberately the only chromatic colour in the set.
-/// Everything else is neutral, which is what lets the one accent actually
-/// point at something.
+/// The neutrals carry the whole interface and two chromatic roles sit on
+/// top of them, each with one job. [accent] — blue — is navigation and
+/// action: the selected tab, the Calculate button, a link. The operator
+/// column on the keypad is warm, because an arithmetic operator is not a
+/// navigation affordance and colouring it the same blue would say it was.
+/// Nothing else in the app is coloured at all.
+///
+/// [categoryTints] is the one deliberate exception: a browsable list of
+/// twenty subjects needs its rows to be told apart at a glance, and a tint
+/// behind an icon does that without colouring the text.
 @immutable
 class Palette {
   const Palette({
@@ -137,6 +155,9 @@ class Palette {
     required this.separator,
     required this.accent,
     required this.onAccent,
+    required this.accentOnSurface,
+    required this.accentSoft,
+    required this.categoryTints,
     required this.keyNumber,
     required this.keyOperator,
     required this.keyFunction,
@@ -163,9 +184,26 @@ class Palette {
   final Color secondaryLabel;
   final Color separator;
 
-  /// The single accent. One colour, doing all the pointing.
+  /// The accent as a *fill* — a button, a selected tab indicator — with
+  /// [onAccent] written on it.
   final Color accent;
   final Color onAccent;
+
+  /// The accent as *ink on the page*, for a link or a selected tab's
+  /// label. It is a different value from [accent] in dark appearances: a
+  /// blue dark enough to carry white text is too dark to read against a
+  /// near-black background, and one value cannot be both.
+  final Color accentOnSurface;
+
+  /// A pale wash of the accent with the accent written on it — a selected
+  /// row, a highlighted example, the badge on the primary tool.
+  final SurfacePair accentSoft;
+
+  /// Tints for the icon badge beside a category name, in the order
+  /// categories are offered. A browsable list of twenty subjects needs
+  /// them told apart at a glance; the tint does that behind the icon so
+  /// the text stays the one neutral colour.
+  final List<SurfacePair> categoryTints;
 
   final SurfacePair keyNumber;
   final SurfacePair keyOperator;
@@ -188,6 +226,11 @@ class Palette {
         'grouped body text': SurfacePair(groupedBackground, label),
         'elevated text': SurfacePair(elevatedSurface, label),
         'accent': SurfacePair(accent, onAccent),
+        'accent ink on page': SurfacePair(background, accentOnSurface),
+        'accent ink on a card': SurfacePair(elevatedSurface, accentOnSurface),
+        'soft accent': accentSoft,
+        for (var i = 0; i < categoryTints.length; i++)
+          'category tint $i': categoryTints[i],
         'number key': keyNumber,
         'operator key': keyOperator,
         'function key': keyFunction,
@@ -206,68 +249,94 @@ class Palette {
 }
 
 // The palettes. These are the only literal colours in the application.
+//
+// The neutrals are very slightly blue rather than pure grey. A warm grey
+// reads as paper and a cool one as glass; a calculator is an instrument,
+// so it gets glass.
 
-const _ink = Color(0xFF1A1714);
-const _paper = Color(0xFFF7F5F2);
+const _ink = Color(0xFF0C1220);
+const _paper = Color(0xFFF2F5FA);
+const _white = Color(0xFFFFFFFF);
+
+/// The operator column. Warm on purpose: an operator is not navigation,
+/// and painting it the same blue as the Calculate button would say it was.
+/// Dark ink on the amber rather than the white that calculators
+/// traditionally use — white on this orange is 2.2:1, which is not a
+/// label, it is a rumour of one.
+const _amber = Color(0xFFF59E0B);
 
 const _light = Palette(
   appearance: Appearance.light,
   background: _paper,
-  groupedBackground: Color(0xFFEDE9E3),
-  elevatedSurface: Color(0xFFFFFFFF),
+  groupedBackground: Color(0xFFE7ECF5),
+  elevatedSurface: _white,
   label: _ink,
-  secondaryLabel: Color(0xFF5C554D),
-  separator: Color(0xFFD5CFC6),
-  accent: Color(0xFF8A4B00),
-  onAccent: Color(0xFFFFFFFF),
-  keyNumber: SurfacePair(Color(0xFFFFFFFF), _ink),
-  keyOperator: SurfacePair(Color(0xFFE4DDD3), _ink),
-  keyFunction: SurfacePair(Color(0xFFEDE9E3), _ink),
-  keyAction: SurfacePair(Color(0xFFDCD3C6), _ink),
-  keyEquals: SurfacePair(Color(0xFF8A4B00), Color(0xFFFFFFFF)),
-  display: SurfacePair(_paper, _ink),
-  errorSurface: SurfacePair(Color(0xFFF7F5F2), Color(0xFF9B1C1C)),
+  secondaryLabel: Color(0xFF596478),
+  separator: Color(0xFFD4DBE7),
+  accent: Color(0xFF1B5FD9),
+  onAccent: _white,
+  accentOnSurface: Color(0xFF1451BE),
+  accentSoft: SurfacePair(Color(0xFFE4EDFC), Color(0xFF14509E)),
+  categoryTints: _lightTints,
+  keyNumber: SurfacePair(_white, _ink),
+  keyFunction: SurfacePair(Color(0xFFE7ECF5), _ink),
+  keyAction: SurfacePair(Color(0xFFD3DBE8), _ink),
+  keyOperator: SurfacePair(Color(0xFFFFE9C2), Color(0xFF6B3E00)),
+  keyEquals: SurfacePair(Color(0xFFB45309), _white),
+  display: SurfacePair(_white, _ink),
+  errorSurface: SurfacePair(_paper, Color(0xFFB4231C)),
 );
+
+const _darkInk = Color(0xFFF1F4FA);
+const _darkPage = Color(0xFF0B0E14);
 
 const _dark = Palette(
   appearance: Appearance.dark,
-  background: Color(0xFF16140F),
-  groupedBackground: Color(0xFF1E1C17),
+  background: _darkPage,
+  groupedBackground: Color(0xFF141922),
   // Lighter than the background: elevation reads as light in dark mode.
-  elevatedSurface: Color(0xFF2A2721),
-  label: Color(0xFFF5F1EA),
-  secondaryLabel: Color(0xFFB5ADA1),
-  separator: Color(0xFF3A362F),
-  accent: Color(0xFFF0A23C),
-  onAccent: Color(0xFF1A1714),
-  keyNumber: SurfacePair(Color(0xFF35322E), Color(0xFFF5F1EA)),
-  keyOperator: SurfacePair(Color(0xFF4A4540), Color(0xFFF5F1EA)),
-  keyFunction: SurfacePair(Color(0xFF2C2A27), Color(0xFFF5F1EA)),
-  keyAction: SurfacePair(Color(0xFF574E3F), Color(0xFFF5F1EA)),
-  keyEquals: SurfacePair(Color(0xFFF0A23C), Color(0xFF1A1714)),
-  display: SurfacePair(Color(0xFF16140F), Color(0xFFF5F1EA)),
-  errorSurface: SurfacePair(Color(0xFF16140F), Color(0xFFFF9A8A)),
+  elevatedSurface: Color(0xFF1B212C),
+  label: _darkInk,
+  secondaryLabel: Color(0xFF98A3B6),
+  separator: Color(0xFF262E3C),
+  accent: Color(0xFF2563EB),
+  onAccent: _white,
+  // A blue dark enough to carry white text is too dark to read against a
+  // near-black page, so ink and fill are different values here.
+  accentOnSurface: Color(0xFF6BA3FF),
+  accentSoft: SurfacePair(Color(0xFF15233D), Color(0xFF8CB8FF)),
+  categoryTints: _darkTints,
+  keyNumber: SurfacePair(Color(0xFF242B37), _darkInk),
+  keyFunction: SurfacePair(Color(0xFF171D27), _darkInk),
+  keyAction: SurfacePair(Color(0xFF323B4A), _darkInk),
+  keyOperator: SurfacePair(_amber, Color(0xFF291A00)),
+  keyEquals: SurfacePair(_amber, Color(0xFF291A00)),
+  display: SurfacePair(Color(0xFF11161F), _darkInk),
+  errorSurface: SurfacePair(_darkPage, Color(0xFFFF9A8A)),
 );
 
 /// Increase Contrast, light. Not a different design — the same design with
 /// the neutrals pushed apart and the accent darkened.
 const _lightHighContrast = Palette(
   appearance: Appearance.lightHighContrast,
-  background: Color(0xFFFFFFFF),
-  groupedBackground: Color(0xFFF0EEEA),
-  elevatedSurface: Color(0xFFFFFFFF),
+  background: _white,
+  groupedBackground: Color(0xFFEDF1F8),
+  elevatedSurface: _white,
   label: Color(0xFF000000),
-  secondaryLabel: Color(0xFF3A3530),
-  separator: Color(0xFF6B655C),
-  accent: Color(0xFF6B3A00),
-  onAccent: Color(0xFFFFFFFF),
-  keyNumber: SurfacePair(Color(0xFFFFFFFF), Color(0xFF000000)),
-  keyOperator: SurfacePair(Color(0xFFDBD3C7), Color(0xFF000000)),
-  keyFunction: SurfacePair(Color(0xFFEFECE7), Color(0xFF000000)),
-  keyAction: SurfacePair(Color(0xFFCFC4B3), Color(0xFF000000)),
-  keyEquals: SurfacePair(Color(0xFF6B3A00), Color(0xFFFFFFFF)),
-  display: SurfacePair(Color(0xFFFFFFFF), Color(0xFF000000)),
-  errorSurface: SurfacePair(Color(0xFFFFFFFF), Color(0xFF8A0000)),
+  secondaryLabel: Color(0xFF323B4A),
+  separator: Color(0xFF5E6878),
+  accent: Color(0xFF0B3F96),
+  onAccent: _white,
+  accentOnSurface: Color(0xFF0B3F96),
+  accentSoft: SurfacePair(Color(0xFFDCE8FB), Color(0xFF08306F)),
+  categoryTints: _lightHighContrastTints,
+  keyNumber: SurfacePair(_white, Color(0xFF000000)),
+  keyFunction: SurfacePair(Color(0xFFEDF1F8), Color(0xFF000000)),
+  keyAction: SurfacePair(Color(0xFFC9D2E0), Color(0xFF000000)),
+  keyOperator: SurfacePair(Color(0xFFFFE2AE), Color(0xFF3D2300)),
+  keyEquals: SurfacePair(Color(0xFF7A3703), _white),
+  display: SurfacePair(_white, Color(0xFF000000)),
+  errorSurface: SurfacePair(_white, Color(0xFF8A0000)),
 );
 
 /// Increase Contrast, dark. True black, because it serves OLED here and
@@ -275,19 +344,63 @@ const _lightHighContrast = Palette(
 const _darkHighContrast = Palette(
   appearance: Appearance.darkHighContrast,
   background: Color(0xFF000000),
-  groupedBackground: Color(0xFF0D0D0D),
-  elevatedSurface: Color(0xFF1A1A1A),
-  label: Color(0xFFFFFFFF),
-  secondaryLabel: Color(0xFFD8D3CB),
-  separator: Color(0xFF8A857D),
-  accent: Color(0xFFFFC24B),
+  groupedBackground: Color(0xFF0C0C0E),
+  elevatedSurface: Color(0xFF17181C),
+  label: _white,
+  secondaryLabel: Color(0xFFCDD4E0),
+  separator: Color(0xFF858C99),
+  // 9.7:1 against its white label. The ordinary dark accent is 5.7:1,
+  // which is AA but not the AAA this appearance exists to provide.
+  accent: Color(0xFF0B3F96),
+  onAccent: _white,
+  accentOnSurface: Color(0xFF9CC2FF),
+  accentSoft: SurfacePair(Color(0xFF0E1B30), Color(0xFFAFCEFF)),
+  categoryTints: _darkHighContrastTints,
+  keyNumber: SurfacePair(Color(0xFF1B1D22), _white),
+  keyFunction: SurfacePair(Color(0xFF101216), _white),
+  keyAction: SurfacePair(Color(0xFF3A3F49), _white),
+  keyOperator: SurfacePair(Color(0xFFFFC24B), Color(0xFF000000)),
   // Black on amber, 13:1. This is the pairing the old theme got wrong.
-  onAccent: Color(0xFF000000),
-  keyNumber: SurfacePair(Color(0xFF1A1A1A), Color(0xFFFFFFFF)),
-  keyOperator: SurfacePair(Color(0xFF3A3A3A), Color(0xFFFFFFFF)),
-  keyFunction: SurfacePair(Color(0xFF262626), Color(0xFFFFFFFF)),
-  keyAction: SurfacePair(Color(0xFF4A4A4A), Color(0xFFFFFFFF)),
   keyEquals: SurfacePair(Color(0xFFFFC24B), Color(0xFF000000)),
-  display: SurfacePair(Color(0xFF000000), Color(0xFFFFFFFF)),
+  display: SurfacePair(Color(0xFF000000), _white),
   errorSurface: SurfacePair(Color(0xFF000000), Color(0xFFFFB3A6)),
 );
+
+/// Six tints, cycled. Six is enough that adjacent rows never repeat and
+/// few enough that the list still looks like one family rather than a
+/// paint chart.
+const _lightTints = <SurfacePair>[
+  SurfacePair(Color(0xFFE3EDFC), Color(0xFF14509E)),
+  SurfacePair(Color(0xFFEBE8FD), Color(0xFF4B32AE)),
+  SurfacePair(Color(0xFFDFF3E7), Color(0xFF13633A)),
+  SurfacePair(Color(0xFFFBE7F0), Color(0xFF9C1256)),
+  SurfacePair(Color(0xFFFCEBDC), Color(0xFF8A4206)),
+  SurfacePair(Color(0xFFDDF0F4), Color(0xFF0A5A6A)),
+];
+
+const _darkTints = <SurfacePair>[
+  SurfacePair(Color(0xFF16273F), Color(0xFF8FBAFF)),
+  SurfacePair(Color(0xFF231F45), Color(0xFFB8A8FF)),
+  SurfacePair(Color(0xFF0F2C1F), Color(0xFF76D6A0)),
+  SurfacePair(Color(0xFF37162A), Color(0xFFFFA0C6)),
+  SurfacePair(Color(0xFF362413), Color(0xFFFFB878)),
+  SurfacePair(Color(0xFF0E2A31), Color(0xFF79D3DE)),
+];
+
+const _lightHighContrastTints = <SurfacePair>[
+  SurfacePair(Color(0xFFDCE8FB), Color(0xFF08306F)),
+  SurfacePair(Color(0xFFE6E1FC), Color(0xFF331F84)),
+  SurfacePair(Color(0xFFD7EFE1), Color(0xFF0B4527)),
+  SurfacePair(Color(0xFFFADFEA), Color(0xFF6E0C3C)),
+  SurfacePair(Color(0xFFFBE4D0), Color(0xFF632F04)),
+  SurfacePair(Color(0xFFD4ECF1), Color(0xFF07404B)),
+];
+
+const _darkHighContrastTints = <SurfacePair>[
+  SurfacePair(Color(0xFF0D1B2E), Color(0xFFAFCEFF)),
+  SurfacePair(Color(0xFF191534), Color(0xFFCFC2FF)),
+  SurfacePair(Color(0xFF0A2016), Color(0xFF9BE6BC)),
+  SurfacePair(Color(0xFF2A0F20), Color(0xFFFFBBD6)),
+  SurfacePair(Color(0xFF29190B), Color(0xFFFFCE9C)),
+  SurfacePair(Color(0xFF082026), Color(0xFF9FE3EC)),
+];

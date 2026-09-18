@@ -47,8 +47,8 @@ class _KeySpec {
 /// second app, it's the same calculator at a different density.
 const _keys = <_KeySpec>[
   _KeySpec(label: '2nd', role: ButtonRole.action, action: _Action.toggleShift),
-  _KeySpec(label: 'DEG', role: ButtonRole.action, action: _Action.toggleAngle,
-      semanticLabel: 'Toggle angle mode'),
+  _KeySpec(label: ',', role: ButtonRole.function, action: _Action.input, token: ',',
+      semanticLabel: 'comma, separates arguments'),
   _KeySpec(label: '(', role: ButtonRole.function, action: _Action.input, token: '('),
   _KeySpec(label: ')', role: ButtonRole.function, action: _Action.input, token: ')'),
   _KeySpec(label: 'DEL', role: ButtonRole.action, action: _Action.backspace),
@@ -56,8 +56,8 @@ const _keys = <_KeySpec>[
   _KeySpec(label: 'x²', role: ButtonRole.function, action: _Action.wrapSquare),
   _KeySpec(label: 'x^y', role: ButtonRole.function, action: _Action.input, token: '^'),
   _KeySpec(label: '√', role: ButtonRole.function, action: _Action.wrapSqrt),
-  _KeySpec(label: 'AC', role: ButtonRole.action, action: _Action.clear),
   _KeySpec(label: '%', role: ButtonRole.function, action: _Action.input, token: '/100'),
+  _KeySpec(label: 'AC', role: ButtonRole.action, action: _Action.clear),
 
   _KeySpec(
       label: 'sin', role: ButtonRole.function, action: _Action.input,
@@ -83,23 +83,23 @@ const _keys = <_KeySpec>[
   _KeySpec(label: '7', role: ButtonRole.number, action: _Action.input, token: '7'),
   _KeySpec(label: '8', role: ButtonRole.number, action: _Action.input, token: '8'),
   _KeySpec(label: '9', role: ButtonRole.number, action: _Action.input, token: '9'),
-  _KeySpec(label: '÷', role: ButtonRole.operatorKey, action: _Action.input, token: '/'),
   _KeySpec(label: '1/x', role: ButtonRole.function, action: _Action.wrapReciprocal,
       semanticLabel: 'reciprocal'),
+  _KeySpec(label: '÷', role: ButtonRole.operatorKey, action: _Action.input, token: '/'),
 
   _KeySpec(label: '4', role: ButtonRole.number, action: _Action.input, token: '4'),
   _KeySpec(label: '5', role: ButtonRole.number, action: _Action.input, token: '5'),
   _KeySpec(label: '6', role: ButtonRole.number, action: _Action.input, token: '6'),
-  _KeySpec(label: '×', role: ButtonRole.operatorKey, action: _Action.input, token: '*'),
   _KeySpec(label: 'π', role: ButtonRole.function, action: _Action.input, token: 'pi',
       semanticLabel: 'pi'),
+  _KeySpec(label: '×', role: ButtonRole.operatorKey, action: _Action.input, token: '*'),
 
   _KeySpec(label: '1', role: ButtonRole.number, action: _Action.input, token: '1'),
   _KeySpec(label: '2', role: ButtonRole.number, action: _Action.input, token: '2'),
   _KeySpec(label: '3', role: ButtonRole.number, action: _Action.input, token: '3'),
-  _KeySpec(label: '−', role: ButtonRole.operatorKey, action: _Action.input, token: '-'),
   _KeySpec(label: 'e', role: ButtonRole.function, action: _Action.input, token: 'e',
       semanticLabel: 'euler\'s number'),
+  _KeySpec(label: '−', role: ButtonRole.operatorKey, action: _Action.input, token: '-'),
 
   _KeySpec(label: '0', role: ButtonRole.number, action: _Action.input, token: '0'),
   _KeySpec(label: '.', role: ButtonRole.number, action: _Action.input, token: '.'),
