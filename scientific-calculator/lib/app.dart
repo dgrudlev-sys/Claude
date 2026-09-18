@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home_screen.dart';
+import 'screens/math_gallery_screen.dart';
 import 'services/settings_controller.dart';
 import 'theme/app_theme.dart';
 
@@ -28,6 +29,7 @@ class CalculatorApp extends StatelessWidget {
           highContrastDarkTheme: buildAppTheme(Appearance.darkHighContrast),
           themeMode: ThemeMode.system,
           home: HomeScreen(settings: settings),
+          routes: {'/math-gallery': (_) => const MathGalleryScreen()},
         );
       },
     );
