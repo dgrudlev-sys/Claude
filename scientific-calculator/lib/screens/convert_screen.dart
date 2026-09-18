@@ -50,12 +50,48 @@ class _ConvertScreenState extends State<ConvertScreen> {
     UnitCategory.frequency,
   ];
 
+  /// What each category opens on.
+  ///
+  /// Catalog order would pair metres with kilometres, whose answer is
+  /// 0.001 — arithmetically correct and useless as a first impression.
+  /// These are the pairings people actually come to a converter for: the
+  /// ones that cross a system boundary, or a scale, rather than the ones
+  /// you can do in your head.
+  static const _defaultPairs = <UnitCategory, (String, String)>{
+    UnitCategory.length: ('metre', 'foot'),
+    UnitCategory.mass: ('kilogram', 'pound'),
+    UnitCategory.volume: ('litre', 'gallon_us'),
+    UnitCategory.temperature: ('celsius', 'fahrenheit'),
+    UnitCategory.area: ('square_metre', 'square_foot'),
+    UnitCategory.speed: ('kilometre_per_hour', 'mile_per_hour'),
+    UnitCategory.time: ('hour', 'minute'),
+    UnitCategory.digitalStorage: ('gigabyte', 'megabyte'),
+    UnitCategory.pressure: ('bar', 'psi'),
+    UnitCategory.energy: ('kilojoule', 'kilocalorie'),
+    UnitCategory.power: ('kilowatt', 'horsepower_mechanical'),
+    UnitCategory.angle: ('degree', 'radian'),
+  };
+
   static const _converter = UnitConverter();
 
   UnitCategory _category = UnitCategory.length;
-  late Unit _from = UnitCatalog.inCategory(_category).first;
-  late Unit _to = UnitCatalog.inCategory(_category)[1];
+  late Unit _from = _defaultFor(_category).$1;
+  late Unit _to = _defaultFor(_category).$2;
   String _amount = '1';
+
+  /// The opening pair for a category, falling back to the first two units
+  /// when the catalog does not carry the ids named above — a missing id
+  /// should not leave the screen blank.
+  static (Unit, Unit) _defaultFor(UnitCategory category) {
+    final units = UnitCatalog.inCategory(category);
+    final preferred = _defaultPairs[category];
+    final from = preferred == null ? null : UnitCatalog.byId(preferred.$1);
+    final to = preferred == null ? null : UnitCatalog.byId(preferred.$2);
+    return (
+      from ?? units.first,
+      to ?? (units.length > 1 ? units[1] : units.first),
+    );
+  }
 
   // Owned here rather than rebuilt inline: the field reads on every
   // keystroke, and a controller recreated each build would drop the
@@ -69,11 +105,11 @@ class _ConvertScreenState extends State<ConvertScreen> {
   }
 
   void _selectCategory(UnitCategory category) {
-    final units = UnitCatalog.inCategory(category);
+    final pair = _defaultFor(category);
     setState(() {
       _category = category;
-      _from = units.first;
-      _to = units.length > 1 ? units[1] : units.first;
+      _from = pair.$1;
+      _to = pair.$2;
     });
   }
 

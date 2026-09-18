@@ -92,14 +92,14 @@ enum InputMethod {
     label: 'Voice',
     icon: Icons.mic_outlined,
     caveat: 'The microphone needs a platform adapter that is not attached '
-        'yet. The words below are what a recogniser would hand over; '
+        'yet. The transcript above is what a recogniser would hand over; '
         'everything after that point is running for real.',
   ),
   camera(
     label: 'Camera',
     icon: Icons.photo_camera_outlined,
     caveat: 'The camera needs a platform adapter that is not attached yet. '
-        'The glyphs below stand in for what on-device text recognition '
+        'The glyphs above stand in for what on-device text recognition '
         'would return, positions and all.',
   ),
   braille(
@@ -226,6 +226,10 @@ class _CameraPanelState extends State<_CameraPanel> {
       RecognizedGlyph(text: 'x', left: 72, top: 40, width: 14, height: 20),
       RecognizedGlyph(text: '+', left: 92, top: 44, width: 12, height: 12),
       RecognizedGlyph(text: '6', left: 110, top: 40, width: 12, height: 20),
+      // The equals and the nought are what make this an equation rather
+      // than an expression, and the model can hold that now.
+      RecognizedGlyph(text: '=', left: 130, top: 44, width: 12, height: 10),
+      RecognizedGlyph(text: '0', left: 150, top: 40, width: 12, height: 20),
     ],
     '3x - 7': [
       RecognizedGlyph(text: '3', left: 10, top: 40, width: 12, height: 20),

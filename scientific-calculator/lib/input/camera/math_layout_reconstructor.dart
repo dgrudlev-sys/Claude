@@ -216,7 +216,14 @@ class MathLayoutReconstructor {
           exponent.write(ordered[j].text);
           j++;
         }
-        out.write('^($exponent)');
+        // Parenthesised only when the exponent is more than one
+        // character. Brackets around a lone digit survive all the way to
+        // the screen as "x to the power of open paren 2 close paren",
+        // which is noise the reader has to see through — and the whole
+        // point of reconstructing layout is to hand on what was on the
+        // page, not to add punctuation to it.
+        final raised = exponent.toString();
+        out.write(raised.length == 1 ? '^$raised' : '^($raised)');
         i = j;
         continue;
       }

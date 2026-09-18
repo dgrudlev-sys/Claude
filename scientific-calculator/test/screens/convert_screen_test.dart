@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:scientific_calculator/convert/unit.dart';
 import 'package:scientific_calculator/screens/convert_screen.dart';
 import 'package:scientific_calculator/theme/app_theme.dart';
 
@@ -120,6 +121,31 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       expect(find.text('Mile'), findsOneWidget);
+    });
+
+    testWidgets('every category opens on a pair worth seeing', (tester) async {
+      // A mistyped default id would fall back silently to the first two
+      // units in the catalog — metres into kilometres, whose answer is
+      // 0.001. This walks every category so that stays a caught bug
+      // rather than a quiet disappointment.
+      await pump(tester, surface: const Size(412, 1400));
+      for (final category in UnitCategory.values) {
+        final chip = find.text(category.displayName);
+        if (chip.evaluate().isEmpty) continue;
+        await tester.tap(chip);
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull, reason: category.name);
+        // 1 of the source unit converted to itself would mean the
+        // fallback pair collapsed to one unit.
+        expect(find.text('Swap'), findsOneWidget, reason: category.name);
+      }
+    });
+
+    testWidgets('length opens on metres and feet, not metres and kilometres',
+        (tester) async {
+      await pump(tester);
+      expect(find.text('Metre (m)'), findsOneWidget);
+      expect(find.text('Foot (ft)'), findsOneWidget);
     });
 
     testWidgets('switching category switches both units with it',

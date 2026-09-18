@@ -21,7 +21,7 @@ void main() {
   group('superscripts become powers', () {
     test('x squared', () {
       final result = reconstructor.reconstruct([base('x', 0), sup('2', 13)]);
-      expect(result.normalizedSource, 'x^(2)');
+      expect(result.normalizedSource, 'x^2');
       expect(
         evaluator
             .evaluate(parser.parse(result.normalizedSource),
@@ -29,6 +29,13 @@ void main() {
             .toDouble(),
         closeTo(16, 1e-12),
       );
+    });
+
+    test('a single-character exponent needs no brackets', () {
+      // "x to the power of open paren 2 close paren" is what a reader
+      // heard before this: punctuation the page never had.
+      final result = reconstructor.reconstruct([base('x', 0), sup('2', 13)]);
+      expect(result.normalizedSource, isNot(contains('(')));
     });
 
     test('a multi-digit exponent stays one exponent', () {
@@ -54,7 +61,7 @@ void main() {
         base('+', 25),
         base('1', 40),
       ]);
-      expect(result.normalizedSource, 'x^(2)+1');
+      expect(result.normalizedSource, 'x^2+1');
     });
   });
 
