@@ -2,7 +2,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:scientific_calculator/input/language/language_support.dart';
 import 'package:scientific_calculator/input/platform/speech_ports.dart';
 
-import 'math_speaker_test.dart' show FakeTts;
+/// Stands in for the platform voice engine. Defined here rather than
+/// imported from another test file: a test that reaches into a sibling
+/// test for its fixtures cannot be read, run or changed on its own.
+class FakeTts implements TextToSpeechPort {
+  FakeTts(this.voices);
+
+  final List<SpeechVoice> voices;
+
+  @override
+  Future<List<SpeechVoice>> availableVoices() async => voices;
+
+  @override
+  Future<bool> isLanguageAvailable(String localeTag) async =>
+      voices.any((voice) => voice.localeTag == localeTag);
+
+  @override
+  Future<void> speak(
+    String text, {
+    String? voiceId,
+    String? localeTag,
+    double rate = 0.5,
+    double pitch = 1.0,
+  }) async {}
+
+  @override
+  Future<void> stop() async {}
+}
 
 /// Stands in for the device recogniser. Two phones running the same OS
 /// return different lists here, which is the whole reason the app has to
@@ -37,9 +63,8 @@ void main() {
     List<SpeechVoice> voices = const [],
     List<SpeechLocale> locales = const [],
   }) {
-    final tts = FakeTts()..voices = voices;
     return LanguageSupportService(
-      tts: tts,
+      tts: FakeTts(voices),
       speech: FakeSpeechRecognition(locales),
     );
   }
