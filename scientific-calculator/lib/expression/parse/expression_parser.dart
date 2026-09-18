@@ -34,6 +34,8 @@ enum TokenType {
   bang,
   percent,
   bar,
+  plusMinus,
+  relation,
   end,
 }
 
@@ -120,6 +122,8 @@ class Tokenizer {
 
       final type = switch (char) {
         '+' => TokenType.plus,
+        '±' => TokenType.plusMinus,
+        '=' || '≠' || '<' || '>' || '≤' || '≥' || '≈' => TokenType.relation,
         '-' || '−' => TokenType.minus,
         '*' || '×' || '·' => TokenType.times,
         '/' || '÷' => TokenType.divide,
@@ -155,7 +159,13 @@ class Tokenizer {
   /// letters. Without this, the identifier scanner would swallow `√9` as
   /// a single variable named "√9", since it accepts any code point above
   /// 127 to allow π and φ.
-  static const _nonIdentifierSymbols = {'√', '×', '÷', '−', '·'};
+  static const _nonIdentifierSymbols = {
+    '√', '×', '÷', '−', '·',
+    // Added with ± and the relations, which fell into the same trap:
+    // every one of them is above the ASCII range, so the identifier
+    // scanner read "1±2" as a variable named "±2".
+    '±', '≠', '≤', '≥', '≈',
+  };
 
   bool _isIdentifierStart(String c) {
     if (_nonIdentifierSymbols.contains(c)) return false;
@@ -181,7 +191,25 @@ class ExpressionParser {
     if (state.peek().type == TokenType.end) {
       throw const ParseError('Nothing to calculate', position: 0);
     }
-    final node = _parseBinary(state, 1);
+    var node = _parseBinary(state, 1);
+
+    // A relation binds looser than every operator, so it is read last and
+    // whatever is on either side of it is a complete expression.
+    if (state.peek().type == TokenType.relation) {
+      final token = state.peek();
+      state.advance();
+      final operator = RelationOperator.values
+          .firstWhere((candidate) => candidate.symbol == token.lexeme);
+      if (state.peek().type == TokenType.end) {
+        throw ParseError(
+          'Nothing on the right of "${token.lexeme}"',
+          position: token.start,
+          suggestion: 'An equation needs something on both sides',
+        );
+      }
+      node = RelationNode(operator, node, _parseBinary(state, 1));
+    }
+
     if (state.peek().type != TokenType.end) {
       final token = state.peek();
       if (token.type == TokenType.rparen) {
@@ -206,6 +234,7 @@ class ExpressionParser {
         TokenType.minus => BinaryOperator.subtract,
         TokenType.times => BinaryOperator.multiply,
         TokenType.divide => BinaryOperator.divide,
+        TokenType.plusMinus => BinaryOperator.plusMinus,
         _ => null,
       };
 

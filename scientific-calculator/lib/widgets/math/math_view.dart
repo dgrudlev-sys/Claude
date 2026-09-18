@@ -234,6 +234,19 @@ class _Node extends StatelessWidget {
             ),
           ],
         ),
+      RelationNode(:final operator) => _Row(
+          children: [
+            _child(node.children[0], 0),
+            // A relation gets more air than an operator: it separates two
+            // statements rather than joining two quantities.
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: (style.fontSize ?? 20) * 0.34),
+              child: Text(operator.symbol, style: style),
+            ),
+            _child(node.children[1], 1),
+          ],
+        ),
       MatrixNode(:final rows) => _Fenced(
           style: style,
           child: Column(
@@ -277,6 +290,7 @@ class _Node extends StatelessWidget {
       BinaryOperator.subtract => '−',
       BinaryOperator.multiply => '×',
       BinaryOperator.divide => '÷',
+      BinaryOperator.plusMinus => '\u00B1',
       BinaryOperator.modulo => 'mod',
     };
     final space = (style.fontSize ?? 20) * 0.22;

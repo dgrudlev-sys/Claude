@@ -240,6 +240,17 @@ class RussianMathVocabulary extends MathVocabulary {
         // inflect, so the label goes first and stays in the nominative —
         // "синус, конец" rather than ungrammatical "конец синус".
         functionEnd: (spokenName) => '$spokenName конец',
+        plusOrMinus: 'плюс минус',
+        relation: (name) => switch (name) {
+          'equals' => 'равно',
+          'notEquals' => 'не равно',
+          'lessThan' => 'меньше',
+          'lessOrEqual' => 'меньше или равно',
+          'greaterThan' => 'больше',
+          'greaterOrEqual' => 'больше или равно',
+          'approximately' => 'приблизительно',
+          _ => name,
+        },
         functionNames: const {
           'sin': 'синус',
           'cos': 'косинус',

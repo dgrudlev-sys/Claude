@@ -194,6 +194,17 @@ class GermanMathVocabulary extends MathVocabulary {
         matrixEnd: 'Matrix Ende',
         equals: 'gleich',
         and: 'und',
+        plusOrMinus: 'plus minus',
+        relation: (name) => switch (name) {
+          'equals' => 'gleich',
+          'notEquals' => 'ungleich',
+          'lessThan' => 'kleiner als',
+          'lessOrEqual' => 'kleiner gleich',
+          'greaterThan' => 'größer als',
+          'greaterOrEqual' => 'größer gleich',
+          'approximately' => 'ungefähr',
+          _ => name,
+        },
         functionNames: const {
           'sin': 'Sinus',
           'cos': 'Kosinus',

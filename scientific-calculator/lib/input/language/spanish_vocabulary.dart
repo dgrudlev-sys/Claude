@@ -252,6 +252,17 @@ class SpanishMathVocabulary extends MathVocabulary {
         and: 'y',
         functionOf: 'de',
         functionEnd: (spokenName) => 'fin de $spokenName',
+        plusOrMinus: 'más menos',
+        relation: (name) => switch (name) {
+          'equals' => 'igual a',
+          'notEquals' => 'distinto de',
+          'lessThan' => 'menor que',
+          'lessOrEqual' => 'menor o igual que',
+          'greaterThan' => 'mayor que',
+          'greaterOrEqual' => 'mayor o igual que',
+          'approximately' => 'aproximadamente',
+          _ => name,
+        },
         functionNames: const {
           'sin': 'seno',
           'cos': 'coseno',

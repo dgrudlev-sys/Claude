@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:scientific_calculator/app.dart';
 import 'package:scientific_calculator/design/tokens.dart';
 import 'package:scientific_calculator/navigation/calculator_mode.dart';
+import 'package:scientific_calculator/screens/input_methods_screen.dart';
 import 'package:scientific_calculator/services/settings_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,7 +42,7 @@ void main() {
           scrollable: find.byType(Scrollable).first);
 
   group('every tool announces itself', () {
-    testWidgets('all eight are named on the home screen', (tester) async {
+    testWidgets('all of them are named on the home screen', (tester) async {
       await pumpApp(tester);
       for (final mode in CalculatorMode.values) {
         await scrollTo(tester, find.text(mode.title));
@@ -140,6 +141,55 @@ void main() {
         expect(tester.takeException(), isNull,
             reason: 'leaving ${mode.title} threw');
       }
+    });
+  });
+
+  group('the other ways in are reachable', () {
+    // The whole reason this group exists: voice, camera and braille each
+    // had a parser and a test suite and no button anywhere in the app.
+    // Working code nobody can reach is indistinguishable from no code.
+    testWidgets('the home screen offers speaking, scanning and braille',
+        (tester) async {
+      await pumpApp(tester);
+      await scrollTo(tester, find.text(CalculatorMode.input.title));
+      await tester.ensureVisible(find.text(CalculatorMode.input.title));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(CalculatorMode.input.title));
+      await tester.pumpAndSettle();
+
+      for (final label in ['Voice', 'Camera', 'Braille']) {
+        expect(find.text(label), findsWidgets, reason: '$label is unreachable');
+      }
+    });
+
+    testWidgets('and the calculator carries them in its own bar',
+        (tester) async {
+      // Reachable only from the home screen is not reachable: the home
+      // screen is the one place you are not when you want to dictate a
+      // sum.
+      await pumpApp(tester);
+      await tester.tap(find.text(CalculatorMode.calculator.title));
+      await tester.pumpAndSettle();
+
+      for (final method in InputMethod.values) {
+        expect(find.widgetWithIcon(IconButton, method.icon), findsOneWidget,
+            reason: '${method.label} has no button on the calculator');
+      }
+    });
+
+    testWidgets('a bar button opens the panel it promised', (tester) async {
+      await pumpApp(tester);
+      await tester.tap(find.text(CalculatorMode.calculator.title));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.widgetWithIcon(IconButton, InputMethod.braille.icon),
+      );
+      await tester.pumpAndSettle();
+
+      // Landing on a menu after tapping a braille button would make the
+      // button a lie.
+      expect(find.text('Braille in'), findsOneWidget);
     });
   });
 

@@ -113,6 +113,9 @@ class SpeechRenderer {
       case AbsoluteNode(:final operand):
         return '${_t.absoluteValueOf} ${_render(operand)}, ${_t.absoluteEnd}';
 
+      case RelationNode(:final operator, :final left, :final right):
+        return '${_render(left)} ${_t.relation(operator.name)} ${_render(right)}';
+
       case MatrixNode(:final rows):
         final buffer = StringBuffer(
           '${_t.matrixSize('${rows.length}', '${rows.isEmpty ? 0 : rows.first.length}')}, ',
@@ -150,6 +153,7 @@ class SpeechRenderer {
         BinaryOperator.subtract => _t.minus,
         BinaryOperator.multiply => _t.times,
         BinaryOperator.divide => _t.dividedBy,
+        BinaryOperator.plusMinus => _t.plusOrMinus,
         BinaryOperator.modulo => _t.modulo,
       };
 

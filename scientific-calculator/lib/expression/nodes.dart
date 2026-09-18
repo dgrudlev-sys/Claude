@@ -89,7 +89,16 @@ enum BinaryOperator {
   subtract('−', 'minus', 1),
   multiply('×', 'times', 2),
   divide('÷', 'divided by', 2),
-  modulo('mod', 'mod', 2);
+  modulo('mod', 'mod', 2),
+
+  /// "plus or minus", as in the quadratic formula. Binds like addition
+  /// because that is what it stands in for — two additions at once.
+  ///
+  /// This one does not evaluate to a number, because it is not one
+  /// number: it names both branches. Asking for its value is a question
+  /// with two answers, and the evaluator says so rather than quietly
+  /// picking the positive one.
+  plusMinus('±', 'plus or minus', 1);
 
   const BinaryOperator(this.symbol, this.spokenName, this.precedence);
 
@@ -128,6 +137,57 @@ final class BinaryNode extends ExpressionNode {
 
   @override
   String toString() => 'Binary(${operator.symbol}, $left, $right)';
+}
+
+/// How two sides of a statement are being compared.
+///
+/// A relation is not an expression: `V = I × R` does not have a value,
+/// it makes a claim. Keeping it a separate node is what lets the formula
+/// library store Ohm's law as the thing it is, lets the solver see which
+/// side is which, and lets the evaluator refuse an equation with an
+/// explanation rather than returning a number nobody asked for.
+enum RelationOperator {
+  equals('=', 'equals'),
+  notEquals('≠', 'is not equal to'),
+  lessThan('<', 'is less than'),
+  lessOrEqual('≤', 'is less than or equal to'),
+  greaterThan('>', 'is greater than'),
+  greaterOrEqual('≥', 'is greater than or equal to'),
+  approximately('≈', 'is approximately');
+
+  const RelationOperator(this.symbol, this.spokenName);
+
+  final String symbol;
+  final String spokenName;
+}
+
+/// A statement about two expressions: an equation, or an inequality.
+final class RelationNode extends ExpressionNode {
+  const RelationNode(this.operator, this.left, this.right);
+
+  final RelationOperator operator;
+  final ExpressionNode left;
+  final ExpressionNode right;
+
+  @override
+  List<ExpressionNode> get children => [left, right];
+
+  @override
+  ExpressionNode withChildren(List<ExpressionNode> newChildren) =>
+      RelationNode(operator, newChildren[0], newChildren[1]);
+
+  @override
+  bool operator ==(Object other) =>
+      other is RelationNode &&
+      other.operator == operator &&
+      other.left == left &&
+      other.right == right;
+
+  @override
+  int get hashCode => Object.hash(operator, left, right);
+
+  @override
+  String toString() => 'Relation(${operator.symbol}, $left, $right)';
 }
 
 enum UnaryOperator {

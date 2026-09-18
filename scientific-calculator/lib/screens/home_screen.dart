@@ -5,9 +5,11 @@ import '../navigation/calculator_mode.dart';
 import '../services/settings_controller.dart';
 import '../theme/app_theme.dart';
 import 'calculator_screen.dart';
+import 'convert_screen.dart';
 import 'finance_screen.dart';
 import 'geometry_screen.dart';
 import 'graph_screen.dart';
+import 'input_methods_screen.dart';
 import 'matrix_screen.dart';
 import 'settings_screen.dart';
 import 'solve_screen.dart';
@@ -149,10 +151,18 @@ class HomeScreen extends StatelessWidget {
 /// is what the Human Interface Guidelines ask for and what tells a
 /// screen-reader user where they are about to end up.
 class ModeScaffold extends StatelessWidget {
-  const ModeScaffold({super.key, required this.mode, required this.settings});
+  const ModeScaffold({
+    super.key,
+    required this.mode,
+    required this.settings,
+    this.initialInputMethod = InputMethod.voice,
+  });
 
   final CalculatorMode mode;
   final SettingsController settings;
+
+  /// Only meaningful for [CalculatorMode.input]: which panel to open on.
+  final InputMethod initialInputMethod;
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +172,28 @@ class ModeScaffold extends StatelessWidget {
         leading: BackButton(
           onPressed: () => Navigator.of(context).maybePop(),
         ),
+        // The other ways in, where they are actually needed. Voice and
+        // camera were reachable only from the home screen, which is the
+        // one place you are not when you want to dictate a sum — so the
+        // calculator carries them itself.
+        actions: mode == CalculatorMode.calculator
+            ? [
+                for (final method in InputMethod.values)
+                  IconButton(
+                    icon: Icon(method.icon),
+                    tooltip: method.label,
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ModeScaffold(
+                          mode: CalculatorMode.input,
+                          settings: settings,
+                          initialInputMethod: method,
+                        ),
+                      ),
+                    ),
+                  ),
+              ]
+            : null,
       ),
       body: SafeArea(child: _body()),
     );
@@ -176,6 +208,8 @@ class ModeScaffold extends StatelessWidget {
         CalculatorMode.statistics => const StatsScreen(),
         CalculatorMode.finance => const FinanceScreen(),
         CalculatorMode.solve => const SolveScreen(),
+        CalculatorMode.convert => const ConvertScreen(),
+        CalculatorMode.input => InputMethodsScreen(initial: initialInputMethod),
       };
 }
 

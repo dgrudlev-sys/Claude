@@ -82,6 +82,10 @@ class BrailleRenderer {
             case BinaryOperator.divide:
               out.add(NemethCode.prefix46);
               out.add(NemethCode.divideSecondCell);
+            case BinaryOperator.plusMinus:
+              throw const BrailleRenderError(
+                'Plus-or-minus is not implemented in braille yet',
+              );
             case BinaryOperator.modulo:
               throw const BrailleRenderError(
                 'Modulo has no Nemeth form in this implementation',
@@ -158,6 +162,11 @@ class BrailleRenderer {
       case AbsoluteNode():
         throw const BrailleRenderError(
           'Absolute value is not implemented in braille yet',
+        );
+
+      case RelationNode():
+        throw const BrailleRenderError(
+          'Equations are not implemented in braille yet',
         );
 
       case MatrixNode():

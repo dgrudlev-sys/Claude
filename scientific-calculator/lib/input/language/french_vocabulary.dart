@@ -292,6 +292,17 @@ class FrenchMathVocabulary extends MathVocabulary {
         and: 'et',
         functionOf: 'de',
         functionEnd: (spokenName) => 'fin de $spokenName',
+        plusOrMinus: 'plus ou moins',
+        relation: (name) => switch (name) {
+          'equals' => 'égale',
+          'notEquals' => 'différent de',
+          'lessThan' => 'inférieur à',
+          'lessOrEqual' => 'inférieur ou égal à',
+          'greaterThan' => 'supérieur à',
+          'greaterOrEqual' => 'supérieur ou égal à',
+          'approximately' => 'environ',
+          _ => name,
+        },
         functionNames: const {
           'sin': 'sinus',
           'cos': 'cosinus',

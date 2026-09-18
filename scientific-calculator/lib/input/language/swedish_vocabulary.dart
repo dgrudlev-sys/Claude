@@ -209,6 +209,17 @@ class SwedishMathVocabulary extends MathVocabulary {
         and: 'och',
         functionOf: 'av',
         functionEnd: (spokenName) => 'slut $spokenName',
+        plusOrMinus: 'plus minus',
+        relation: (name) => switch (name) {
+          'equals' => 'är lika med',
+          'notEquals' => 'är inte lika med',
+          'lessThan' => 'mindre än',
+          'lessOrEqual' => 'mindre än eller lika med',
+          'greaterThan' => 'större än',
+          'greaterOrEqual' => 'större än eller lika med',
+          'approximately' => 'ungefär',
+          _ => name,
+        },
         functionNames: const {
           'sin': 'sinus',
           'cos': 'cosinus',

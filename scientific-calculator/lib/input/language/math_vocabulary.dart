@@ -136,6 +136,8 @@ class SpeechTerms {
     required this.matrixEnd,
     required this.equals,
     required this.and,
+    required this.plusOrMinus,
+    required this.relation,
     required this.functionNames,
     required this.functionOf,
     required this.functionEnd,
@@ -147,6 +149,14 @@ class SpeechTerms {
   final String times;
   final String dividedBy;
   final String modulo;
+
+  /// "plus or minus" — the ± of the quadratic formula.
+  final String plusOrMinus;
+
+  /// How a relation is read, given the operator's name: equals, lessThan
+  /// and so on. A function rather than seven fields because the set is
+  /// closed and the phrasing is regular within a language.
+  final String Function(String relationName) relation;
 
   final String negative;
   final String factorial;

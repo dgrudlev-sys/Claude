@@ -52,6 +52,16 @@ enum CalculatorMode {
     title: 'Solve',
     summary: 'Find the roots of an equation or a polynomial.',
     icon: Icons.functions,
+  ),
+  convert(
+    title: 'Convert',
+    summary: 'Units, cooking measures, data sizes and currency.',
+    icon: Icons.swap_horiz,
+  ),
+  input(
+    title: 'Speak, scan or braille',
+    summary: 'Say it, photograph it off the page, or type it in Nemeth.',
+    icon: Icons.mic_none_outlined,
   );
 
   const CalculatorMode({

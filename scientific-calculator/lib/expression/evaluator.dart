@@ -84,7 +84,12 @@ class Evaluator {
           BinaryOperator.subtract => a.subtract(b),
           BinaryOperator.multiply => a.multiply(b),
           BinaryOperator.divide => a.divide(b),
-          BinaryOperator.modulo => _modulo(a, b),
+          BinaryOperator.plusMinus => throw const MathError(
+            MathErrorKind.unsupported,
+            'Plus-or-minus has two values, not one. Ask for both branches '
+            'rather than a single result.',
+          ),
+        BinaryOperator.modulo => _modulo(a, b),
         };
 
       case UnaryNode(:final operator, :final operand):
@@ -116,6 +121,16 @@ class Evaluator {
 
       case FunctionNode(:final name, :final arguments):
         return _callFunction(name, [for (final a in arguments) _eval(a, ctx)], ctx);
+
+      case RelationNode():
+        // An equation is a claim, not a quantity. Returning a number here
+        // would answer a question nobody asked — solving and evaluating
+        // are different operations, and this is the latter.
+        throw const MathError(
+          MathErrorKind.unsupported,
+          'This is an equation, not an expression. Use Solve to find the '
+          'value that makes it true.',
+        );
 
       case MatrixNode():
         throw const MathError(

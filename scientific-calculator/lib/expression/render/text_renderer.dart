@@ -24,6 +24,7 @@ class TextRenderer {
         BinaryOperator.subtract => _minusSymbol(),
         BinaryOperator.multiply => _multiplySymbol(),
         BinaryOperator.divide => _divideSymbol(),
+        BinaryOperator.plusMinus => '±',
         BinaryOperator.modulo => ' mod ',
       };
 
@@ -79,6 +80,11 @@ class TextRenderer {
 
       case AbsoluteNode(:final operand):
         return '|${_render(operand, 0)}|';
+
+      case RelationNode(:final operator, :final left, :final right):
+        // A relation binds looser than anything inside it, so its sides
+        // never need parentheses of their own.
+        return '${_render(left, 0)} ${operator.symbol} ${_render(right, 0)}';
 
       case MatrixNode(:final rows):
         final body = rows

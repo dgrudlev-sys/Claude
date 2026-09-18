@@ -168,6 +168,7 @@ class LinearSlice {
         BinaryOperator.subtract => '-',
         BinaryOperator.multiply => '*',
         BinaryOperator.divide => '/',
+        BinaryOperator.plusMinus => '\u00B1',
         BinaryOperator.modulo => ' mod ',
       };
 }

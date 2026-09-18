@@ -216,6 +216,17 @@ class DanishMathVocabulary extends MathVocabulary {
         and: 'og',
         functionOf: 'af',
         functionEnd: (spokenName) => '$spokenName slut',
+        plusOrMinus: 'plus minus',
+        relation: (name) => switch (name) {
+          'equals' => 'er lig med',
+          'notEquals' => 'er ikke lig med',
+          'lessThan' => 'mindre end',
+          'lessOrEqual' => 'mindre end eller lig med',
+          'greaterThan' => 'større end',
+          'greaterOrEqual' => 'større end eller lig med',
+          'approximately' => 'cirka',
+          _ => name,
+        },
         functionNames: const {
           'sin': 'sinus',
           'cos': 'cosinus',

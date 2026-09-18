@@ -216,6 +216,17 @@ class EnglishMathVocabulary extends MathVocabulary {
         matrixEnd: 'end matrix',
         equals: 'equals',
         and: 'and',
+        plusOrMinus: 'plus or minus',
+        relation: (name) => switch (name) {
+          'equals' => 'equals',
+          'notEquals' => 'is not equal to',
+          'lessThan' => 'is less than',
+          'lessOrEqual' => 'is less than or equal to',
+          'greaterThan' => 'is greater than',
+          'greaterOrEqual' => 'is greater than or equal to',
+          'approximately' => 'is approximately',
+          _ => name,
+        },
         functionNames: const {
           'sin': 'sine',
           'cos': 'cosine',
