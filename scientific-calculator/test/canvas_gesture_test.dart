@@ -6,7 +6,6 @@ import 'package:scientific_calculator/graphing3d/surface_controller.dart';
 import 'package:scientific_calculator/screens/graph_screen.dart';
 import 'package:scientific_calculator/screens/surface3d_screen.dart';
 import 'package:scientific_calculator/theme/app_theme.dart';
-import 'package:scientific_calculator/theme/layout_style.dart';
 
 /// Mirrors HomeShell's actual structure (a screen hosted as one page of a
 /// NeverScrollableScrollPhysics TabBarView) — the fix for the gesture-arena
@@ -15,7 +14,7 @@ import 'package:scientific_calculator/theme/layout_style.dart';
 /// exact shape, not with the canvas pumped standalone.
 Widget _wrapInTabShell(Widget child) {
   return MaterialApp(
-    theme: buildAppTheme(LayoutStyle.classic),
+    theme: buildAppTheme(Appearance.light),
     home: DefaultTabController(
       length: 2,
       child: Scaffold(

@@ -143,6 +143,7 @@ class Palette {
     required this.keyAction,
     required this.keyEquals,
     required this.display,
+    required this.errorSurface,
   });
 
   final Appearance appearance;
@@ -173,6 +174,11 @@ class Palette {
   final SurfacePair keyEquals;
   final SurfacePair display;
 
+  /// A failed calculation or an invalid entry. Chromatic like the accent,
+  /// because an error is meaning rather than decoration — but it never
+  /// carries the message alone: an error always has words beside it.
+  final SurfacePair errorSurface;
+
   /// Every surface/foreground pairing in this palette, for the tests that
   /// check contrast. Anything added above belongs here too, or it ships
   /// unchecked.
@@ -188,6 +194,7 @@ class Palette {
         'action key': keyAction,
         'equals key': keyEquals,
         'display': display,
+        'error': errorSurface,
       };
 
   static Palette of(Appearance appearance) => switch (appearance) {
@@ -219,6 +226,7 @@ const _light = Palette(
   keyAction: SurfacePair(Color(0xFFDCD3C6), _ink),
   keyEquals: SurfacePair(Color(0xFF8A4B00), Color(0xFFFFFFFF)),
   display: SurfacePair(_paper, _ink),
+  errorSurface: SurfacePair(Color(0xFFF7F5F2), Color(0xFF9B1C1C)),
 );
 
 const _dark = Palette(
@@ -238,6 +246,7 @@ const _dark = Palette(
   keyAction: SurfacePair(Color(0xFF574E3F), Color(0xFFF5F1EA)),
   keyEquals: SurfacePair(Color(0xFFF0A23C), Color(0xFF1A1714)),
   display: SurfacePair(Color(0xFF16140F), Color(0xFFF5F1EA)),
+  errorSurface: SurfacePair(Color(0xFF16140F), Color(0xFFFF9A8A)),
 );
 
 /// Increase Contrast, light. Not a different design — the same design with
@@ -258,6 +267,7 @@ const _lightHighContrast = Palette(
   keyAction: SurfacePair(Color(0xFFCFC4B3), Color(0xFF000000)),
   keyEquals: SurfacePair(Color(0xFF6B3A00), Color(0xFFFFFFFF)),
   display: SurfacePair(Color(0xFFFFFFFF), Color(0xFF000000)),
+  errorSurface: SurfacePair(Color(0xFFFFFFFF), Color(0xFF8A0000)),
 );
 
 /// Increase Contrast, dark. True black, because it serves OLED here and
@@ -279,4 +289,5 @@ const _darkHighContrast = Palette(
   keyAction: SurfacePair(Color(0xFF4A4A4A), Color(0xFFFFFFFF)),
   keyEquals: SurfacePair(Color(0xFFFFC24B), Color(0xFF000000)),
   display: SurfacePair(Color(0xFF000000), Color(0xFFFFFFFF)),
+  errorSurface: SurfacePair(Color(0xFF000000), Color(0xFFFFB3A6)),
 );

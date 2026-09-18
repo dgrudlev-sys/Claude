@@ -229,10 +229,16 @@ class _DomainRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Row(
+      // Two labelled fields do not fit on one line at phone width, and a
+      // fixed Row has no way to say so. Wrapping lets the second pair drop
+      // to a new line instead of running off the edge — and it is what
+      // keeps them reachable once the text size grows, too.
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 8,
         children: [
           Text('$label min', style: Theme.of(context).textTheme.labelSmall),
-          const SizedBox(width: 6),
           SizedBox(
             width: 70,
             child: TextFormField(
@@ -243,9 +249,7 @@ class _DomainRow extends StatelessWidget {
               onFieldSubmitted: (v) => apply(double.tryParse(v) ?? min, max),
             ),
           ),
-          const SizedBox(width: 12),
           Text('$label max', style: Theme.of(context).textTheme.labelSmall),
-          const SizedBox(width: 6),
           SizedBox(
             width: 70,
             child: TextFormField(
@@ -279,7 +283,16 @@ class _ControlBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      child: Row(
+      // Three icon buttons, a view toggle and an angle-mode control do not
+      // fit on one line at phone width, and a Spacer cannot report that —
+      // it just pushes the last control off the edge. Wrapping lets the
+      // row become two, which is also what has to happen when the text
+      // size grows.
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        alignment: WrapAlignment.spaceBetween,
+        spacing: 4,
+        runSpacing: 4,
         children: [
           IconButton(
             icon: const Icon(Icons.zoom_in),
@@ -296,14 +309,12 @@ class _ControlBar extends StatelessWidget {
             tooltip: 'Reset view',
             onPressed: controller.resetViewport,
           ),
-          const Spacer(),
           if (controller.mode == GraphMode.function)
             TextButton.icon(
               onPressed: onToggleTable,
               icon: Icon(showTable ? Icons.show_chart : Icons.table_chart),
               label: Text(showTable ? 'Graph' : 'Table'),
             ),
-          const SizedBox(width: 4),
           SegmentedButton<AngleMode>(
             segments: const [
               ButtonSegment(value: AngleMode.radians, label: Text('RAD')),
@@ -327,7 +338,7 @@ class _GraphCanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
+    final palette = AppPalette.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
@@ -358,9 +369,9 @@ class _GraphCanvas extends StatelessWidget {
                 viewport: controller.viewport,
                 plots: controller.plots,
                 segmentsOf: controller.segmentsFor,
-                axisColor: palette.onButton.withValues(alpha: 0.8),
-                gridColor: palette.onButton.withValues(alpha: 0.12),
-                labelColor: palette.onButton.withValues(alpha: 0.55),
+                axisColor: palette.label.withValues(alpha: 0.8),
+                gridColor: palette.separator,
+                labelColor: palette.secondaryLabel,
               ),
             ),
           ),

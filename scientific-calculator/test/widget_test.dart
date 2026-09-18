@@ -14,6 +14,10 @@ void main() {
 
     await tester.pumpWidget(CalculatorApp(settings: settings));
     await tester.pumpAndSettle();
+    // The calculator is now opened from the home screen rather than being
+    // the first tab.
+    await tester.tap(find.text('Calculator'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('5'));
     await tester.tap(find.text('+'));
@@ -29,6 +33,10 @@ void main() {
     final settings = await SettingsController.create();
 
     await tester.pumpWidget(CalculatorApp(settings: settings));
+    await tester.pumpAndSettle();
+    // The calculator is now opened from the home screen rather than being
+    // the first tab.
+    await tester.tap(find.text('Calculator'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('7'));

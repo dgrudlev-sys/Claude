@@ -39,7 +39,7 @@ class _GeometryScreenState extends State<GeometryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
+    final palette = AppPalette.of(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
@@ -110,10 +110,10 @@ class _GeometryScreenState extends State<GeometryScreen> {
                           controller: _controller,
                           viewCenter: _viewCenter,
                           viewScale: _viewScale,
-                          pointColor: palette.operatorButton,
-                          shapeColor: palette.onButton,
-                          pendingColor: palette.equalsButton,
-                          labelColor: palette.onButton,
+                          pointColor: palette.accent,
+                          shapeColor: palette.label,
+                          pendingColor: palette.keyEquals.background,
+                          labelColor: palette.label,
                         ),
                       ),
                     ),

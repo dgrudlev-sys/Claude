@@ -91,20 +91,32 @@ class _MatrixEditor extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            // Wraps rather than overflowing: on a phone the title and the
+            // two steppers do not fit on one line, and a Row with a Spacer
+            // has no way to say so — it just runs off the right edge.
+            Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              alignment: WrapAlignment.spaceBetween,
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 Text(label, style: Theme.of(context).textTheme.titleMedium),
-                const Spacer(),
-                _DimensionStepper(
-                  label: 'rows',
-                  value: rows,
-                  onChanged: (v) => onResize(v, cols),
-                ),
-                const SizedBox(width: 8),
-                _DimensionStepper(
-                  label: 'cols',
-                  value: cols,
-                  onChanged: (v) => onResize(rows, v),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _DimensionStepper(
+                      label: 'rows',
+                      value: rows,
+                      onChanged: (v) => onResize(v, cols),
+                    ),
+                    _DimensionStepper(
+                      label: 'cols',
+                      value: cols,
+                      onChanged: (v) => onResize(rows, v),
+                    ),
+                  ],
                 ),
               ],
             ),

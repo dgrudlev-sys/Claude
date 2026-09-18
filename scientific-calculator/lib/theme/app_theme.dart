@@ -1,126 +1,155 @@
 import 'package:flutter/material.dart';
 
-import 'layout_style.dart';
+import '../design/tokens.dart';
+import '../design/typography.dart';
 
+export '../design/tokens.dart' show Appearance, Palette, SurfacePair, Space, Radii, TouchTarget, Motion;
+
+/// Which kind of key a button is. The colour it gets comes from the
+/// palette, which supplies the text colour alongside it.
 enum ButtonRole { number, operatorKey, function, action, equals }
 
-/// Per-role button colors for the current theme. Kept separate from
-/// [ThemeData] because the calculator keypad needs more color categories
-/// than Material's default roles cover.
-class CalculatorPalette extends ThemeExtension<CalculatorPalette> {
-  const CalculatorPalette({
-    required this.numberButton,
-    required this.operatorButton,
-    required this.functionButton,
-    required this.actionButton,
-    required this.equalsButton,
-    required this.onButton,
-    required this.displayBackground,
-  });
+/// Carries the resolved [Palette] through the widget tree.
+///
+/// A theme extension rather than a set of loose colours, so a widget asks
+/// for the role it needs and cannot pick a background from one appearance
+/// and a foreground from another.
+class AppPalette extends ThemeExtension<AppPalette> {
+  const AppPalette(this.palette);
 
-  final Color numberButton;
-  final Color operatorButton;
-  final Color functionButton;
-  final Color actionButton;
-  final Color equalsButton;
-  final Color onButton;
-  final Color displayBackground;
+  final Palette palette;
 
-  Color forRole(ButtonRole role) => switch (role) {
-        ButtonRole.number => numberButton,
-        ButtonRole.operatorKey => operatorButton,
-        ButtonRole.function => functionButton,
-        ButtonRole.action => actionButton,
-        ButtonRole.equals => equalsButton,
+  SurfacePair forRole(ButtonRole role) => switch (role) {
+        ButtonRole.number => palette.keyNumber,
+        ButtonRole.operatorKey => palette.keyOperator,
+        ButtonRole.function => palette.keyFunction,
+        ButtonRole.action => palette.keyAction,
+        ButtonRole.equals => palette.keyEquals,
       };
 
   @override
-  CalculatorPalette copyWith({
-    Color? numberButton,
-    Color? operatorButton,
-    Color? functionButton,
-    Color? actionButton,
-    Color? equalsButton,
-    Color? onButton,
-    Color? displayBackground,
-  }) {
-    return CalculatorPalette(
-      numberButton: numberButton ?? this.numberButton,
-      operatorButton: operatorButton ?? this.operatorButton,
-      functionButton: functionButton ?? this.functionButton,
-      actionButton: actionButton ?? this.actionButton,
-      equalsButton: equalsButton ?? this.equalsButton,
-      onButton: onButton ?? this.onButton,
-      displayBackground: displayBackground ?? this.displayBackground,
-    );
-  }
+  AppPalette copyWith({Palette? palette}) => AppPalette(palette ?? this.palette);
 
   @override
-  CalculatorPalette lerp(ThemeExtension<CalculatorPalette>? other, double t) {
-    if (other is! CalculatorPalette) return this;
-    return CalculatorPalette(
-      numberButton: Color.lerp(numberButton, other.numberButton, t)!,
-      operatorButton: Color.lerp(operatorButton, other.operatorButton, t)!,
-      functionButton: Color.lerp(functionButton, other.functionButton, t)!,
-      actionButton: Color.lerp(actionButton, other.actionButton, t)!,
-      equalsButton: Color.lerp(equalsButton, other.equalsButton, t)!,
-      onButton: Color.lerp(onButton, other.onButton, t)!,
-      displayBackground:
-          Color.lerp(displayBackground, other.displayBackground, t)!,
-    );
+  AppPalette lerp(ThemeExtension<AppPalette>? other, double t) {
+    // Palettes are discrete appearances, not points on a line: half way
+    // between light and dark is not a design, it is a smear. Snap.
+    if (other is! AppPalette) return this;
+    return t < 0.5 ? this : other;
   }
+
+  static Palette of(BuildContext context) =>
+      Theme.of(context).extension<AppPalette>()!.palette;
 }
 
-/// Builds the [ThemeData] for a given [LayoutStyle]. Colors are deliberately
-/// not TI's navy/silver trade dress — a warm charcoal-and-amber identity
-/// keeps the familiar key layout without copying the physical device's look.
-ThemeData buildAppTheme(LayoutStyle style) {
-  if (style == LayoutStyle.accessible) {
-    // Pure black/white/amber: maximizes contrast (WCAG AAA) for low-vision
-    // users rather than matching the other skins' palette.
-    const amber = Color(0xFFFFC24B);
-    return ThemeData(
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: Colors.black,
-      colorScheme: const ColorScheme.dark(
-        primary: amber,
-        surface: Colors.black,
-      ),
-      extensions: const [
-        CalculatorPalette(
-          numberButton: Color(0xFF1A1A1A),
-          operatorButton: amber,
-          functionButton: Color(0xFF262626),
-          actionButton: Color(0xFF3A3A3A),
-          equalsButton: amber,
-          onButton: Colors.white,
-          displayBackground: Colors.black,
-        ),
-      ],
-    );
-  }
+/// Builds the theme for one appearance.
+///
+/// Four of these exist — light, dark, and an Increase Contrast variant of
+/// each — and Flutter picks between them from the system settings, so the
+/// app follows the phone rather than asking the user to configure it
+/// twice.
+ThemeData buildAppTheme(Appearance appearance) {
+  final palette = Palette.of(appearance);
+  final brightness = appearance.isDark ? Brightness.dark : Brightness.light;
 
-  const charcoal = Color(0xFF1E1C1A);
-  const amber = Color(0xFFE08A2C);
-  const slate = Color(0xFF2C2A27);
+  final scheme = ColorScheme(
+    brightness: brightness,
+    primary: palette.accent,
+    onPrimary: palette.onAccent,
+    secondary: palette.accent,
+    onSecondary: palette.onAccent,
+    error: palette.errorSurface.background,
+    onError: palette.errorSurface.foreground,
+    surface: palette.elevatedSurface,
+    onSurface: palette.label,
+    surfaceContainerHighest: palette.groupedBackground,
+    onSurfaceVariant: palette.secondaryLabel,
+    outline: palette.separator,
+  );
+
+  TextStyle body(TextStyle style) => style.copyWith(color: palette.label);
+  TextStyle muted(TextStyle style) => style.copyWith(color: palette.secondaryLabel);
 
   return ThemeData(
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: charcoal,
-    colorScheme: const ColorScheme.dark(
-      primary: amber,
-      surface: charcoal,
+    useMaterial3: true,
+    brightness: brightness,
+    colorScheme: scheme,
+    scaffoldBackgroundColor: palette.background,
+    dividerColor: palette.separator,
+    extensions: [AppPalette(palette)],
+    textTheme: TextTheme(
+      displayLarge: body(AppType.displayResult),
+      headlineLarge: body(AppType.largeTitle),
+      headlineMedium: body(AppType.title1),
+      headlineSmall: body(AppType.title2),
+      titleLarge: body(AppType.title3),
+      titleMedium: body(AppType.headline),
+      bodyLarge: body(AppType.body),
+      bodyMedium: body(AppType.callout),
+      bodySmall: muted(AppType.subheadline),
+      labelLarge: body(AppType.headline),
+      labelMedium: muted(AppType.footnote),
+      labelSmall: muted(AppType.caption1),
     ),
-    extensions: const [
-      CalculatorPalette(
-        numberButton: Color(0xFF35322E),
-        operatorButton: Color(0xFF4A4540),
-        functionButton: slate,
-        actionButton: Color(0xFF574E3F),
-        equalsButton: amber,
-        onButton: Color(0xFFF5F1EA),
-        displayBackground: charcoal,
+    appBarTheme: AppBarTheme(
+      backgroundColor: palette.background,
+      foregroundColor: palette.label,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      centerTitle: false,
+      titleTextStyle: AppType.title2.copyWith(color: palette.label),
+    ),
+    // A utility surface: transitions get out of the way of the task.
+    // A cross-fade on every platform. Fades survive Reduce Motion with
+    // only a change of duration; a slide that crosses the screen is the
+    // highest-risk category for vestibular disorders and has to be
+    // replaced outright rather than shortened.
+    pageTransitionsTheme: const PageTransitionsTheme(builders: {
+      TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+      TargetPlatform.iOS: FadeForwardsPageTransitionsBuilder(),
+      TargetPlatform.macOS: FadeForwardsPageTransitionsBuilder(),
+    }),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        minimumSize: const Size(TouchTarget.comfortable, TouchTarget.comfortable),
+        backgroundColor: palette.accent,
+        foregroundColor: palette.onAccent,
+        textStyle: AppType.headline,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Radii.medium),
+        ),
       ),
-    ],
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size(TouchTarget.comfortable, TouchTarget.comfortable),
+        foregroundColor: palette.label,
+        side: BorderSide(color: palette.separator),
+        textStyle: AppType.callout,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Radii.medium),
+        ),
+      ),
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        minimumSize: const Size(TouchTarget.minimum, TouchTarget.minimum),
+        foregroundColor: palette.label,
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: palette.elevatedSurface,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Radii.small),
+        borderSide: BorderSide(color: palette.separator),
+      ),
+      labelStyle: AppType.subheadline.copyWith(color: palette.secondaryLabel),
+    ),
+    listTileTheme: ListTileThemeData(
+      titleTextStyle: AppType.body.copyWith(color: palette.label),
+      subtitleTextStyle: AppType.subheadline.copyWith(color: palette.secondaryLabel),
+      iconColor: palette.secondaryLabel,
+    ),
   );
 }

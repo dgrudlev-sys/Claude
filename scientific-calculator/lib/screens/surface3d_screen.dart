@@ -36,7 +36,7 @@ class _Surface3dScreenState extends State<Surface3dScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
+    final palette = AppPalette.of(context);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
@@ -126,8 +126,8 @@ class _Surface3dScreenState extends State<Surface3dScreen> {
                       azimuth: _controller.azimuth,
                       elevation: _controller.elevation,
                       zoom: _controller.zoom,
-                      lineColor: palette.operatorButton,
-                      axisColor: palette.onButton.withValues(alpha: 0.6),
+                      lineColor: palette.accent,
+                      axisColor: palette.secondaryLabel,
                     ),
                   ),
                 ),

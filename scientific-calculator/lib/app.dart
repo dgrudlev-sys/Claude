@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/home_shell.dart';
+import 'screens/home_screen.dart';
 import 'services/settings_controller.dart';
 import 'theme/app_theme.dart';
 
@@ -15,10 +15,19 @@ class CalculatorApp extends StatelessWidget {
       animation: settings,
       builder: (context, _) {
         return MaterialApp(
-          title: 'Scientific Calculator',
+          title: HomeScreen.title,
           debugShowCheckedModeBanner: false,
-          theme: buildAppTheme(settings.layoutStyle),
-          home: HomeShell(settings: settings),
+          // Four appearances, chosen by the system rather than by us.
+          // A person who has set their phone to light, or turned on
+          // Increase Contrast, has already said what they want; asking
+          // them to say it again inside every app is the thing Apple's
+          // guidelines are arguing against.
+          theme: buildAppTheme(Appearance.light),
+          darkTheme: buildAppTheme(Appearance.dark),
+          highContrastTheme: buildAppTheme(Appearance.lightHighContrast),
+          highContrastDarkTheme: buildAppTheme(Appearance.darkHighContrast),
+          themeMode: ThemeMode.system,
+          home: HomeScreen(settings: settings),
         );
       },
     );

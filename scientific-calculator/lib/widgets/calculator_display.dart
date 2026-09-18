@@ -12,11 +12,11 @@ class CalculatorDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
+    final palette = AppPalette.of(context);
     final history = controller.history;
 
     return Container(
-      color: palette.displayBackground,
+      color: palette.display.background,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -39,7 +39,7 @@ class CalculatorDisplay extends StatelessWidget {
                             child: Text(
                               '${entry.expression} = ${entry.result}',
                               style: TextStyle(
-                                color: palette.onButton.withValues(alpha: 0.45),
+                                color: palette.secondaryLabel,
                                 fontSize: 14,
                               ),
                             ),
@@ -61,7 +61,7 @@ class CalculatorDisplay extends StatelessWidget {
                 style: TextStyle(
                   color: controller.errorMessage != null
                       ? Colors.redAccent
-                      : palette.onButton,
+                      : palette.display.foreground,
                   fontSize: 44,
                   fontWeight: FontWeight.w300,
                 ),

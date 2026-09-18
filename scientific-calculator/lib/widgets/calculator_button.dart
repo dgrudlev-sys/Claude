@@ -27,8 +27,9 @@ class CalculatorButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
-    final background = palette.forRole(role);
+    // The surface and its text arrive together, so they cannot be
+    // mismatched the way they were when the amber key took white text.
+    final surface = Theme.of(context).extension<AppPalette>()!.forRole(role);
     final isAccent = role == ButtonRole.equals;
 
     return Semantics(
@@ -40,7 +41,7 @@ class CalculatorButton extends StatelessWidget {
           minHeight: _minTouchTarget,
         ),
         child: Material(
-          color: background,
+          color: surface.background,
           borderRadius: BorderRadius.circular(style == LayoutStyle.accessible ? 14 : 10),
           child: InkWell(
             onTap: onPressed,
@@ -49,7 +50,7 @@ class CalculatorButton extends StatelessWidget {
               child: Text(
                 label,
                 style: TextStyle(
-                  color: isAccent ? Colors.black : palette.onButton,
+                  color: surface.foreground,
                   fontSize: 18 * style.fontScale,
                   fontWeight: isAccent ? FontWeight.bold : FontWeight.w600,
                 ),
