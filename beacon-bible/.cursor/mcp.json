@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "tokengate": {
+      "command": "python",
+      "args": [
+        "-m",
+        "tokengate.mcp_server"
+      ],
+      "env": {
+        "TOKENGATE_ROOT": "${workspaceFolder}",
+        "NVIDIA_API_KEY": "${env:NVIDIA_API_KEY}"
+      }
+    }
+  }
+}
