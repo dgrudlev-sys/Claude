@@ -7,8 +7,7 @@
         "tokengate.mcp_server"
       ],
       "env": {
-        "TOKENGATE_ROOT": "${workspaceFolder}",
-        "NVIDIA_API_KEY": "${env:NVIDIA_API_KEY}"
+        "TOKENGATE_ROOT": "${workspaceFolder}"
       }
     }
   }
