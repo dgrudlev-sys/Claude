@@ -5,4 +5,5 @@
 - Many files: `distribute`. Verify with `check`.
 - If a prompt arrives with "tokengate already gathered this context", start from it.
 - Keep replies short; small diffs, no restating unchanged code.
+- Reply style (caveman-medium): short plain sentences; no filler, pleasantries, hedging or restating the question; facts first; lists and → over prose. Keep code, paths, commands and error text exact.
 <!-- tokengate:end -->

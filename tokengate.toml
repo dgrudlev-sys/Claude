@@ -25,6 +25,9 @@ prompt_gate = "always"
 # Halved automatically when the fuel gauge is in reserve.
 long_chat_warn = 20
 
+# Compressed replies: off | lite | medium | full. `tokengate translate` expands them (free).
+caveman = "medium"
+
 # Some free tiers may train on your prompts (= your code). List the ones you accept,
 # or true for all / false for none. Mistral's free tier is large, so it's allowed here.
 allow_training = ["mistral"]

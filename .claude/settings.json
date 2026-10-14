@@ -22,6 +22,18 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "timeout": 120,
+            "command": "python3 -c \"import tokengate\" 2>/dev/null && python3 -m tokengate.style || echo \"{}\""
+          }
+        ]
+      }
     ]
   },
   "enabledMcpjsonServers": [
