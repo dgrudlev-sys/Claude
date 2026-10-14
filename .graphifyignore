@@ -1,0 +1,12 @@
+node_modules/
+.git/
+.expo/
+android/
+ios/
+build/
+dist/
+__pycache__/
+.venv/
+.tokengate/
+coverage/
+Pods/

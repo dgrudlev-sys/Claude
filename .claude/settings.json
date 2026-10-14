@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import tokengate\" 2>/dev/null && python3 -m tokengate.prompt_gate || echo \"{}\"",
+            "timeout": 90,
+            "statusMessage": "tokengate: trying free models first"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import tokengate\" 2>/dev/null || flock /tmp/tokengate-install.lock sh -c 'python3 -c \"import tokengate\" 2>/dev/null || python3 -m pip install -q \"tokengate[mcp] @ git+https://github.com/dgrudlev-sys/tokengate.git\" >/dev/null 2>&1' || true",
+            "timeout": 300
+          }
+        ]
+      }
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "tokengate"
+  ],
+  "permissions": {
+    "deny": [
+      "Read(**/node_modules/**)",
+      "Read(**/package-lock.json)",
+      "Read(**/yarn.lock)",
+      "Read(**/.tokengate/**)"
+    ]
+  }
+}

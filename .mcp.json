@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "tokengate": {
+      "command": "sh",
+      "args": [
+        "-c",
+        "python3 -c \"import tokengate\" 2>/dev/null || flock /tmp/tokengate-install.lock sh -c 'python3 -c \"import tokengate\" 2>/dev/null || python3 -m pip install -q \"tokengate[mcp] @ git+https://github.com/dgrudlev-sys/tokengate.git\" >/dev/null 2>&1'; exec python3 -m tokengate.mcp_server"
+      ]
+    }
+  }
+}
