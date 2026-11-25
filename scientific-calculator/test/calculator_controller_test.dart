@@ -22,6 +22,16 @@ void main() {
     expect(c.cursor, 0);
   });
 
+  test('insertAns pastes the last result at the cursor', () {
+    final c = CalculatorController();
+    c.input('5+3');
+    c.evaluate();
+    c.clear();
+    c.input('2*');
+    c.insertAns();
+    expect(c.expression, '2*8');
+  });
+
   test('evaluate stores history and recall restores the result', () {
     final c = CalculatorController();
     c.input('5+3');

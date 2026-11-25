@@ -32,11 +32,10 @@ Map<String, String> _s({
 final _simple = <String, Map<String, String>>{
   'en': _s(
     percentage: 'Percentage',
-    percentageDesc: 'What is 15% of 80? Or: 20 is what percent of 50?',
+    percentageDesc: 'Part of, reverse percent, percent change.',
     fractions: 'Fractions',
-    fractionsDesc: 'Add, subtract, multiply, or divide two fractions. The answer is simplified.',
-    convertDesc:
-        'Change units: money, length, cooking, temperature, volume, mass, data, speed, time, and tip.',
+    fractionsDesc: 'Add, subtract, multiply, divide; simplified.',
+    convertDesc: 'Units, currency, cooking, tip.',
     currency: 'Money',
     currencyDesc: 'Change dollars, euros, leva, and other currencies. The table updates about once a day.',
     cooking: 'Cooking',

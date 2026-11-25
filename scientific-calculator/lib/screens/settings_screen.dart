@@ -145,7 +145,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               SwitchListTile(
                 title: Text(strings.openLast),
-                subtitle: const Text('Skip the chooser and go straight to the last tool you used'),
+                subtitle: Text(strings.openLastHint),
                 value: settings.openLastMode,
                 onChanged: settings.setOpenLastMode,
               ),

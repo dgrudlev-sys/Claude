@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:scientific_calculator/convert/fraction_math.dart';
+import 'package:scientific_calculator/convert/tool_explainers.dart';
 
 void main() {
   test('1/2 plus 1/3 is 5/6', () {
@@ -28,5 +29,58 @@ void main() {
 
   test('divide by zero fraction throws', () {
     expect(() => Fraction(1, 2) / Fraction(0, 1), throwsArgumentError);
+  });
+
+  test('1/2 plus 1/3 plus 1/6 is 1', () {
+    final c = evalFractionTerms([
+      Fraction(1, 2),
+      Fraction(1, 3),
+      Fraction(1, 6),
+    ], FractionOp.add);
+    expect(c.mixedLabel, '1');
+    expect(c.numerator, 1);
+    expect(c.denominator, 1);
+  });
+
+  test('subtracts three fractions in order', () {
+    final c = evalFractionTerms([
+      Fraction(3, 4),
+      Fraction(1, 4),
+      Fraction(1, 4),
+    ], FractionOp.subtract);
+    expect(c.mixedLabel, '1/4');
+  });
+
+  test('multiplies three fractions', () {
+    final c = evalFractionTerms([
+      Fraction(1, 2),
+      Fraction(1, 3),
+      Fraction(1, 4),
+    ], FractionOp.multiply);
+    expect(c.improperLabel, '1/24');
+  });
+
+  test('divides three fractions left to right', () {
+    final c = evalFractionTerms([
+      Fraction(1, 2),
+      Fraction(1, 2),
+      Fraction(1, 2),
+    ], FractionOp.divide);
+    expect(c.mixedLabel, '2');
+  });
+
+  test('add walkthrough rewrites three terms on a common denominator', () {
+    final steps = ToolExplainers.fractions(
+      Fraction(1, 2),
+      FractionOp.add,
+      Fraction(1, 3),
+      [Fraction(1, 6)],
+    ).steps;
+    expect(steps.first.words.toLowerCase(), contains('common denominator'));
+    expect(steps.first.words, contains('3/6'));
+    expect(steps.first.words, contains('2/6'));
+    expect(steps.first.words, contains('1/6'));
+    expect(steps.any((s) => s.symbols.contains('6/6')), isTrue);
+    expect(steps.any((s) => s.symbols.contains('1/1')), isTrue);
   });
 }

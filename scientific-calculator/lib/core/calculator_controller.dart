@@ -182,6 +182,16 @@ class CalculatorController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Last evaluated result, for the Ans key.
+  String? get lastAnswer => visibleHistory.firstOrNull?.result;
+
+  /// Inserts the last result at the cursor. No-op when history is empty.
+  void insertAns() {
+    final ans = lastAnswer;
+    if (ans == null) return;
+    input(ans);
+  }
+
   void evaluate() {
     if (_expression.isEmpty) return;
     try {

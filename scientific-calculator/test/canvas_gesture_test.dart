@@ -77,6 +77,10 @@ void main() {
   });
 
   testWidgets('Geometry canvas: a tap places a point through pointer events', (tester) async {
+    tester.view.physicalSize = const Size(411, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     final controller = GeometryController();
     addTearDown(controller.dispose);
 
@@ -96,6 +100,10 @@ void main() {
   });
 
   testWidgets('Geometry canvas: a tiny mouse jitter still counts as a tap, not a pan', (tester) async {
+    tester.view.physicalSize = const Size(411, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
     final controller = GeometryController();
     addTearDown(controller.dispose);
 

@@ -14,6 +14,17 @@ class AppMetrics {
 
   static const double radiusCard = 16;
   static const double radiusControl = 12;
+  /// Dense keypad: tighter than [radiusControl] so keys tessellate, not pillow.
+  static const double radiusKey = 8;
+
+  /// 4px between keys. Do not pad each key on both sides or this doubles to 8.
+  static const double keypadGutter = space1;
+  /// 4px from the screen edge — pad reads edge-to-edge, not floating islands.
+  static const double keypadInset = space1;
+  /// Wide window / landscape: functions on the left, Samsung numpad on the right.
+  static const double keypadWideMinWidth = 640;
+  /// Gap between the scientific cluster and the number pad in the wide layout.
+  static const double keypadPanelGutter = space2;
 
   static const double padCard = 16;
   static const double hairline = 1;

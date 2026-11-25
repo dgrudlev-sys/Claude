@@ -6,7 +6,7 @@ import '../convert/currency_service.dart';
 import '../convert/tool_explainers.dart';
 import '../l10n/l10n.dart';
 import '../theme/app_metrics.dart';
-import '../theme/app_theme.dart';
+import '../widgets/chooser_tile.dart';
 import '../widgets/numeric_field.dart';
 import '../widgets/steps_panel.dart';
 
@@ -117,29 +117,36 @@ class _ConvertScreenState extends State<ConvertScreen> {
   Widget _picker(BuildContext context) {
     final strings = L10n.stringsOf(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      padding: const EdgeInsets.only(top: AppMetrics.space2, bottom: AppMetrics.space4),
       children: [
-        Text(
-          strings.convertAsk,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppMetrics.space3, 0, AppMetrics.space3, AppMetrics.space2),
+          child: Text(
+            strings.convertAsk,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  height: AppMetrics.titleHeight,
+                  letterSpacing: AppMetrics.titleTracking,
+                ),
+          ),
         ),
-        const SizedBox(height: 8),
-        Text(
-          strings.convertPick,
-          style: Theme.of(context).textTheme.bodyMedium,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppMetrics.space3, 0, AppMetrics.space3, AppMetrics.space2),
+          child: Text(
+            strings.convertPick,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ),
-        const SizedBox(height: 12),
-        for (final category in ConvertCategory.values)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: _ChoiceCard(
+        ...ChooserTile.separated([
+          for (final category in ConvertCategory.values)
+            ChooserTile(
               key: Key('convert-${category.name}'),
+              icon: category.icon,
               title: strings.convertLabel(category.name),
               subtitle: strings.convertDescription(category.name),
-              icon: category.icon,
               onTap: () => _pick(category),
             ),
-          ),
+        ]),
       ],
     );
   }
@@ -520,74 +527,6 @@ class _ConvertScreenState extends State<ConvertScreen> {
         ),
         StepsPanel(explanation: explanation),
       ],
-    );
-  }
-}
-
-class _ChoiceCard extends StatelessWidget {
-  const _ChoiceCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
-    return Semantics(
-      button: true,
-      label: '$title. $subtitle',
-      child: Material(
-        color: Theme.of(context).colorScheme.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppMetrics.radiusCard),
-          side: BorderSide(color: Theme.of(context).colorScheme.outline),
-        ),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppMetrics.radiusCard),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Row(
-              children: [
-                Icon(icon, size: 32, color: palette.onButton),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: palette.onButton,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(Icons.arrow_forward_ios, size: 18),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -1,7 +1,8 @@
 /// The visual/keypad skins a user can pick between. All three share the
 /// same button set and math logic — only density, sizing, and contrast
 /// change, so accessibility is a first-class layout choice, not a bolt-on
-/// afterthought.
+/// afterthought. The number pad is always 4 columns; [columns] is a density
+/// hint for chrome, not a reason to rescale the Samsung numpad.
 enum LayoutStyle {
   classic(
     label: 'Classic',

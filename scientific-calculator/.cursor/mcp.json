@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "tokengate": {
+      "command": "C:\\Python314\\python.exe",
+      "args": [
+        "-m",
+        "tokengate.mcp_server"
+      ],
+      "env": {
+        "TOKENGATE_ROOT": "${workspaceFolder}"
+      }
+    }
+  }
+}

@@ -47,6 +47,39 @@ void main() {
     expect(find.textContaining('denominator'), findsWidgets);
   });
 
+  testWidgets('fractions add a third term 1/2 + 1/3 + 1/6 is 1', (tester) async {
+    await pumpApp(tester);
+    await chooseMode(tester, 'fractions');
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('fractions-add-term'), skipOffstage: false),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.byKey(const Key('fractions-add-term')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('frac-n3')), '1');
+    await tester.enterText(find.byKey(const Key('frac-d3')), '6');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('1/2 plus 1/3 plus 1/6 is'), findsOneWidget);
+    final result = tester.widget<Text>(find.byKey(const Key('frac-result'))).data!;
+    expect(
+      result.contains(' is 1') || result.contains('1/1') || result.contains('6/6'),
+      isTrue,
+      reason: result,
+    );
+    final how = find.byKey(const Key('how-we-got-this'), skipOffstage: false);
+    expect(how, findsOneWidget);
+    await tester.ensureVisible(how);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('how-we-got-this')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('denominator'), findsWidgets);
+    expect(find.textContaining('3/6'), findsWidgets);
+    expect(find.textContaining('2/6'), findsWidgets);
+    expect(find.textContaining('1/6'), findsWidgets);
+    expect(find.text('Step 1'), findsNothing);
+  });
+
   testWidgets('currency converter uses stub rates', (tester) async {
     CurrencyService.instance = CurrencyService(
       fetch: (uri) async {

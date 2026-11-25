@@ -42,8 +42,7 @@ class CalculatorPalette extends ThemeExtension<CalculatorPalette> {
   final Color operatorButton;
   final Color functionButton;
   final Color actionButton;
-  /// Destructive "clear everything" key. Always paired with the letters AC
-  /// (or the locale equivalent) so color is never the only signal.
+  /// Destructive clear key. Always the letter C so color is never the only signal.
   final Color clearButton;
   final Color equalsButton;
   final Color onButton;
@@ -153,7 +152,7 @@ ThemeData _highContrastTheme() {
         operatorButton: sky,
         functionButton: Color(0xFF1A1A1A),
         actionButton: Color(0xFF2A2A2A),
-        // Dark red + the letters AC — color-blind users still read the label.
+        // Dark red + the letter C — color-blind users still read the label.
         clearButton: Color(0xFFB71C1C),
         equalsButton: yellow,
         onButton: Colors.white,
@@ -186,30 +185,55 @@ ThemeData _storyTheme(ColorStory story) {
 
 ThemeData _withType(ThemeData theme, TypeVoice voice) {
   final on = theme.colorScheme.onSurface;
+  final surface = theme.colorScheme.surface;
   final text = theme.textTheme.apply(fontFamily: voice.uiFamily, bodyColor: on, displayColor: on);
+  final titled = text.copyWith(
+    titleLarge: text.titleLarge?.copyWith(
+      fontFamily: voice.uiFamily,
+      fontWeight: FontWeight.w700,
+      height: 1.20,
+      letterSpacing: -0.3,
+    ),
+    titleMedium: text.titleMedium?.copyWith(
+      fontFamily: voice.uiFamily,
+      fontWeight: FontWeight.w600,
+      height: AppMetrics.titleHeight,
+      letterSpacing: AppMetrics.titleTracking,
+    ),
+    bodyMedium: text.bodyMedium?.copyWith(
+      fontFamily: voice.uiFamily,
+      height: AppMetrics.bodyHeight,
+    ),
+    bodySmall: text.bodySmall?.copyWith(
+      fontFamily: voice.uiFamily,
+      height: AppMetrics.captionHeight,
+      letterSpacing: AppMetrics.captionTracking,
+    ),
+  );
   return theme.copyWith(
-    textTheme: text.copyWith(
-      titleLarge: text.titleLarge?.copyWith(
-        fontFamily: voice.uiFamily,
-        fontWeight: FontWeight.w700,
-        height: 1.20,
-        letterSpacing: -0.3,
+    textTheme: titled,
+    iconTheme: IconThemeData(color: on, size: AppMetrics.iconSize),
+    primaryIconTheme: IconThemeData(color: theme.colorScheme.primary, size: AppMetrics.iconSize),
+    appBarTheme: AppBarTheme(
+      backgroundColor: surface,
+      foregroundColor: on,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
+      iconTheme: IconThemeData(color: on, size: AppMetrics.iconSize),
+      actionsIconTheme: IconThemeData(color: on, size: AppMetrics.iconSize),
+      titleTextStyle: titled.titleLarge?.copyWith(color: on),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: on,
+        iconColor: on,
       ),
-      titleMedium: text.titleMedium?.copyWith(
-        fontFamily: voice.uiFamily,
-        fontWeight: FontWeight.w600,
-        height: AppMetrics.titleHeight,
-        letterSpacing: AppMetrics.titleTracking,
-      ),
-      bodyMedium: text.bodyMedium?.copyWith(
-        fontFamily: voice.uiFamily,
-        height: AppMetrics.bodyHeight,
-      ),
-      bodySmall: text.bodySmall?.copyWith(
-        fontFamily: voice.uiFamily,
-        height: AppMetrics.captionHeight,
-        letterSpacing: AppMetrics.captionTracking,
-      ),
+    ),
+    dividerTheme: DividerThemeData(
+      color: on.withValues(alpha: 0.35),
+      thickness: AppMetrics.hairline,
+      space: 1,
     ),
     extensions: [
       theme.extension<CalculatorPalette>()!,

@@ -1,46 +1,165 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:scientific_calculator/theme/app_theme.dart';
+
 import 'test_helpers.dart';
 
 void main() {
-  testWidgets('chooser lists every calculator including Convert', (tester) async {
+  testWidgets('chooser lists Convert, Percentage, Fractions, Graph, and Solve up front',
+      (tester) async {
     await pumpApp(tester);
+    await openChooser(tester);
     expect(find.text('Choose a calculator'), findsOneWidget);
     expect(find.byKey(const Key('mode-calculator')), findsOneWidget);
     expect(find.byKey(const Key('mode-convert')), findsOneWidget);
     expect(find.byKey(const Key('mode-percentage')), findsOneWidget);
     expect(find.byKey(const Key('mode-fractions')), findsOneWidget);
     expect(find.byKey(const Key('mode-graph')), findsOneWidget);
-    expect(find.byKey(const Key('mode-surface3d')), findsOneWidget);
-    expect(find.byKey(const Key('mode-geometry')), findsOneWidget);
-    expect(find.byKey(const Key('mode-matrix')), findsOneWidget);
-    expect(find.byKey(const Key('mode-statistics')), findsOneWidget);
-    expect(find.byKey(const Key('mode-finance')), findsOneWidget);
     expect(find.byKey(const Key('mode-solve')), findsOneWidget);
+    expect(find.byKey(const Key('mode-finance')), findsNothing);
+    expect(find.byKey(const Key('mode-matrix')), findsNothing);
+    expect(find.byKey(const Key('mode-geometry')), findsNothing);
+    expect(find.byKey(const Key('mode-statistics')), findsNothing);
+    expect(find.byKey(const Key('mode-surface3d')), findsNothing);
   });
 
-  testWidgets('everyday tools sit above grouped advanced calculators', (tester) async {
+  testWidgets('Finance is absent from home and the chooser', (tester) async {
     await pumpApp(tester);
-    expect(find.text('Graphs and shapes'), findsOneWidget);
-    expect(find.text('More math'), findsOneWidget);
-    expect(find.text('Money'), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display')), findsOneWidget);
+    expect(find.text('7'), findsOneWidget);
+    expect(find.text('='), findsOneWidget);
+    expect(find.byKey(const Key('mode-finance')), findsNothing);
+    expect(find.text('Finance'), findsNothing);
+
+    await openChooser(tester);
+    expect(find.byKey(const Key('mode-finance')), findsNothing);
+    expect(find.text('Finance'), findsNothing);
+    expect(find.text('Money'), findsNothing);
+  });
+
+  testWidgets('More contains Statistics, Matrix, Geometry, and 3D', (tester) async {
+    await pumpApp(tester);
+    await openChooser(tester);
+
+    expect(find.byKey(const Key('chooser-more')), findsOneWidget);
+    expect(find.text('More'), findsOneWidget);
+    expect(find.byKey(const Key('mode-matrix')), findsNothing);
+
+    await tester.tap(find.byKey(const Key('chooser-more')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('mode-statistics')), findsOneWidget);
+    expect(find.byKey(const Key('mode-matrix')), findsOneWidget);
+    expect(find.byKey(const Key('mode-geometry')), findsOneWidget);
+    expect(find.byKey(const Key('mode-surface3d')), findsOneWidget);
+    expect(find.byKey(const Key('mode-finance')), findsNothing);
+
+    final moreTop = tester.getTopLeft(find.byKey(const Key('chooser-more'))).dy;
+    expect(moreTop > tester.getBottomLeft(find.byKey(const Key('mode-solve'))).dy, isTrue);
+    expect(
+      tester.getTopLeft(find.byKey(const Key('mode-statistics'))).dy > moreTop,
+      isTrue,
+    );
+    expect(
+      tester.getTopLeft(find.byKey(const Key('mode-matrix'))).dy >
+          tester.getTopLeft(find.byKey(const Key('mode-statistics'))).dy,
+      isTrue,
+    );
+  });
+
+  testWidgets('Convert shortcut on calculator chrome opens Convert', (tester) async {
+    await pumpApp(tester);
+    expect(find.byKey(const Key('convert-shortcut')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('convert-shortcut')));
+    await tester.pumpAndSettle();
+    expect(find.text('What do you want to convert?'), findsOneWidget);
+    expect(find.byKey(const Key('convert-currency')), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display')), findsNothing);
+  });
+
+  testWidgets('chooser rows are full-bleed with no gap', (tester) async {
+    await pumpApp(tester);
+    await openChooser(tester);
+
+    final calc = tester.getRect(find.byKey(const Key('mode-calculator')));
+    final convert = tester.getRect(find.byKey(const Key('mode-convert')));
+    final scaffold = tester.getRect(find.byType(Scaffold).first);
+    expect(calc.left, scaffold.left);
+    expect(calc.right, scaffold.right);
+    // Settings-style hairline Divider between tiles — not an 8–16px gap.
+    expect(convert.top - calc.bottom, lessThanOrEqualTo(1.5));
+    expect(convert.top, greaterThanOrEqualTo(calc.bottom));
+  });
+
+  testWidgets('chooser has no trailing chevrons', (tester) async {
+    await pumpApp(tester);
+    await openChooser(tester);
+    expect(find.byIcon(Icons.arrow_forward_ios), findsNothing);
+  });
+
+  testWidgets('last used icon uses ColorStory highlight', (tester) async {
+    await pumpApp(tester);
+    await chooseMode(tester, 'percentage');
+    await openChooser(tester);
+
+    final context = tester.element(find.byKey(const Key('mode-percentage')));
+    final highlight = Theme.of(context).extension<CalculatorPalette>()!.equalsButton;
+    final percentIcon = tester.widget<Icon>(
+      find.descendant(
+        of: find.byKey(const Key('mode-percentage')),
+        matching: find.byIcon(Icons.percent),
+      ),
+    );
+    expect(percentIcon.color, highlight);
+
+    final calcIcon = tester.widget<Icon>(
+      find.descendant(
+        of: find.byKey(const Key('mode-calculator')),
+        matching: find.byIcon(Icons.calculate_outlined),
+      ),
+    );
+    expect(calcIcon.color, Theme.of(context).colorScheme.onSurface);
+  });
+
+  testWidgets('percentage questions are full-bleed rows, not cards', (tester) async {
+    await pumpApp(tester);
+    await chooseMode(tester, 'percentage');
+    final row = tester.getRect(find.byKey(const Key('percent-of')));
+    final scaffold = tester.getRect(find.byType(Scaffold).first);
+    expect(row.left, scaffold.left);
+    expect(row.right, scaffold.right);
+    expect(find.byIcon(Icons.arrow_forward_ios), findsNothing);
+  });
+
+  testWidgets('last used is a check and label, not a card outline', (tester) async {
+    await pumpApp(tester);
+    await chooseMode(tester, 'percentage');
+    await openChooser(tester);
+    expect(find.text('Last used'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('mode-percentage')),
+        matching: find.byIcon(Icons.check),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('primary tools sit above More', (tester) async {
+    await pumpApp(tester);
+    await openChooser(tester);
 
     final fractionsBottom = tester.getBottomLeft(find.byKey(const Key('mode-fractions'))).dy;
-    expect(fractionsBottom < tester.getTopLeft(find.text('Graphs and shapes')).dy, isTrue);
+    expect(fractionsBottom < tester.getTopLeft(find.byKey(const Key('mode-graph'))).dy, isTrue);
     expect(
-      tester.getTopLeft(find.text('Graphs and shapes')).dy <
-          tester.getTopLeft(find.byKey(const Key('mode-graph'))).dy,
+      tester.getTopLeft(find.byKey(const Key('mode-graph'))).dy <
+          tester.getTopLeft(find.byKey(const Key('mode-solve'))).dy,
       isTrue,
     );
     expect(
-      tester.getTopLeft(find.text('More math')).dy <
-          tester.getTopLeft(find.byKey(const Key('mode-matrix'))).dy,
-      isTrue,
-    );
-    expect(
-      tester.getTopLeft(find.text('Money')).dy <
-          tester.getTopLeft(find.byKey(const Key('mode-finance'))).dy,
+      tester.getTopLeft(find.byKey(const Key('mode-solve'))).dy <
+          tester.getTopLeft(find.byKey(const Key('chooser-more'))).dy,
       isTrue,
     );
   });
@@ -94,20 +213,12 @@ void main() {
 
     await tester.tap(find.byKey(const Key('switch-calculator')));
     await tester.pumpAndSettle();
-    await chooseMode(tester, 'fractions');
-    expect(find.text('Two fractions.'), findsOneWidget);
+    expect(find.byKey(const Key('mode-fractions')), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('switch-calculator')));
-    await tester.pumpAndSettle();
     await chooseMode(tester, 'convert');
     expect(find.text('What do you want to convert?'), findsOneWidget);
     expect(find.byKey(const Key('convert-currency')), findsOneWidget);
     expect(find.byKey(const Key('convert-cooking')), findsOneWidget);
-
-    await tester.tap(find.byKey(const Key('switch-calculator')));
-    await tester.pumpAndSettle();
-    await chooseMode(tester, 'finance');
-    expect(find.text('Simple interest'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('switch-calculator')));
     await tester.pumpAndSettle();

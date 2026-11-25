@@ -10,6 +10,7 @@ import '../geometry/geometry_models.dart';
 import '../geometry/geometry_painter.dart';
 import '../l10n/l10n.dart';
 import '../theme/app_theme.dart';
+import '../widgets/chooser_tile.dart';
 import '../widgets/numeric_field.dart';
 
 class GeometryScreen extends StatefulWidget {
@@ -303,85 +304,17 @@ class _ToolGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = L10n.stringsOf(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          const gap = 6.0;
-          final tileW = (constraints.maxWidth - gap) / 2;
-          return Wrap(
-            spacing: gap,
-            runSpacing: gap,
-            children: [
-              for (final tool in GeometryTool.values)
-                SizedBox(
-                  width: tileW,
-                  height: 44,
-                  child: _ToolTile(
-                    tool: tool,
-                    selected: controller.tool == tool,
-                    label: strings.geometryTool(tool.name),
-                    hint: strings.geometryHint(tool.name),
-                    onTap: () => controller.setTool(tool),
-                  ),
-                ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _ToolTile extends StatelessWidget {
-  const _ToolTile({
-    required this.tool,
-    required this.selected,
-    required this.label,
-    required this.hint,
-    required this.onTap,
-  });
-
-  final GeometryTool tool;
-  final bool selected;
-  final String label;
-  final String hint;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
-    return Semantics(
-      button: true,
-      selected: selected,
-      label: '$label. $hint${selected ? ' Selected.' : ''}',
-      child: Material(
-        color: selected ? palette.equalsButton.withValues(alpha: 0.35) : palette.functionButton,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-            color: selected ? palette.selectedBorder : palette.onButton,
-            width: selected ? 3 : 1,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: ChooserTile.separated([
+        for (final tool in GeometryTool.values)
+          ChooserTile(
+            key: Key('geometry-tool-${tool.name}'),
+            title: strings.geometryTool(tool.name),
+            selected: controller.tool == tool,
+            onTap: () => controller.setTool(tool),
           ),
-        ),
-        child: InkWell(
-          key: Key('geometry-tool-${tool.name}'),
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
-          child: Center(
-            child: Text(
-              selected ? '$label ✓' : label,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: palette.onButton,
-                  ),
-            ),
-          ),
-        ),
-      ),
+      ]),
     );
   }
 }

@@ -23,16 +23,15 @@ class CalculatorApp extends StatefulWidget {
 }
 
 class _CalculatorAppState extends State<CalculatorApp> {
-  CalculatorMode? _mode;
+  late CalculatorMode _mode;
+  var _showChooser = false;
 
   @override
   void initState() {
     super.initState();
     final settings = widget.settings;
     CurrencyService.instance.attachPrefs(settings.prefs);
-    if (settings.openLastMode && settings.lastMode != null) {
-      _mode = settings.lastMode;
-    }
+    _mode = _launchMode(settings);
   }
 
   @override
@@ -73,19 +72,33 @@ class _CalculatorAppState extends State<CalculatorApp> {
                     settings: settings,
                     asFirstLaunch: true,
                   )
-                : _mode == null
+                : _showChooser
                     ? ModePickerScreen(
                         settings: settings,
-                        onChosen: (mode) => setState(() => _mode = mode),
+                        onChosen: (mode) => setState(() {
+                          _mode = mode;
+                          _showChooser = false;
+                        }),
                       )
                     : HomeShell(
                         settings: settings,
-                        mode: _mode!,
-                        onChangeCalculator: () => setState(() => _mode = null),
+                        mode: _mode,
+                        onChangeCalculator: () => setState(() => _showChooser = true),
+                        onSelectMode: (mode) => setState(() {
+                          _mode = mode;
+                          _showChooser = false;
+                        }),
                       ),
           ),
         );
       },
     );
   }
+}
+
+CalculatorMode _launchMode(SettingsController settings) {
+  if (!settings.openLastMode) return CalculatorMode.calculator;
+  final last = settings.lastMode;
+  if (last == null || !last.inChooser) return CalculatorMode.calculator;
+  return last;
 }

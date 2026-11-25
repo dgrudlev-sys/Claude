@@ -18,6 +18,8 @@ const _kOpenLastModeKey = 'open_last_mode';
 const _kLanguageKey = 'language_code';
 const _kColorStoryKey = 'color_story';
 const _kTypeVoiceKey = 'type_voice';
+const _kScientificKeypadKey = 'scientific_keypad';
+const _kChooserMoreExpandedKey = 'chooser_more_expanded';
 
 /// User-configurable app settings, persisted via [SharedPreferences].
 class SettingsController extends ChangeNotifier {
@@ -43,7 +45,9 @@ class SettingsController extends ChangeNotifier {
         _typeVoice = TypeVoice.values.firstWhere(
           (s) => s.name == _prefs.getString(_kTypeVoiceKey),
           orElse: () => TypeVoice.laboratory,
-        );
+        ),
+        _scientificKeypad = _prefs.getBool(_kScientificKeypadKey) ?? false,
+        _chooserMoreExpanded = _prefs.getBool(_kChooserMoreExpandedKey) ?? false;
 
   static Future<SettingsController> create() async {
     final prefs = await SharedPreferences.getInstance();
@@ -78,6 +82,8 @@ class SettingsController extends ChangeNotifier {
   AppLanguage? _language;
   ColorStory _colorStory;
   TypeVoice _typeVoice;
+  bool _scientificKeypad;
+  bool _chooserMoreExpanded;
 
   LayoutStyle get layoutStyle => _layoutStyle;
   VisionProfile get visionProfile => _visionProfile;
@@ -89,6 +95,8 @@ class SettingsController extends ChangeNotifier {
   AppLanguage? get language => _language;
   ColorStory get colorStory => _colorStory;
   TypeVoice get typeVoice => _typeVoice;
+  bool get scientificKeypad => _scientificKeypad;
+  bool get chooserMoreExpanded => _chooserMoreExpanded;
   SharedPreferences get prefs => _prefs;
 
   Future<void> setLayoutStyle(LayoutStyle style) async {
@@ -149,5 +157,17 @@ class SettingsController extends ChangeNotifier {
     _typeVoice = voice;
     notifyListeners();
     await _prefs.setString(_kTypeVoiceKey, voice.name);
+  }
+
+  Future<void> setScientificKeypad(bool enabled) async {
+    _scientificKeypad = enabled;
+    notifyListeners();
+    await _prefs.setBool(_kScientificKeypadKey, enabled);
+  }
+
+  Future<void> setChooserMoreExpanded(bool expanded) async {
+    _chooserMoreExpanded = expanded;
+    notifyListeners();
+    await _prefs.setBool(_kChooserMoreExpandedKey, expanded);
   }
 }

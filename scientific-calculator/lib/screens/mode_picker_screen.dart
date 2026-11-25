@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import '../core/calculator_mode.dart';
 import '../l10n/l10n.dart';
 import '../services/settings_controller.dart';
+import '../theme/app_metrics.dart';
+import '../widgets/chooser_tile.dart';
 import 'language_picker_screen.dart';
 import 'settings_screen.dart';
 
-/// First screen: pick which calculator to use. Large targets, spoken
-/// labels that include a short description — a screen-reader user should
-/// never have to guess what a tab icon means.
+/// Apps list: Calculator through Solve up front; Statistics, Matrix,
+/// Geometry, and 3D under More. Finance is not listed here.
 class ModePickerScreen extends StatelessWidget {
   const ModePickerScreen({
     super.key,
@@ -23,6 +24,7 @@ class ModePickerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final last = settings.lastMode;
     final strings = L10n.stringsOf(context);
+    final moreOpen = settings.chooserMoreExpanded;
     return Scaffold(
       appBar: AppBar(
         title: FittedBox(
@@ -32,7 +34,10 @@ class ModePickerScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.translate),
+            icon: AlignedGlyph(
+              icon: Icons.translate,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             tooltip: strings.language,
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
@@ -41,7 +46,10 @@ class ModePickerScreen extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: AlignedGlyph(
+              icon: Icons.settings_outlined,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             tooltip: strings.settings,
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => SettingsScreen(settings: settings)),
@@ -49,59 +57,136 @@ class ModePickerScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-            Text(
-              strings.chooseCalculatorHint,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 12),
-            for (final mode in CalculatorMode.values.where((m) => m.isEveryday))
-              _modeCard(mode, last),
-            for (final groupId in CalculatorMode.chooserGroupOrder) ...[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
-                child: Semantics(
-                  header: true,
-                  child: Text(
-                    strings.groupLabel(groupId),
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                  ),
-                ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppMetrics.space3,
+                12,
+                AppMetrics.space3,
+                AppMetrics.space2,
               ),
-              for (final mode in CalculatorMode.values.where((m) => m.chooserGroup == groupId))
-                _modeCard(mode, last),
-            ],
+              child: Text(
+                strings.chooseCalculatorHint,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      height: AppMetrics.bodyHeight,
+                    ),
+              ),
+            ),
+            ...ChooserTile.separated([
+              for (final mode in CalculatorMode.primaryChooserOrder) _modeTile(mode, last),
+            ]),
+            const ChooserDivider(),
+            _MoreHeader(
+              expanded: moreOpen,
+              onToggle: () => settings.setChooserMoreExpanded(!moreOpen),
+            ),
+            AnimatedSize(
+              duration: AppMotion.standard,
+              curve: AppMotion.inOut,
+              alignment: Alignment.topCenter,
+              child: moreOpen
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const ChooserDivider(),
+                        ...ChooserTile.separated([
+                          for (final mode in CalculatorMode.moreChooserOrder) _modeTile(mode, last),
+                        ]),
+                      ],
+                    )
+                  : const SizedBox(width: double.infinity),
+            ),
+            const SizedBox(height: AppMetrics.space4),
           ],
-          ),
         ),
       ),
     );
   }
 
-  Widget _modeCard(CalculatorMode mode, CalculatorMode? last) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: _ModeCard(
-        mode: mode,
-        isLastUsed: last == mode,
-        onChosen: () {
-          settings.setLastMode(mode);
-          onChosen(mode);
-        },
+  Widget _modeTile(CalculatorMode mode, CalculatorMode? last) {
+    return _ModeTile(
+      mode: mode,
+      isLastUsed: last == mode,
+      onChosen: () {
+        settings.setLastMode(mode);
+        onChosen(mode);
+      },
+    );
+  }
+}
+
+class _MoreHeader extends StatelessWidget {
+  const _MoreHeader({
+    required this.expanded,
+    required this.onToggle,
+  });
+
+  final bool expanded;
+  final VoidCallback onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final strings = L10n.stringsOf(context);
+    final theme = Theme.of(context);
+    final onSurface = theme.colorScheme.onSurface;
+    final expandIcon = expanded ? Icons.expand_less : Icons.expand_more;
+    final nudge = expanded ? 1.5 : -1.5;
+    return Semantics(
+      button: true,
+      header: true,
+      expanded: expanded,
+      label: strings.groupLabel('more'),
+      child: InkWell(
+        key: const Key('chooser-more'),
+        onTap: onToggle,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppMetrics.space3,
+              12,
+              AppMetrics.space3,
+              AppMetrics.space2,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      strings.groupLabel('more'),
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        height: 1.20,
+                        letterSpacing: -0.3,
+                        color: onSurface,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: AppMetrics.iconSize,
+                  height: AppMetrics.iconSize,
+                  child: Transform.translate(
+                    offset: Offset(0, nudge),
+                    child: Icon(expandIcon, size: AppMetrics.iconSize, color: onSurface),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 }
 
-class _ModeCard extends StatelessWidget {
-  const _ModeCard({
+class _ModeTile extends StatelessWidget {
+  const _ModeTile({
     required this.mode,
     required this.isLastUsed,
     required this.onChosen,
@@ -114,73 +199,14 @@ class _ModeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final strings = L10n.stringsOf(context);
-    final label = strings.modeLabel(mode.name);
-    final description = strings.modeDescription(mode.name);
-    return Semantics(
-      button: true,
-      label: '$label. $description${isLastUsed ? '. ${strings.lastUsed}.' : ''}',
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 64),
-        child: Material(
-          color: Theme.of(context).colorScheme.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: BorderSide(
-              color: isLastUsed
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.outline,
-              width: isLastUsed ? 3 : 1,
-            ),
-          ),
-          child: InkWell(
-            key: Key('mode-${mode.name}'),
-            onTap: onChosen,
-            borderRadius: BorderRadius.circular(14),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                children: [
-                  Icon(mode.icon, size: 32),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          description,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        if (isLastUsed)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              strings.lastUsed,
-                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.arrow_forward_ios, size: 18),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+    return ChooserTile(
+      key: Key('mode-${mode.name}'),
+      icon: mode.icon,
+      title: strings.modeLabel(mode.name),
+      subtitle: strings.modeDescription(mode.name),
+      caption: isLastUsed ? strings.lastUsed : null,
+      selected: isLastUsed,
+      onTap: onChosen,
     );
   }
 }

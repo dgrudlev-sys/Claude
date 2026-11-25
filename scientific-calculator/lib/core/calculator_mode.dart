@@ -1,67 +1,61 @@
 import 'package:flutter/material.dart';
 
-/// The top-level calculator a user picks on the chooser screen.
-///
-/// Set is based on what actually ships in the best tools people already
-/// use, then written in plain language:
-/// - Samsung/Google: everyday arithmetic + Convert (units and tip)
-/// - Casio ClassWiz: Calculate, Statistics, Matrix, Equation
-/// - TI-84: Graph, Finance, Matrix, Stat, Solver
-/// - GeoGebra: Geometry constructions and 3D surfaces
+/// Tools on the chooser. Finance stays on the enum for math and tests,
+/// but is not listed on this app's home.
 enum CalculatorMode {
   calculator(
     label: 'Calculator',
-    description: 'Add, subtract, multiply, and divide. Also sin, logs, and powers. History keeps your last sums.',
+    description: 'Arithmetic, powers, trig. History keeps recent results.',
     icon: Icons.calculate_outlined,
   ),
   convert(
     label: 'Convert',
-    description: 'Change units: money, length, cooking, temperature, volume, mass, data, speed, time, and tip.',
+    description: 'Units, currency, cooking, tip.',
     icon: Icons.swap_horiz,
   ),
   percentage(
     label: 'Percentage',
-    description: 'What is 15% of 80? Or: 20 is what percent of 50?',
+    description: 'Part of, reverse percent, percent change.',
     icon: Icons.percent,
   ),
   fractions(
     label: 'Fractions',
-    description: 'Add, subtract, multiply, or divide two fractions. The answer is simplified.',
+    description: 'Add, subtract, multiply, divide; simplified.',
     icon: Icons.pie_chart_outline,
   ),
   graph(
     label: 'Graph',
-    description: 'Draw a picture of a formula, like y = x².',
+    description: 'Plot a formula. Table of values.',
     icon: Icons.show_chart,
   ),
   surface3d(
     label: '3D',
-    description: 'Spin a 3D picture of z = f(x, y).',
+    description: 'Plot z = f(x, y).',
     icon: Icons.view_in_ar_outlined,
   ),
   geometry(
     label: 'Geometry',
-    description: 'Add points by tapping or typing x and y. Then draw lines, circles, and measure.',
+    description: 'Points, lines, circles, measure.',
     icon: Icons.change_history,
   ),
   matrix(
     label: 'Matrix',
-    description: 'Work with grids of numbers: add, multiply, determinant, inverse.',
+    description: 'Add, multiply, det, inverse.',
     icon: Icons.grid_on,
   ),
   statistics(
     label: 'Statistics',
-    description: 'Average, spread, best-fit line, and chance (normal, binomial).',
+    description: 'Mean, spread, fit, distributions.',
     icon: Icons.bar_chart,
   ),
   finance(
     label: 'Finance',
-    description: 'Interest, loans, savings, and monthly payments — in plain words.',
+    description: 'Interest, loans, savings, and monthly payments.',
     icon: Icons.attach_money,
   ),
   solve(
     label: 'Solve',
-    description: 'Find x in an equation. Also polynomial roots and derivatives.',
+    description: 'Find x, polynomial roots, derivative.',
     icon: Icons.functions,
   );
 
@@ -75,19 +69,34 @@ enum CalculatorMode {
   final String description;
   final IconData icon;
 
-  /// Everyday tools stay ungrouped at the top of the chooser.
-  bool get isEveryday => switch (this) {
-        calculator || convert || percentage || fractions => true,
+  /// Finance is kept on the enum for math/tests, but not on this app's home.
+  bool get inChooser => this != finance;
+
+  /// Always-visible chooser rows (Calc through Solve).
+  bool get isPrimary => switch (this) {
+        calculator || convert || percentage || fractions || graph || solve => true,
         _ => false,
       };
 
-  /// Section under which this mode is listed. Null = everyday, on top.
-  String? get chooserGroup => switch (this) {
-        graph || surface3d || geometry => 'graphs',
-        matrix || statistics || solve => 'school',
-        finance => 'money',
-        _ => null,
+  /// Collapsed under More: Statistics, Matrix, Geometry, 3D.
+  bool get isMore => switch (this) {
+        statistics || matrix || geometry || surface3d => true,
+        _ => false,
       };
 
-  static const chooserGroupOrder = ['graphs', 'school', 'money'];
+  static const primaryChooserOrder = [
+    calculator,
+    convert,
+    percentage,
+    fractions,
+    graph,
+    solve,
+  ];
+
+  static const moreChooserOrder = [
+    statistics,
+    matrix,
+    geometry,
+    surface3d,
+  ];
 }

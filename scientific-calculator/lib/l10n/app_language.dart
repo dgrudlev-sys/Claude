@@ -10,7 +10,7 @@
 ///   and argument lists then use semicolon. US/UK/TI-84 OS keep a period.
 /// - Variable x is Latin even in Russian/Bulgarian textbooks' calculator apps.
 /// - French TI packs: "2nde" instead of "2nd"; Window → Fenêtre, Trace → Trace.
-/// We overlay decimal/argument separators and localized chrome (AC, 2nd,
+/// We overlay decimal/argument separators and localized chrome (C, 2nd,
 /// mode titles) without copying TI navy/silver trade dress.
 class AppLanguage {
   const AppLanguage({
@@ -21,7 +21,7 @@ class AppLanguage {
     required this.decimalSeparator,
     this.argumentSeparator = ',',
     this.secondKey = '2nd',
-    this.allClear = 'AC',
+    this.allClear = 'C',
     this.rtl = false,
     this.searchAliases = const [],
   });

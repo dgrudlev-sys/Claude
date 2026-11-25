@@ -65,4 +65,21 @@ void main() {
     await tester.pumpAndSettle();
     expect(settings.colorStory, ColorStory.tritanopia);
   });
+
+  testWidgets('Panther look tints app bar icons and history chrome', (tester) async {
+    await pumpApp(tester);
+    await chooseMode(tester, 'calculator');
+
+    final onPad = ColorStory.panther.tokens.onDominant;
+    final appsTheme = IconTheme.of(tester.element(find.byIcon(Icons.apps)));
+    expect(appsTheme.color, onPad);
+
+    final settingsTheme = IconTheme.of(tester.element(find.byIcon(Icons.settings_outlined)));
+    expect(settingsTheme.color, onPad);
+
+    final historyIcon = tester.widget<Icon>(
+      find.descendant(of: find.byKey(const Key('history-button')), matching: find.byType(Icon)),
+    );
+    expect(historyIcon.color, onPad);
+  });
 }

@@ -80,13 +80,87 @@ void main() {
     await tester.tap(find.byKey(const Key('lang-ru')));
     await tester.pumpAndSettle();
     expect(settings.language?.code, 'ru');
-    expect(find.textContaining('калькулятор'), findsWidgets);
+    expect(find.byKey(const Key('calculator-display')), findsOneWidget);
+    expect(find.text('C'), findsOneWidget);
+    expect(find.text('AC'), findsNothing);
+    expect(find.text('Choose a calculator'), findsNothing);
+  });
+
+  testWidgets('picking English on first launch opens the basic calculator', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(411, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final settings = await SettingsController.create();
+    await tester.pumpWidget(CalculatorApp(settings: settings));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('lang-en')));
+    await tester.pumpAndSettle();
+    expect(settings.language?.code, 'en');
+    expect(find.byKey(const Key('calculator-display')), findsOneWidget);
+    expect(find.text('C'), findsOneWidget);
+    expect(find.text('5'), findsOneWidget);
+    expect(find.text('Choose a calculator'), findsNothing);
+    expect(find.text('sin'), findsNothing);
+  });
+
+  test('open last calculator at launch defaults to off', () async {
+    SharedPreferences.setMockInitialValues({});
+    final settings = await SettingsController.create();
+    expect(settings.openLastMode, isFalse);
+    expect(settings.lastMode, isNull);
+  });
+
+  testWidgets('a previous last mode does not trap launch away from Calculator', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'language_code': 'en',
+      'last_calculator_mode': 'matrix',
+    });
+    tester.view.physicalSize = const Size(411, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final settings = await SettingsController.create();
+    expect(settings.openLastMode, isFalse);
+    await tester.pumpWidget(CalculatorApp(settings: settings));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('calculator-display')), findsOneWidget);
+    expect(find.text('7'), findsOneWidget);
+    expect(find.text('='), findsOneWidget);
+    expect(find.text('Matrix A'), findsNothing);
+    expect(find.text('Choose a calculator'), findsNothing);
+  });
+
+  testWidgets('open last tool opted in restores that calculator', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'language_code': 'en',
+      'open_last_mode': true,
+      'last_calculator_mode': 'percentage',
+    });
+    tester.view.physicalSize = const Size(411, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final settings = await SettingsController.create();
+    expect(settings.openLastMode, isTrue);
+    await tester.pumpWidget(CalculatorApp(settings: settings));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Pick one question.'), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display')), findsNothing);
+    expect(find.text('Choose a calculator'), findsNothing);
   });
 
   testWidgets('Bulgarian chooser shows translated titles and subtitles', (tester) async {
     SharedPreferences.setMockInitialValues({'language_code': 'bg'});
     final settings = await SettingsController.create();
     await tester.pumpWidget(CalculatorApp(settings: settings));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('switch-calculator')));
     await tester.pumpAndSettle();
 
     expect(find.text('Калкулатор'), findsOneWidget);
@@ -100,10 +174,12 @@ void main() {
     final settings = await SettingsController.create();
     await tester.pumpWidget(CalculatorApp(settings: settings));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('mode-calculator')));
-    await tester.pumpAndSettle();
 
-    expect(find.text('2nde'), findsOneWidget);
+    expect(find.byKey(const Key('calculator-display')), findsOneWidget);
     expect(find.text(','), findsWidgets);
+
+    await tester.tap(find.byKey(const Key('key-sci')));
+    await tester.pumpAndSettle();
+    expect(find.text('2nde'), findsOneWidget);
   });
 }

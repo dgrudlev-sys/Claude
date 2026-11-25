@@ -1,15 +1,6 @@
 /// Chooser titles + subtitles, and Convert cards.
 ///
-/// Category set is the union of what the best everyday and school tools
-/// actually ship, not a TI clone:
-/// - **Samsung / Google Calculator** — one-tap arithmetic plus a Convert
-///   hub (length, area, temperature, volume, mass, data, speed, time, tip).
-/// - **Casio ClassWiz** — Calculate, Statistics, Matrix, Equation.
-/// - **TI-84** — Graph, Table/Solve, Finance (interest & TVM), Matrix, Stat.
-/// - **GeoGebra** — Geometry constructions and 3D surfaces.
-///
-/// Copy is plain language (a child should know what the card does). Every
-/// supported locale translates BOTH the title and the subtitle — falling
+/// Adult chooser copy. Every locale translates title and subtitle — falling
 /// back to English for the subtitle was the Bulgarian bug.
 library;
 
@@ -109,25 +100,25 @@ Map<String, String> _pack({
 final _tools = <String, Map<String, String>>{
   'en': _pack(
     calculator: 'Calculator',
-    calculatorDesc: 'Add, subtract, multiply, and divide. Also sin, logs, and powers. History keeps your last sums.',
+    calculatorDesc: 'Arithmetic, powers, trig. History keeps recent results.',
     convert: 'Convert',
-    convertDesc: 'Change units: length, area, temperature, volume, mass, data, speed, time, and tip.',
+    convertDesc: 'Units, currency, cooking, tip.',
     graph: 'Graph',
-    graphDesc: 'Draw a picture of a formula, like y = x².',
+    graphDesc: 'Plot a formula. Table of values.',
     surface3d: '3D',
-    surface3dDesc: 'Spin a 3D picture of z = f(x, y).',
+    surface3dDesc: 'Plot z = f(x, y).',
     geometry: 'Geometry',
-    geometryDesc: 'Add points by tapping or typing x and y. Then draw lines, circles, and measure.',
+    geometryDesc: 'Points, lines, circles, measure.',
     matrix: 'Matrix',
-    matrixDesc: 'Work with grids of numbers: add, multiply, determinant, inverse.',
+    matrixDesc: 'Add, multiply, det, inverse.',
     statistics: 'Statistics',
-    statisticsDesc: 'Average, spread, best-fit line, and chance (normal, binomial).',
+    statisticsDesc: 'Mean, spread, fit, distributions.',
     finance: 'Finance',
-    financeDesc: 'Interest, loans, savings, and monthly payments — in plain words.',
+    financeDesc: 'Interest, loans, savings, and monthly payments.',
     solve: 'Solve',
-    solveDesc: 'Find x in an equation. Also polynomial roots and derivatives.',
+    solveDesc: 'Find x, polynomial roots, derivative.',
     convertAsk: 'What do you want to convert?',
-    convertPick: 'Pick one. Each card is one job.',
+    convertPick: 'Pick one. Each row is one job.',
     area: 'Area',
     areaDesc: 'Square metres, acres, and other areas.',
     length: 'Length',

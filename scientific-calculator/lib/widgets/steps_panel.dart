@@ -54,7 +54,11 @@ class _StepsPanelState extends State<StepsPanel> {
                     SizedBox(
                       width: AppMetrics.iconSize,
                       height: AppMetrics.iconSize,
-                      child: Icon(Icons.menu_book_outlined, size: AppMetrics.iconSize),
+                      child: Icon(
+                        Icons.menu_book_outlined,
+                        size: AppMetrics.iconSize,
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
                     const SizedBox(width: AppMetrics.space2),
                     Expanded(

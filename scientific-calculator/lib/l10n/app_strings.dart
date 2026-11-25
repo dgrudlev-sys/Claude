@@ -29,12 +29,14 @@ class AppStrings {
   String get sound => _t('sound');
   String get haptics => _t('haptics');
   String get openLast => _t('openLast');
+  String get openLastHint => _t('openLastHint');
   String get history => _t('history');
   String get noEquations => _t('noEquations');
   String get pin => _t('pin');
   String get unpin => _t('unpin');
   String get hide => _t('hide');
   String get delete => _t('delete');
+  String get clear => _t('clear');
   String get clearAll => _t('clearAll');
   String get backspace => _t('backspace');
   String get cursorLeft => _t('cursorLeft');
@@ -51,6 +53,9 @@ class AppStrings {
   String get howWeGotThis => _t('howWeGotThis');
   String get howWeGotThisHint => _t('howWeGotThisHint');
   String get readEquation => _t('readEquation');
+  String get scientificKeypad => _t('scientificKeypad');
+  String get scientificKeypadOn => _t('scientificKeypadOn');
+  String get scientificKeypadOff => _t('scientificKeypadOff');
 
   String groupLabel(String id) => _t('group_$id');
   String modeLabel(String id) => _t('mode_$id');
@@ -73,10 +78,25 @@ class AppStrings {
 
   static const _en = {
     'chooseCalculator': 'Choose a calculator',
-    'chooseCalculatorHint': 'Select the tool you want. You can switch later from the top bar.',
+    'chooseCalculatorHint': 'Calculator is home. Convert, percentages, and the other tools are one tap away.',
+    'group_more': 'More',
+    'catalog.housing': 'Housing',
+    'catalog.food': 'Food & dining',
+    'catalog.activity': 'Lifestyle',
+    'catalog.travel': 'Travel',
+    'catalog.transport': 'Transport',
+    'catalog.care': 'Health & care',
+    'catalog.goals': 'Goals',
+    'catalog.money': 'Money',
+    'catalog.home': 'Housing',
+    'catalog.everyday': 'Food & dining',
     'group_graphs': 'Graphs and shapes',
     'group_school': 'More math',
+    'house.expense.restaurants': 'Restaurants',
+    'house.expense.coffee': 'Coffee',
+    'house.expense.takeout': 'Takeout',
     'group_money': 'Money',
+    'openLastHint': 'When on, the app opens the last tool instead of Calculator.',
     'lastUsed': 'Last used',
     'settings': 'Settings',
     'layout': 'Layout',
@@ -95,13 +115,14 @@ class AppStrings {
     'noLanguages': 'No languages match that search',
     'sound': 'Sound on key press',
     'haptics': 'Vibration on key press',
-    'openLast': 'Open last calculator at launch',
+    'openLast': 'Open last tool',
     'history': 'History',
     'noEquations': 'No calculations yet.',
     'pin': 'Pin',
     'unpin': 'Unpin',
     'hide': 'Hide',
     'delete': 'Delete',
+    'clear': 'Clear',
     'clearAll': 'Clear all, delete everything',
     'backspace': 'Backspace, delete character before cursor',
     'cursorLeft': 'Move cursor left',
@@ -118,6 +139,9 @@ class AppStrings {
     'howWeGotThis': 'How this was worked out',
     'howWeGotThisHint': 'Plain language, with the arithmetic beside it.',
     'readEquation': 'Read the equation',
+    'scientificKeypad': 'SCI',
+    'scientificKeypadOn': 'Scientific keypad, on',
+    'scientificKeypadOff': 'Scientific keypad, off',
     'mode_calculator': 'Calculator',
     'mode_convert': 'Convert',
     'mode_graph': 'Graph',
@@ -127,15 +151,15 @@ class AppStrings {
     'mode_statistics': 'Statistics',
     'mode_finance': 'Finance',
     'mode_solve': 'Solve',
-    'modeDesc_calculator': 'Arithmetic, trigonometry, powers, and equation history.',
-    'modeDesc_convert': 'Length, temperature, volume, tip, and other unit changers.',
-    'modeDesc_graph': 'Plot functions, parametric, polar, and sequences.',
-    'modeDesc_surface3d': 'Rotate a 3D surface of z equals f of x and y.',
-    'modeDesc_geometry': 'Construct points, lines, circles, and measurements.',
-    'modeDesc_matrix': 'Matrix arithmetic, determinant, inverse, and row reduction.',
-    'modeDesc_statistics': 'One-variable stats, regression, and distributions.',
-    'modeDesc_finance': 'Simple interest, loans, savings, and monthly payments.',
-    'modeDesc_solve': 'Numeric and polynomial equation solving, derivatives.',
+    'modeDesc_calculator': 'Arithmetic, powers, trig. History keeps recent results.',
+    'modeDesc_convert': 'Units, currency, cooking, tip.',
+    'modeDesc_graph': 'Plot a formula. Table of values.',
+    'modeDesc_surface3d': 'Plot z = f(x, y).',
+    'modeDesc_geometry': 'Points, lines, circles, measure.',
+    'modeDesc_matrix': 'Add, multiply, det, inverse.',
+    'modeDesc_statistics': 'Mean, spread, fit, distributions.',
+    'modeDesc_finance': 'Interest, loans, savings, and monthly payments.',
+    'modeDesc_solve': 'Find x, polynomial roots, derivative.',
     'geo_select': 'Move',
     'geo_point': 'Point',
     'geo_segment': 'Segment',
@@ -160,6 +184,7 @@ class AppStrings {
     'group_graphs': 'Graphiques et formes',
     'group_school': 'Plus de maths',
     'group_money': 'Argent',
+    'group_more': 'Plus',
     'lastUsed': 'Dernier utilisé',
     'settings': 'Réglages',
     'layout': 'Disposition',
@@ -178,6 +203,7 @@ class AppStrings {
     'unpin': 'Désépingler',
     'hide': 'Masquer',
     'delete': 'Supprimer',
+    'clear': 'Effacer',
     'clearAll': 'Tout effacer',
     'backspace': 'Retour arrière',
     'cursorLeft': 'Curseur à gauche',
@@ -189,6 +215,9 @@ class AppStrings {
     'result': 'Résultat',
     'error': 'Erreur',
     'angleMode': 'Mode d’angle',
+    'scientificKeypad': 'SCI',
+    'scientificKeypadOn': 'Clavier scientifique, activé',
+    'scientificKeypadOff': 'Clavier scientifique, désactivé',
   };
 
   static const _es = {
@@ -196,6 +225,7 @@ class AppStrings {
     'group_graphs': 'Gráficos y formas',
     'group_school': 'Más matemáticas',
     'group_money': 'Dinero',
+    'group_more': 'Más',
     'settings': 'Ajustes',
     'language': 'Idioma',
     'searchLanguages': 'Buscar idiomas',
@@ -206,7 +236,11 @@ class AppStrings {
     'switchCalculator': 'Elegir otra calculadora',
     'result': 'Resultado',
     'error': 'Error',
+    'clear': 'Borrar',
     'clearAll': 'Borrar todo',
+    'scientificKeypad': 'SCI',
+    'scientificKeypadOn': 'Teclado científico, activado',
+    'scientificKeypadOff': 'Teclado científico, desactivado',
   };
 
   static const _de = {
@@ -214,6 +248,7 @@ class AppStrings {
     'group_graphs': 'Grafiken und Formen',
     'group_school': 'Mehr Mathematik',
     'group_money': 'Geld',
+    'group_more': 'Mehr',
     'settings': 'Einstellungen',
     'language': 'Sprache',
     'searchLanguages': 'Sprachen suchen',
@@ -224,7 +259,11 @@ class AppStrings {
     'switchCalculator': 'Anderen Rechner wählen',
     'result': 'Ergebnis',
     'error': 'Fehler',
+    'clear': 'Löschen',
     'clearAll': 'Alles löschen',
+    'scientificKeypad': 'SCI',
+    'scientificKeypadOn': 'Wissenschaftliches Tastenfeld, an',
+    'scientificKeypadOff': 'Wissenschaftliches Tastenfeld, aus',
   };
 
   static const _bg = {
@@ -233,6 +272,7 @@ class AppStrings {
     'group_graphs': 'Графики и фигури',
     'group_school': 'Още математика',
     'group_money': 'Пари',
+    'group_more': 'Още',
     'lastUsed': 'Последно използван',
     'settings': 'Настройки',
     'layout': 'Изглед',
@@ -251,6 +291,7 @@ class AppStrings {
     'unpin': 'Откачи',
     'hide': 'Скрий',
     'delete': 'Изтрий',
+    'clear': 'Изчисти',
     'clearAll': 'Изчисти всичко',
     'backspace': 'Изтрий знака преди курсора',
     'cursorLeft': 'Курсор наляво',
@@ -262,6 +303,9 @@ class AppStrings {
     'result': 'Резултат',
     'error': 'Грешка',
     'angleMode': 'Режим на ъгли',
+    'scientificKeypad': 'SCI',
+    'scientificKeypadOn': 'Научна клавиатура, включена',
+    'scientificKeypadOff': 'Научна клавиатура, изключена',
   };
 
   static const _ru = {
@@ -269,6 +313,7 @@ class AppStrings {
     'group_graphs': 'Графики и фигуры',
     'group_school': 'Ещё математика',
     'group_money': 'Деньги',
+    'group_more': 'Ещё',
     'settings': 'Настройки',
     'language': 'Язык',
     'searchLanguages': 'Поиск языка',
@@ -279,7 +324,11 @@ class AppStrings {
     'switchCalculator': 'Выбрать другой калькулятор',
     'result': 'Результат',
     'error': 'Ошибка',
+    'clear': 'Очистить',
     'clearAll': 'Очистить всё',
+    'scientificKeypad': 'SCI',
+    'scientificKeypadOn': 'Научная клавиатура, включена',
+    'scientificKeypadOff': 'Научная клавиатура, выключена',
   };
 
   static const _tables = {

@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'test_helpers.dart';
+import 'package:scientific_calculator/screens/finance_screen.dart';
+import 'package:scientific_calculator/theme/app_theme.dart';
+import 'package:scientific_calculator/theme/layout_style.dart';
+
+/// Finance is off the scientific chooser; these tests host the worksheets
+/// directly so the math UI stays covered without a home-screen tile.
+Widget _financeApp() {
+  return MaterialApp(
+    theme: buildAppTheme(LayoutStyle.classic),
+    home: const Scaffold(body: FinanceScreen()),
+  );
+}
 
 void main() {
   testWidgets('finance fields reject letters and keep the previous number', (tester) async {
-    await pumpApp(tester);
-    await chooseMode(tester, 'finance');
+    tester.view.physicalSize = const Size(411, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(_financeApp());
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('finance-simple')));
     await tester.pumpAndSettle();
 
@@ -23,8 +38,12 @@ void main() {
   });
 
   testWidgets('simple interest matches a known value', (tester) async {
-    await pumpApp(tester);
-    await chooseMode(tester, 'finance');
+    tester.view.physicalSize = const Size(411, 915);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(_financeApp());
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('finance-simple')));
     await tester.pumpAndSettle();
 

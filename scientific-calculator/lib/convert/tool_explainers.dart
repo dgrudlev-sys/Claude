@@ -64,34 +64,50 @@ class ToolExplainers {
     ]);
   }
 
-  static Explanation fractions(Fraction a, FractionOp op, Fraction b) {
-    final result = evalFractions(a, op, b);
+  static Explanation fractions(Fraction a, FractionOp op, Fraction b, [List<Fraction> more = const []]) {
+    return fractionsAll([a, b, ...more], op);
+  }
+
+  static Explanation fractionsAll(List<Fraction> terms, FractionOp op) {
+    final result = evalFractionTerms(terms, op);
     return switch (op) {
-      FractionOp.add => _fractionAddSub(a, b, result, add: true),
-      FractionOp.subtract => _fractionAddSub(a, b, result, add: false),
-      FractionOp.multiply => _fractionMul(a, b, result),
-      FractionOp.divide => _fractionDiv(a, b, result),
+      FractionOp.add => _fractionAddSub(terms, result, add: true),
+      FractionOp.subtract => _fractionAddSub(terms, result, add: false),
+      FractionOp.multiply => _fractionMul(terms, result),
+      FractionOp.divide => _fractionDiv(terms, result),
     };
   }
 
-  static Explanation _fractionAddSub(Fraction a, Fraction b, Fraction result, {required bool add}) {
-    final common = a.denominator * b.denominator;
-    final aTop = a.numerator * b.denominator;
-    final bTop = b.numerator * a.denominator;
-    final rawTop = add ? aTop + bTop : aTop - bTop;
-    final raw = Fraction(rawTop, common);
+  static Explanation _fractionAddSub(List<Fraction> terms, Fraction result, {required bool add}) {
+    final common = commonDenominator(terms);
+    final tops = [
+      for (final term in terms) term.numerator * (common ~/ term.denominator),
+    ];
+    var rawTop = tops.first;
+    for (final top in tops.skip(1)) {
+      rawTop = add ? rawTop + top : rawTop - top;
+    }
+    final rewritten = [
+      for (var i = 0; i < terms.length; i++) '${terms[i].improperLabel} as ${tops[i]}/$common',
+    ];
+    final rewrittenEq = [
+      for (var i = 0; i < terms.length; i++) '${terms[i].improperLabel} = ${tops[i]}/$common',
+    ];
+    final pieces = [for (final top in tops) '$top/$common'];
     final sym = add ? '+' : '−';
     final steps = <ExplanationStep>[
       ExplanationStep(
-        words: 'A common denominator of $common lets us rewrite ${a.improperLabel} as $aTop/$common and ${b.improperLabel} as $bTop/$common.',
-        symbols: '${a.improperLabel} = $aTop/$common,  ${b.improperLabel} = $bTop/$common',
+        words: 'A common denominator of $common lets us rewrite ${_joinEnglish(rewritten)}.',
+        symbols: rewrittenEq.join(',  '),
       ),
       ExplanationStep(
-        words: add ? 'Adding the numerators keeps the denominator $common.' : 'Subtracting the numerators keeps the denominator $common.',
-        symbols: '$aTop/$common $sym $bTop/$common = $rawTop/$common',
+        words: add
+            ? 'Adding the numerators keeps the denominator $common.'
+            : 'Subtracting the numerators in order keeps the denominator $common.',
+        symbols: '${pieces.join(' $sym ')} = $rawTop/$common',
       ),
     ];
-    if (raw.numerator != result.numerator || raw.denominator != result.denominator) {
+    if (rawTop != result.numerator || common != result.denominator) {
       steps.add(ExplanationStep(
         words: 'Simplify by dividing numerator and denominator by their greatest common factor.',
         symbols: '$rawTop/$common = ${result.improperLabel}',
@@ -105,13 +121,21 @@ class ToolExplainers {
     return Explanation(steps: steps);
   }
 
-  static Explanation _fractionMul(Fraction a, Fraction b, Fraction result) {
-    final rawN = a.numerator * b.numerator;
-    final rawD = a.denominator * b.denominator;
+  static Explanation _fractionMul(List<Fraction> terms, Fraction result) {
+    var rawN = 1;
+    var rawD = 1;
+    for (final term in terms) {
+      rawN *= term.numerator;
+      rawD *= term.denominator;
+    }
+    final product = terms.map((t) => t.improperLabel).join(' × ');
+    final many = terms.length > 2;
     return Explanation(steps: [
       ExplanationStep(
-        words: 'Multiply the numerators. Multiply the denominators.',
-        symbols: '${a.improperLabel} × ${b.improperLabel} = $rawN/$rawD',
+        words: many
+            ? 'Multiply all numerators. Multiply all denominators.'
+            : 'Multiply the numerators. Multiply the denominators.',
+        symbols: '$product = $rawN/$rawD',
       ),
       ExplanationStep(
         words: rawN == result.numerator && rawD == result.denominator
@@ -122,20 +146,38 @@ class ToolExplainers {
     ]);
   }
 
-  static Explanation _fractionDiv(Fraction a, Fraction b, Fraction result) {
-    final flipped = Fraction(b.denominator, b.numerator);
-    final rawN = a.numerator * flipped.numerator;
-    final rawD = a.denominator * flipped.denominator;
+  static Explanation _fractionDiv(List<Fraction> terms, Fraction result) {
+    final first = terms.first;
+    final rest = terms.skip(1).toList();
+    final reciprocals = [for (final term in rest) Fraction(term.denominator, term.numerator)];
+    var rawN = first.numerator;
+    var rawD = first.denominator;
+    for (final rec in reciprocals) {
+      rawN *= rec.numerator;
+      rawD *= rec.denominator;
+    }
+    final original = terms.map((t) => t.improperLabel).join(' ÷ ');
+    final flipped = [first, ...reciprocals].map((t) => t.improperLabel).join(' × ');
+    final many = terms.length > 2;
     return Explanation(steps: [
       ExplanationStep(
-        words: 'Dividing by a fraction is multiplication by its reciprocal (numerator and denominator swapped).',
-        symbols: '${a.improperLabel} ÷ ${b.improperLabel} = ${a.improperLabel} × ${flipped.improperLabel}',
+        words: many
+            ? 'Division runs left to right. Each division is multiplication by the reciprocal (numerator and denominator swapped).'
+            : 'Dividing by a fraction is multiplication by its reciprocal (numerator and denominator swapped).',
+        symbols: '$original = $flipped',
       ),
       ExplanationStep(
         words: 'Multiply numerators and denominators, then simplify if needed.',
-        symbols: '${a.improperLabel} × ${flipped.improperLabel} = $rawN/$rawD = ${result.improperLabel}',
+        symbols: '$flipped = $rawN/$rawD = ${result.improperLabel}',
       ),
     ]);
+  }
+
+  static String _joinEnglish(List<String> parts) {
+    if (parts.isEmpty) return '';
+    if (parts.length == 1) return parts.first;
+    if (parts.length == 2) return '${parts[0]} and ${parts[1]}';
+    return '${parts.sublist(0, parts.length - 1).join(', ')}, and ${parts.last}';
   }
 
   static Explanation unitConvert({

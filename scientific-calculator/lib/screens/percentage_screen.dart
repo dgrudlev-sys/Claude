@@ -3,6 +3,8 @@ import 'package:flutter/semantics.dart';
 
 import '../convert/percent_math.dart';
 import '../convert/tool_explainers.dart';
+import '../theme/app_metrics.dart';
+import '../widgets/chooser_tile.dart';
 import '../widgets/numeric_field.dart';
 import '../widgets/steps_panel.dart';
 
@@ -57,88 +59,56 @@ class _PercentageScreenState extends State<PercentageScreen> {
 
   Widget _picker(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      padding: const EdgeInsets.only(top: AppMetrics.space2, bottom: AppMetrics.space4),
       children: [
-        Text(
-          'Pick one question.',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppMetrics.space3, 0, AppMetrics.space3, AppMetrics.space2),
+          child: Text(
+            'Pick one question.',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  height: AppMetrics.titleHeight,
+                  letterSpacing: AppMetrics.titleTracking,
+                ),
+          ),
         ),
-        const SizedBox(height: 8),
-        const Text('Each card is one kind of percent. Numbers only.'),
-        const SizedBox(height: 12),
-        _card(
-          context,
-          key: 'percent-of',
-          title: 'What is this percent of a number?',
-          subtitle: 'Example: 15% of 80.',
-          onTap: () => setState(() {
-            _job = _PercentJob.of;
-            _a.text = '15';
-            _b.text = '80';
-          }),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(AppMetrics.space3, 0, AppMetrics.space3, AppMetrics.space2),
+          child: Text('Each row is one kind of percent. Numbers only.'),
         ),
-        _card(
-          context,
-          key: 'percent-what',
-          title: 'This number is what percent of that number?',
-          subtitle: 'Example: 20 is what percent of 50.',
-          onTap: () => setState(() {
-            _job = _PercentJob.what;
-            _a.text = '20';
-            _b.text = '50';
-          }),
-        ),
-        _card(
-          context,
-          key: 'percent-change',
-          title: 'Increase or decrease a number by a percent',
-          subtitle: 'Example: 50 plus 10%, or 50 minus 10% (type −10).',
-          onTap: () => setState(() {
-            _job = _PercentJob.change;
-            _a.text = '50';
-            _b.text = '10';
-          }),
-        ),
+        ...ChooserTile.separated([
+          ChooserTile(
+            key: const Key('percent-of'),
+            title: 'What is this percent of a number?',
+            subtitle: 'Example: 15% of 80.',
+            onTap: () => setState(() {
+              _job = _PercentJob.of;
+              _a.text = '15';
+              _b.text = '80';
+            }),
+          ),
+          ChooserTile(
+            key: const Key('percent-what'),
+            title: 'This number is what percent of that number?',
+            subtitle: 'Example: 20 is what percent of 50.',
+            onTap: () => setState(() {
+              _job = _PercentJob.what;
+              _a.text = '20';
+              _b.text = '50';
+            }),
+          ),
+          ChooserTile(
+            key: const Key('percent-change'),
+            title: 'Increase or decrease a number by a percent',
+            subtitle: 'Example: 50 plus 10%, or 50 minus 10% (type −10).',
+            onTap: () => setState(() {
+              _job = _PercentJob.change;
+              _a.text = '50';
+              _b.text = '10';
+            }),
+          ),
+        ]),
       ],
-    );
-  }
-
-  Widget _card(
-    BuildContext context, {
-    required String key,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Semantics(
-        button: true,
-        label: '$title. $subtitle',
-        child: Material(
-          color: Theme.of(context).colorScheme.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: BorderSide(color: Theme.of(context).colorScheme.outline),
-          ),
-          child: InkWell(
-            key: Key(key),
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(14),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 4),
-                  Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 

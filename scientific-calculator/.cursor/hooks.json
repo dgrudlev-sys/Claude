@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": "py -3 -m tokengate.prompt_gate"
+      }
+    ]
+  }
+}

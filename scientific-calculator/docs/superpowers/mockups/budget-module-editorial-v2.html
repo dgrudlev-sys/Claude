@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Budget Module – Overview Hero</title>
+  <style>
+    body { margin:0; font-family:system-ui, sans-serif; background:#111; color:#eee; }
+    .hero { padding:16px; background:#222; }
+    .hero .available { font-size:2.4rem; font-weight:600; margin-bottom:8px; }
+    .hero .split {
+      display:flex; flex-wrap:wrap; gap:12px; justify-content:space-between;
+    }
+    .hero .metric {
+      flex:1 1 30%; min-width:80px;
+      text-align:center;
+    }
+    .hero .metric .label { font-size:0.85rem; opacity:0.8; }
+    .hero .metric .value { font-size:1.2rem; font-weight:500; }
+    .progress {
+      height:4px; background:#444; border-radius:2px; overflow:hidden; margin-top:12px;
+    }
+    .progress .fill {
+      height:100%; background:#0f0; width:61%; /* example 61% */
+    }
+    .caption { font-size:0.85rem; opacity:0.7; margin-top:4px; text-align:center; }
+    @media (max-width:300px) {
+      .hero .split { flex-direction:column; align-items:center; }
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="available">Available $12,450</div>
+    <div class="split">
+      <div class="metric">
+        <div class="label">Income</div>
+        <div class="value">$32,000</div>
+      </div>
+      <div class="metric">
+        <div class="label">Already spent</div>
+        <div class="value">$11,750</div>
+      </div>
+      <div class="metric">
+        <div class="label">Upcoming</div>
+        <div class="value">$7,800</div>
+      </div>
+    </div>
+    <div class="progress"><div class="fill"></div></div>
+    <div class="caption">61 % of income committed</div>
+    <p style="font-size:0.75rem; opacity:0.6; margin-top:8px;">
+      Locked formula: Available = Income − Already spent − Upcoming
+    </p>
+  </section>
+</body>
+</html>

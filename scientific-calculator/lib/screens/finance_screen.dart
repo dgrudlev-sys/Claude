@@ -3,7 +3,8 @@ import 'package:flutter/semantics.dart';
 
 import '../finance/money_math.dart';
 import '../convert/tool_explainers.dart';
-import '../theme/app_theme.dart';
+import '../theme/app_metrics.dart';
+import '../widgets/chooser_tile.dart';
 import '../widgets/numeric_field.dart';
 import '../widgets/steps_panel.dart';
 
@@ -137,39 +138,49 @@ class _FinanceScreenState extends State<FinanceScreen> {
 
   Widget _picker(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      padding: const EdgeInsets.only(top: AppMetrics.space2, bottom: AppMetrics.space4),
       children: [
-        Text(
-          'What do you want to know?',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(AppMetrics.space3, 0, AppMetrics.space3, AppMetrics.space2),
+          child: Text(
+            'What do you want to know?',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  height: AppMetrics.titleHeight,
+                  letterSpacing: AppMetrics.titleTracking,
+                ),
+          ),
         ),
-        const SizedBox(height: 8),
-        const Text('Pick one money question. Numbers only in every box.'),
-        const SizedBox(height: 12),
-        _ChoiceCard(
-          key: const Key('finance-simple'),
-          title: 'Simple interest',
-          subtitle: 'How much extra money at a plain yearly percent?',
-          onTap: () => setState(() => _job = _FinanceJob.simple),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(AppMetrics.space3, 0, AppMetrics.space3, AppMetrics.space2),
+          child: Text('Pick one money question. Numbers only in every box.'),
         ),
-        _ChoiceCard(
-          key: const Key('finance-compound'),
-          title: 'Compound interest',
-          subtitle: 'How much will it grow if interest earns interest?',
-          onTap: () => setState(() => _job = _FinanceJob.compound),
-        ),
-        _ChoiceCard(
-          key: const Key('finance-loan'),
-          title: 'Loan payment',
-          subtitle: 'What is my monthly payment?',
-          onTap: () => setState(() => _job = _FinanceJob.loan),
-        ),
-        _ChoiceCard(
-          key: const Key('finance-savings'),
-          title: 'Savings',
-          subtitle: 'How much will I have saved later?',
-          onTap: () => setState(() => _job = _FinanceJob.savings),
-        ),
+        ...ChooserTile.separated([
+          ChooserTile(
+            key: const Key('finance-simple'),
+            title: 'Simple interest',
+            subtitle: 'How much extra money at a plain yearly percent?',
+            onTap: () => setState(() => _job = _FinanceJob.simple),
+          ),
+          ChooserTile(
+            key: const Key('finance-compound'),
+            title: 'Compound interest',
+            subtitle: 'How much will it grow if interest earns interest?',
+            onTap: () => setState(() => _job = _FinanceJob.compound),
+          ),
+          ChooserTile(
+            key: const Key('finance-loan'),
+            title: 'Loan payment',
+            subtitle: 'What is my monthly payment?',
+            onTap: () => setState(() => _job = _FinanceJob.loan),
+          ),
+          ChooserTile(
+            key: const Key('finance-savings'),
+            title: 'Savings',
+            subtitle: 'How much will I have saved later?',
+            onTap: () => setState(() => _job = _FinanceJob.savings),
+          ),
+        ]),
       ],
     );
   }
@@ -270,66 +281,6 @@ class _FinanceScreenState extends State<FinanceScreen> {
           ),
         if (_explanation != null) StepsPanel(explanation: _explanation!),
       ],
-    );
-  }
-}
-
-class _ChoiceCard extends StatelessWidget {
-  const _ChoiceCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final palette = Theme.of(context).extension<CalculatorPalette>()!;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Semantics(
-        button: true,
-        label: '$title. $subtitle',
-        child: Material(
-          color: Theme.of(context).colorScheme.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-            side: BorderSide(color: Theme.of(context).colorScheme.outline),
-          ),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(14),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: palette.onButton,
-                              ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.arrow_forward_ios, size: 18),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

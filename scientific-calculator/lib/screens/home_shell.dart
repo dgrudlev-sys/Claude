@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/calculator_mode.dart';
 import '../l10n/l10n.dart';
 import '../services/settings_controller.dart';
+import '../widgets/chooser_tile.dart';
 import 'calculator_screen.dart';
 import 'convert_screen.dart';
 import 'finance_screen.dart';
@@ -25,11 +26,13 @@ class HomeShell extends StatelessWidget {
     required this.settings,
     required this.mode,
     required this.onChangeCalculator,
+    this.onSelectMode,
   });
 
   final SettingsController settings;
   final CalculatorMode mode;
   final VoidCallback onChangeCalculator;
+  final ValueChanged<CalculatorMode>? onSelectMode;
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +41,29 @@ class HomeShell extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           key: const Key('switch-calculator'),
-          icon: const Icon(Icons.apps),
+          icon: AlignedGlyph(
+            icon: Icons.apps,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           tooltip: strings.switchCalculator,
           onPressed: onChangeCalculator,
         ),
         title: FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
-          child: Text(strings.modeLabel(mode.name)),
+          child: Text(
+            strings.modeLabel(mode.name),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+          ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: AlignedGlyph(
+              icon: Icons.settings_outlined,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
             tooltip: strings.settings,
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => SettingsScreen(settings: settings)),
@@ -63,7 +77,15 @@ class HomeShell extends StatelessWidget {
 
   Widget _screenFor(CalculatorMode mode) {
     return switch (mode) {
-      CalculatorMode.calculator => CalculatorScreen(settings: settings),
+      CalculatorMode.calculator => CalculatorScreen(
+        settings: settings,
+        onOpenConvert: onSelectMode == null
+            ? null
+            : () {
+                settings.setLastMode(CalculatorMode.convert);
+                onSelectMode!(CalculatorMode.convert);
+              },
+      ),
       CalculatorMode.convert => const ConvertScreen(),
       CalculatorMode.percentage => const PercentageScreen(),
       CalculatorMode.fractions => const FractionsScreen(),
